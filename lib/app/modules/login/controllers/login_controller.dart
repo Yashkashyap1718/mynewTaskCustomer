@@ -38,52 +38,71 @@ class LoginController extends GetxController {
   @override
   void onClose() {}
 
-  // Function to send OTP to the provided phone number
-  Future<void> sendOTP(BuildContext context) async {
-    final Map<String, String> payload = {
-      "country_code": countryCodeController.text,
-      "mobile_number": phoneNumberController.text
-    };
 
-    try {
-      final http.Response response = await http.post(
-        Uri.parse(baseURL + sendOtpEndpoint),
-        headers: <String, String>{
-          'Content-Type': 'application/json',
-        },
-        body: {
-          "country_code": countryCodeController,
-          "mobile_number": phoneNumberController.text
-        },
-      );
-      print(phoneNumberController);
-      log(response.body);
-      // if (response.statusCode == 200) {
+Future<void> sendOTP(BuildContext context) async {
+  final Map<String, String> payload = {
+    "country_code": "91", // Assuming you want to keep this static for now
+    "mobile_number": phoneNumberController.text, // Dynamic phone number input
+  };
+
+  try {
+    
+    // Make the POST request
+    final  response = await http.post(
+      Uri.parse("http://172.93.54.177:3001/users/signin"),
+      headers: {
+        "Content-Type": "application/json; charset=UTF-8", // Make sure the server understands the request is JSON
+      },
+      body: jsonEncode(payload), // Encode the payload to JSON
+    );
+     log('Response Status Code: ${response.statusCode}');
+    log('Response Body: ${response.body}');
+
+    print('----sendOTP----');
+
+print('---pay--$payload');
+    log(response.body); // Log the response body for debugging
+
+    if (response.statusCode == 200) {
+      // Parse the response body
       final Map<String, dynamic> responseData = jsonDecode(response.body);
+      
+      // Extract the "msg" field which contains the OTP
       final String msg = responseData['msg'];
+      
+      // Split the message by comma to get the OTP (the first part)
       final List<String> parts = msg.split(',');
-      final String otp = parts.first.trim();
+      final String otp = parts.first.trim(); // Trim to remove any surrounding spaces
 
-      print(otp);
+      print('Extracted OTP: $otp');
 
+      // Navigate to OTP verification screen with the phone number and OTP
       Get.to(
         VerifyOtpView(
           phoneNumder: phoneNumberController.text,
-          oTP: otp,
+          oTP: otp, // Pass the extracted OTP
         ),
       );
-      // } else {
-      //   throw Exception('Failed to send request');
-      // }
-    } catch (e) {
-      log('Error: $e');
+    } else {
+      // Handle unsuccessful response
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error occurred while sending request.'),
+        SnackBar(
+          content: Text('Failed to send OTP: ${response.reasonPhrase}'),
         ),
       );
     }
+  } catch (e) {
+    log('Error: $e'); // Log any errors
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Error occurred while sending request.'),
+      ),
+    );
+
+
+    print(e);
   }
+}
 
   // Function for Firebase phone number verification
   sendCode() async {

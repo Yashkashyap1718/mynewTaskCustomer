@@ -60,7 +60,7 @@ class DrawerView extends StatelessWidget {
                                   margin: const EdgeInsets.only(right: 10),
                                   clipBehavior: Clip.antiAlias,
                                   decoration: ShapeDecoration(
-                                    color: Colors.white,
+                                    color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(200),
                                     ),
@@ -79,7 +79,7 @@ class DrawerView extends StatelessWidget {
                                       Text(
                                         controller.name.value,
                                         style: GoogleFonts.inter(
-                                          color: AppThemData.black,
+                                          color:themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
                                           fontSize: 18,
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -87,7 +87,7 @@ class DrawerView extends StatelessWidget {
                                       Text(
                                         controller.phoneNumber.value,
                                         style: GoogleFonts.inter(
-                                          color: AppThemData.black,
+                                          color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
                                         ),
@@ -153,29 +153,29 @@ class DrawerView extends StatelessWidget {
                           // Get.to(const MyRideView());
                         },
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 50),
-                        child: Divider(),
-                      ),
-                      ListTile(
-                        leading: SvgPicture.asset(
-                          "assets/icon/ic_my_wallet.svg",
-                          colorFilter: ColorFilter.mode(themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black, BlendMode.srcIn),
-                        ),
-                        trailing: const Icon(Icons.keyboard_arrow_right_rounded, size: 30),
-                        title: Text(
-                          'My Wallet'.tr,
-                          style: GoogleFonts.inter(
-                              fontSize: 16,
-                              color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
-                              fontWeight: FontWeight.w400),
-                        ),
-                        onTap: () {
-                          Get.back();
-                          controller.drawerIndex.value = 2;
-                          // Get.to(const MyWalletView());
-                        },
-                      ),
+                      // const Padding(
+                      //   padding: EdgeInsets.only(left: 50),
+                      //   child: Divider(),
+                      // ),
+                      // ListTile(
+                      //   leading: SvgPicture.asset(
+                      //     "assets/icon/ic_my_wallet.svg",
+                      //     colorFilter: ColorFilter.mode(themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black, BlendMode.srcIn),
+                      //   ),
+                      //   trailing: const Icon(Icons.keyboard_arrow_right_rounded, size: 30),
+                      //   title: Text(
+                      //     'My Wallet'.tr,
+                      //     style: GoogleFonts.inter(
+                      //         fontSize: 16,
+                      //         color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                      //         fontWeight: FontWeight.w400),
+                      //   ),
+                      //   onTap: () {
+                      //     Get.back();
+                      //     controller.drawerIndex.value = 2;
+                      //     // Get.to(const MyWalletView());
+                      //   },
+                      // ),
                       const Padding(
                         padding: EdgeInsets.only(left: 50),
                         child: Divider(),
@@ -207,30 +207,30 @@ class DrawerView extends StatelessWidget {
                               fontWeight: FontWeight.w400),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 50),
-                        child: Divider(),
-                      ),
-                      ListTile(
-                        leading: SvgPicture.asset(
-                          "assets/icon/ic_support.svg",
-                          height: 22,
-                          colorFilter: ColorFilter.mode(themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black, BlendMode.srcIn),
-                        ),
-                        trailing: const Icon(Icons.keyboard_arrow_right_rounded, size: 30),
-                        title: Text(
-                          'Support'.tr,
-                          style: GoogleFonts.inter(
-                              fontSize: 16,
-                              color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
-                              fontWeight: FontWeight.w400),
-                        ),
-                        onTap: () {
-                          Get.back();
-                          controller.drawerIndex.value = 3;
-                          // Get.to(const MyWalletView());
-                        },
-                      ),
+                      // const Padding(
+                      //   padding: EdgeInsets.only(left: 50),
+                      //   child: Divider(),
+                      // ),
+                      // ListTile(
+                      //   leading: SvgPicture.asset(
+                      //     "assets/icon/ic_support.svg",
+                      //     height: 22,
+                      //     colorFilter: ColorFilter.mode(themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black, BlendMode.srcIn),
+                      //   ),
+                      //   trailing: const Icon(Icons.keyboard_arrow_right_rounded, size: 30),
+                      //   title: Text(
+                      //     'Support'.tr,
+                      //     style: GoogleFonts.inter(
+                      //         fontSize: 16,
+                      //         color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                      //         fontWeight: FontWeight.w400),
+                      //   ),
+                      //   onTap: () {
+                      //     Get.back();
+                      //     controller.drawerIndex.value = 3;
+                      //     // Get.to(const MyWalletView());
+                      //   },
+                      // ),
                       const Padding(
                         padding: EdgeInsets.only(left: 50),
                         child: Divider(),
@@ -313,29 +313,29 @@ class DrawerView extends StatelessWidget {
                               fontWeight: FontWeight.w400),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 50),
-                        child: Divider(),
-                      ),
-                      ListTile(
-                        leading: SvgPicture.asset(
-                          "assets/icon/ic_language.svg".tr,
-                          colorFilter: ColorFilter.mode(themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black, BlendMode.srcIn),
-                        ),
-                        trailing: const Icon(Icons.keyboard_arrow_right_rounded, size: 30),
-                        title: Text(
-                          'Language'.tr,
-                          style: GoogleFonts.inter(
-                              fontSize: 16,
-                              color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
-                              fontWeight: FontWeight.w400),
-                        ),
-                        onTap: () {
-                          Get.back();
-                          controller.drawerIndex.value = 6;
-                          // Get.to(const LanguageView());
-                        },
-                      ),
+                      // const Padding(
+                      //   padding: EdgeInsets.only(left: 50),
+                      //   child: Divider(),
+                      // ),
+                      // ListTile(
+                      //   leading: SvgPicture.asset(
+                      //     "assets/icon/ic_language.svg".tr,
+                      //     colorFilter: ColorFilter.mode(themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black, BlendMode.srcIn),
+                      //   ),
+                      //   trailing: const Icon(Icons.keyboard_arrow_right_rounded, size: 30),
+                      //   title: Text(
+                      //     'Language'.tr,
+                      //     style: GoogleFonts.inter(
+                      //         fontSize: 16,
+                      //         color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                      //         fontWeight: FontWeight.w400),
+                      //   ),
+                      //   onTap: () {
+                      //     Get.back();
+                      //     controller.drawerIndex.value = 6;
+                      //     // Get.to(const LanguageView());
+                      //   },
+                      // ),
                       const Padding(
                         padding: EdgeInsets.only(left: 50),
                         child: Divider(),

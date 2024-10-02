@@ -1,21 +1,12 @@
-import 'dart:convert';
-import 'dart:developer';
-
-import 'package:customer/app/modules/verify_otp/views/verify_otp_view.dart';
-import 'package:customer/constant/api_constant.dart';
-import 'package:customer/constant_widgets/country_code_selector_view.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
 import 'package:customer/utils/validate_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 import '../../../../theme/responsive.dart';
 import '../controllers/login_controller.dart';
 
@@ -60,9 +51,12 @@ class LoginView extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 32),
                         child: Center(
-                            child: SvgPicture.asset(themeChange.isDarkTheme()
-                                ? "assets/images/taxi.png"
-                                : "assets/images/taxi.png")),
+                            child: Image.asset(
+                          themeChange.isDarkTheme()
+                              ? "assets/images/taxi.png"
+                              : "assets/images/taxi.png",
+                          scale: 6,
+                        )),
                       ),
                       Text(
                         "Login".tr,
@@ -83,7 +77,7 @@ class LoginView extends StatelessWidget {
                             fontWeight: FontWeight.w400),
                       ),
                       Container(
-                        height: 110,
+                        // height: 110,
                         width: Responsive.width(100, context),
                         margin: const EdgeInsets.only(top: 36, bottom: 48),
                         decoration: BoxDecoration(
@@ -95,21 +89,21 @@ class LoginView extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                height: 45,
-                                padding: const EdgeInsets.all(8.0),
-                                child: CountryCodeSelectorView(
-                                  isCountryNameShow: true,
-                                  countryCodeController:
-                                      controller.countryCodeController,
-                                  isEnable: true,
-                                  onChanged: (value) {
-                                    controller.countryCodeController.text =
-                                        value.dialCode.toString();
-                                  },
-                                ),
-                              ),
-                              const Divider(color: AppThemData.grey100),
+                              // Container(
+                              //   height: 45,
+                              //   padding: const EdgeInsets.all(8.0),
+                              //   child: CountryCodeSelectorView(
+                              //     isCountryNameShow: true,
+                              //     countryCodeController:
+                              //         controller.countryCodeController,
+                              //     isEnable: true,
+                              //     onChanged: (value) {
+                              //       controller.countryCodeController.text =
+                              //           value.dialCode.toString();
+                              //     },
+                              //   ),
+                              // ),
+                              // const Divider(color: AppThemData.grey100),
                               SizedBox(
                                 height: 45,
                                 child: TextFormField(
@@ -144,62 +138,77 @@ class LoginView extends StatelessWidget {
                       ),
                       Center(
                         child: RoundShapeButton(
-                            size: const Size(200, 45),
-                            title: "Send OTP".tr,
-                            buttonColor: AppThemData.primary500,
-                            buttonTextColor: AppThemData.black,
-                            onTap: () async {
-                              // if (controller.formKey.value.currentState!
-                              //     .validate()) {
-                              // controller.sendOTP(
-                              //   context,
-                              // );
+                          size: const Size(200, 45),
+                          title: "Send OTP".tr,
+                          buttonColor: AppThemData.primary400,
+                          buttonTextColor: AppThemData.black,
+                          onTap: () {
+                            print(
+                                'Button tapped!'); // Check if the button is tapped
 
-                              try {
-                                final http.Response response = await http.post(
-                                  Uri.parse(baseURL + sendOtpEndpoint),
-                                  headers: <String, String>{
-                                    'Content-Type': 'application/json',
-                                  },
-                                  body: {
-                                    "country_code": "91",
-                                    "mobile_number": phoneController.text
-                                  },
-                                );
-                                print(phoneController.text);
-                                log(response.body);
-                                // if (response.statusCode == 200) {
-                                final Map<String, dynamic> responseData =
-                                    jsonDecode(response.body);
-                                final String msg = responseData['msg'];
-                                final List<String> parts = msg.split(',');
-                                final String otp = parts.first.trim();
+                            if (controller.formKey.value.currentState!
+                                .validate()) {
+                              print(
+                                  'Form validation passed!'); // Check if form validation passes
 
-                                print(otp);
+                              // Call sendOTP function
+                              controller.sendOTP(context);
 
-                                Get.to(
-                                  VerifyOtpView(
-                                    phoneNumder: phoneController.text,
-                                    oTP: otp,
-                                  ),
-                                );
-                                // } else {
-                                //   throw Exception('Failed to send request');
-                                // }
-                              } catch (e) {
-                                log('Error: $e');
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Error occurred while sending request.'),
-                                  ),
-                                );
-                              }
-                              // } else {
-                              //   ShowToastDialog.showToast(
-                              //       'Please enter a valid number'.tr);
-                              // }
-                            }),
+                              print(
+                                  'OTP function called!'); // Check if the sendOTP function is called
+                            } else {
+                              print(
+                                  'Form validation failed!'); // Handle form validation failure
+                            }
+                          },
+// if(controller.formKey.value.currentState!.validate()){
+
+//   try {
+//                                 final http.Response response = await http.post(
+//                                   Uri.parse(baseURL + sendOtpEndpoint),
+//                                   headers: <String, String>{
+//                                     'Content-Type': 'application/json',
+//                                   },
+//                                   body: {
+//                                     "country_code": "91",
+//                                     "mobile_number": phoneController.text
+//                                   },
+//                                 );
+//                                 print(phoneController.text);
+//                                 log(response.body);
+//                                 // if (response.statusCode == 200) {
+//                                 final Map<String, dynamic> responseData =
+//                                     jsonDecode(response.body);
+//                                 final String msg = responseData['msg'];
+//                                 final List<String> parts = msg.split(',');
+//                                 final String otp = parts.first.trim();
+
+//                                 print(otp);
+
+//                                 Get.to(
+//                                   VerifyOtpView(
+//                                     phoneNumder: phoneController.text,
+//                                     oTP: otp,
+//                                   ),
+//                                 );
+//                                 // } else {
+//                                 //   throw Exception('Failed to send request');
+//                                 // }
+//                               } catch (e) {
+//                                 log('Error: $e');
+//                                 ScaffoldMessenger.of(context).showSnackBar(
+//                                   const SnackBar(
+//                                     content: Text(
+//                                         'Error occurred while sending request.'),
+//                                   ),
+//                                 );
+//                               }
+// }
+
+                          // } else {
+                          //   ShowToastDialog.showToast(
+                          //       'Please enter a valid number'.tr);
+                        ),
                       ),
                       // Padding(
                       //   padding: const EdgeInsets.only(top: 20, bottom: 20),
