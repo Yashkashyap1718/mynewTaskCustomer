@@ -84,7 +84,8 @@ class DrawerView extends StatelessWidget {
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
-                                      Text(
+                                      
+                                    Text(
                                         controller.phoneNumber.value,
                                         style: GoogleFonts.inter(
                                           color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
