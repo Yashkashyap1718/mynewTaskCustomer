@@ -42,7 +42,7 @@ class GlobalSettingController extends GetxController {
     });
     await FireStoreUtils().getSettings();
     await FireStoreUtils().getPayment();
-    AppThemData.primary500 = HexColor.fromHex(Constant.appColor.toString());
+    AppThemData.primary400 = HexColor.fromHex(Constant.appColor.toString());
   }
 
   getVehicleTypeList() async {

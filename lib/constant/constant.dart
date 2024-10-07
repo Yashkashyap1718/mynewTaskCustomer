@@ -41,7 +41,7 @@ class Constant {
       "https://firebasestorage.googleapis.com/v0/b/gocab-a8627.appspot.com/o/constant_assets%2F59.png?alt=media&token=a0b1aebd-9c01-45f6-9569-240c4bc08e23";
 
   static UserModel? userModel;
-  static String mapAPIKey = "";
+  static String mapAPIKey = "AIzaSyAsVrHxXGITDH-g6ozMNeoEAtiFuhGulwI";
   static String senderId = "";
   static String jsonFileURL = "";
   static String radius = "10";

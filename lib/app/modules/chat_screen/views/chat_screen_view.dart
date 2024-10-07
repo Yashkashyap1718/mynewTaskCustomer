@@ -227,7 +227,7 @@ class ChatScreenView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
                 color: isMe
-                    ? AppThemData.primary500
+                    ? AppThemData.primary400
                     : themeChange.isDarkTheme()
                         ? AppThemData.grey900
                         : AppThemData.grey50,

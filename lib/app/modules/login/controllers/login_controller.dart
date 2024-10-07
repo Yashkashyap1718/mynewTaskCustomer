@@ -8,7 +8,6 @@ import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/home/views/home_view.dart';
 import 'package:customer/app/modules/signup/views/signup_view.dart';
 import 'package:customer/app/modules/verify_otp/views/verify_otp_view.dart';
-import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/utils/fire_store_utils.dart';
@@ -83,12 +82,12 @@ class LoginController extends GetxController {
             oTP: otp, // Pass the extracted OTP
           ),
         );
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(otp),
-          ),
-        );
+        ShowToastDialog.showToast(msg.tr);
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(
+        //     content: Text(otp),
+        //   ),
+        // );
       } else {
         // Handle unsuccessful response
         ScaffoldMessenger.of(context).showSnackBar(

@@ -250,7 +250,7 @@ class MyRideDetailsController extends GetxController {
                   style: ThemeMode.system,
                   appearance: PaymentSheetAppearance(
                     colors: PaymentSheetAppearanceColors(
-                      primary: AppThemData.primary500,
+                      primary: AppThemData.primary400,
                     ),
                   ),
                   merchantDisplayName: 'MyTaxi'));

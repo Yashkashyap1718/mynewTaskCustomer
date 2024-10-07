@@ -16,7 +16,11 @@ class CategoryView extends StatelessWidget {
   final int index;
   final bool isForPayment;
 
-  const CategoryView({super.key, required this.vehicleType, required this.index, required this.isForPayment});
+  const CategoryView(
+      {super.key,
+      required this.vehicleType,
+      required this.index,
+      required this.isForPayment});
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +38,18 @@ class CategoryView extends StatelessWidget {
           decoration: ShapeDecoration(
             shape: RoundedRectangleBorder(
               side: isForPayment
-                  ? BorderSide(width: 1, color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100)
+                  ? BorderSide(
+                      width: 1,
+                      color: themeChange.isDarkTheme()
+                          ? AppThemData.grey800
+                          : AppThemData.grey100)
                   : controller.selectVehicleTypeIndex.value == index
-                      ? BorderSide(width: 1, color: AppThemData.primary500)
-                      : BorderSide(width: 1, color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100),
+                      ? BorderSide(width: 1, color: AppThemData.primary400)
+                      : BorderSide(
+                          width: 1,
+                          color: themeChange.isDarkTheme()
+                              ? AppThemData.grey800
+                              : AppThemData.grey100),
               borderRadius: BorderRadius.circular(12),
             ),
           ),
@@ -53,7 +65,8 @@ class CategoryView extends StatelessWidget {
                   imageUrl: vehicleType.image,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Constant.loader(),
-                  errorWidget: (context, url, error) => Image.network(Constant.userPlaceHolder),
+                  errorWidget: (context, url, error) =>
+                      Image.network(Constant.userPlaceHolder),
                 ),
               ),
               const SizedBox(width: 12),
@@ -66,7 +79,9 @@ class CategoryView extends StatelessWidget {
                     Text(
                       vehicleType.title,
                       style: GoogleFonts.inter(
-                        color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                        color: themeChange.isDarkTheme()
+                            ? AppThemData.grey25
+                            : AppThemData.grey950,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -75,7 +90,9 @@ class CategoryView extends StatelessWidget {
                     Text(
                       '${'We will arrived in '.tr}${controller.mapModel.value!.rows!.first.elements!.first.duration!.text ?? ''}',
                       style: GoogleFonts.inter(
-                        color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                        color: themeChange.isDarkTheme()
+                            ? AppThemData.grey25
+                            : AppThemData.grey950,
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                       ),
@@ -90,10 +107,14 @@ class CategoryView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    Constant.amountToShow(amount: controller.amountShow(vehicleType, controller.mapModel.value!)),
+                    Constant.amountToShow(
+                        amount: controller.amountShow(
+                            vehicleType, controller.mapModel.value!)),
                     textAlign: TextAlign.right,
                     style: GoogleFonts.inter(
-                      color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                      color: themeChange.isDarkTheme()
+                          ? AppThemData.grey25
+                          : AppThemData.grey950,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                     ),
@@ -109,7 +130,7 @@ class CategoryView extends StatelessWidget {
                       Text(
                         vehicleType.persons,
                         style: GoogleFonts.inter(
-                          color: AppThemData.primary500,
+                          color: AppThemData.primary400,
                           fontSize: 16,
                           fontWeight: FontWeight.w400,
                           height: 0.09,

@@ -36,8 +36,10 @@ class IntroScreenView extends StatelessWidget {
                   visible: controller.currentPage.value != 0,
                   child: IconButton(
                       onPressed: () {
-                        controller.currentPage.value = controller.currentPage.value - 1;
-                        controller.pageController.jumpToPage(controller.currentPage.value);
+                        controller.currentPage.value =
+                            controller.currentPage.value - 1;
+                        controller.pageController
+                            .jumpToPage(controller.currentPage.value);
                       },
                       icon: const Icon(
                         Icons.arrow_back_ios,
@@ -50,14 +52,18 @@ class IntroScreenView extends StatelessWidget {
                     visible: controller.currentPage.value != 2,
                     child: TextButton(
                         onPressed: () {
-                          Preferences.setBoolean(Preferences.isFinishOnBoardingKey, true);
+                          Preferences.setBoolean(
+                              Preferences.isFinishOnBoardingKey, true);
                           Get.offAllNamed(Routes.LOGIN);
                         },
                         child: Row(
                           children: [
                             Text(
                               "Skip".tr,
-                              style: GoogleFonts.inter(fontSize: 16.0, color: AppThemData.grey950, fontWeight: FontWeight.w500),
+                              style: GoogleFonts.inter(
+                                  fontSize: 16.0,
+                                  color: AppThemData.grey950,
+                                  fontWeight: FontWeight.w500),
                             ),
                             const Icon(
                               Icons.arrow_forward_ios_outlined,
@@ -83,17 +89,23 @@ class IntroScreenView extends StatelessWidget {
                       children: [
                         IntroScreenPage(
                           title: "Welcome to MyTaxi".tr,
-                          body: "Your reliable partner for swift and convenient rides. Experience hassle-free transportation at your fingertips.".tr,
+                          body:
+                              "Your reliable partner for swift and convenient rides. Experience hassle-free transportation at your fingertips."
+                                  .tr,
                           image: "assets/icon/intro_image_one.svg",
                         ),
                         IntroScreenPage(
                           title: " Fast and Reliable".tr,
-                          body: "MyTaxi ensures prompt and reliable rides, getting you to your destination with speed and efficiency.".tr,
+                          body:
+                              "MyTaxi ensures prompt and reliable rides, getting you to your destination with speed and efficiency."
+                                  .tr,
                           image: "assets/icon/intro_image_two.svg",
                         ),
                         IntroScreenPage(
                           title: "Seamless User Experience".tr,
-                          body: "Enjoy a user-friendly interface, easy bookings, and secure payments with MyTaxi. Your journey, your way.".tr,
+                          body:
+                              "Enjoy a user-friendly interface, easy bookings, and secure payments with MyTaxi. Your journey, your way."
+                                  .tr,
                           image: "assets/icon/intro_image_three.svg",
                         ),
                       ],
@@ -111,17 +123,21 @@ class IntroScreenView extends StatelessWidget {
                               : 1.0,
                       center: InkWell(
                         onTap: () {
-                          controller.currentPage.value = controller.currentPage.value + 1;
-                          controller.pageController.jumpToPage(controller.currentPage.value);
+                          controller.currentPage.value =
+                              controller.currentPage.value + 1;
+                          controller.pageController
+                              .jumpToPage(controller.currentPage.value);
                         },
                         child: Container(
                           width: 50,
                           height: 50,
-                          decoration: BoxDecoration(color: AppThemData.primary500, borderRadius: BorderRadius.circular(50)),
+                          decoration: BoxDecoration(
+                              color: AppThemData.primary300,
+                              borderRadius: BorderRadius.circular(50)),
                           child: const Icon(Icons.arrow_forward_rounded),
                         ),
                       ),
-                      progressColor: AppThemData.primary500,
+                      progressColor: AppThemData.primary400,
                       backgroundColor: AppThemData.grey50,
                     ),
                   ),
@@ -130,10 +146,11 @@ class IntroScreenView extends StatelessWidget {
                     child: RoundShapeButton(
                         size: const Size(200, 45),
                         title: "Get Started".tr,
-                        buttonColor: AppThemData.primary500,
+                        buttonColor: AppThemData.primary300,
                         buttonTextColor: AppThemData.black,
                         onTap: () {
-                          Preferences.setBoolean(Preferences.isFinishOnBoardingKey, true);
+                          Preferences.setBoolean(
+                              Preferences.isFinishOnBoardingKey, true);
                           Get.offAllNamed(Routes.LOGIN);
                         }),
                   ),

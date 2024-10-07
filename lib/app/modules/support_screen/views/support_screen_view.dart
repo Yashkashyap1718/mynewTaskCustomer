@@ -27,8 +27,9 @@ class SupportScreenView extends GetView<SupportScreenController> {
                       }
                     });
                   },
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(52)),
-                  backgroundColor: AppThemData.primary500,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(52)),
+                  backgroundColor: AppThemData.primary400,
                   child: const Icon(
                     Icons.add,
                     size: 28,
@@ -46,14 +47,20 @@ class SupportScreenView extends GetView<SupportScreenController> {
                             return InkWell(
                               onTap: () {
                                 Get.toNamed(Routes.SUPPORT_TICKET_DETAILS,
-                                    arguments: {"supportTicket": controller.supportTicketList[index]});
+                                    arguments: {
+                                      "supportTicket":
+                                          controller.supportTicketList[index]
+                                    });
                               },
                               child: Container(
                                 margin: const EdgeInsets.only(bottom: 16),
-                                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 16),
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12),
-                                    color: themeChange.isDarkTheme() ? AppThemData.grey900 : AppThemData.grey50),
+                                    color: themeChange.isDarkTheme()
+                                        ? AppThemData.grey900
+                                        : AppThemData.grey50),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -61,27 +68,49 @@ class SupportScreenView extends GetView<SupportScreenController> {
                                       children: [
                                         Expanded(
                                             child: Text(
-                                          controller.supportTicketList[index].title.toString(),
+                                          controller
+                                              .supportTicketList[index].title
+                                              .toString(),
                                           style: GoogleFonts.inter(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500,
-                                              color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950),
+                                              color: themeChange.isDarkTheme()
+                                                  ? AppThemData.grey25
+                                                  : AppThemData.grey950),
                                         )),
                                         const SizedBox(
                                           width: 8,
                                         ),
                                         Text(
-                                          controller.supportTicketList[index].status.toString() == "pending"
+                                          controller.supportTicketList[index]
+                                                      .status
+                                                      .toString() ==
+                                                  "pending"
                                               ? "Pending"
-                                              : controller.supportTicketList[index].status.toString() == "accepted"
+                                              : controller
+                                                          .supportTicketList[
+                                                              index]
+                                                          .status
+                                                          .toString() ==
+                                                      "accepted"
                                                   ? "Accepted"
                                                   : "Rejected",
                                           style: GoogleFonts.inter(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w500,
-                                            color: (controller.supportTicketList[index].status.toString() == "pending"
+                                            color: (controller
+                                                        .supportTicketList[
+                                                            index]
+                                                        .status
+                                                        .toString() ==
+                                                    "pending"
                                                 ? AppThemData.primary400
-                                                : (controller.supportTicketList[index].status.toString() == "accepted"
+                                                : (controller
+                                                            .supportTicketList[
+                                                                index]
+                                                            .status
+                                                            .toString() ==
+                                                        "accepted"
                                                     ? AppThemData.success500
                                                     : AppThemData.error08)),
                                           ),
@@ -92,13 +121,17 @@ class SupportScreenView extends GetView<SupportScreenController> {
                                       height: 4,
                                     ),
                                     Text(
-                                      controller.supportTicketList[index].description.toString(),
+                                      controller
+                                          .supportTicketList[index].description
+                                          .toString(),
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
                                       style: GoogleFonts.inter(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
-                                          color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500),
+                                          color: themeChange.isDarkTheme()
+                                              ? AppThemData.grey400
+                                              : AppThemData.grey500),
                                     ),
                                     const SizedBox(
                                       height: 4,
@@ -110,14 +143,21 @@ class SupportScreenView extends GetView<SupportScreenController> {
                                           style: GoogleFonts.inter(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w400,
-                                              color: themeChange.isDarkTheme() ? AppThemData.grey300 : AppThemData.grey600),
+                                              color: themeChange.isDarkTheme()
+                                                  ? AppThemData.grey300
+                                                  : AppThemData.grey600),
                                         ),
                                         Text(
-                                          Constant.timestampToTime12Hour(controller.supportTicketList[index].createAt!),
+                                          Constant.timestampToTime12Hour(
+                                              controller
+                                                  .supportTicketList[index]
+                                                  .createAt!),
                                           style: GoogleFonts.inter(
                                               fontSize: 12,
                                               fontWeight: FontWeight.w400,
-                                              color: themeChange.isDarkTheme() ? AppThemData.grey300 : AppThemData.grey600),
+                                              color: themeChange.isDarkTheme()
+                                                  ? AppThemData.grey300
+                                                  : AppThemData.grey600),
                                         ),
                                       ],
                                     )

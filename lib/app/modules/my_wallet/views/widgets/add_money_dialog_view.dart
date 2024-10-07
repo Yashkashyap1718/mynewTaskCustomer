@@ -127,7 +127,7 @@ class AddMoneyDialogView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(
@@ -184,7 +184,7 @@ class AddMoneyDialogView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(
@@ -242,7 +242,7 @@ class AddMoneyDialogView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(
@@ -303,7 +303,7 @@ class AddMoneyDialogView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(
@@ -363,7 +363,7 @@ class AddMoneyDialogView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(
@@ -424,7 +424,7 @@ class AddMoneyDialogView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(
@@ -484,7 +484,7 @@ class AddMoneyDialogView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(
@@ -529,7 +529,7 @@ class AddMoneyDialogView extends StatelessWidget {
                     ),
                     RoundShapeButton(
                       title: "Add".tr,
-                      buttonColor: AppThemData.primary500,
+                      buttonColor: AppThemData.primary400,
                       buttonTextColor: AppThemData.black,
                       onTap: () async {
                         if (controller.selectedPaymentMethod.value.isNotEmpty) {

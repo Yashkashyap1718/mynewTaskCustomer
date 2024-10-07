@@ -40,9 +40,16 @@ class HomeView extends StatelessWidget {
         init: HomeController(),
         builder: (controller) {
           return Scaffold(
-              backgroundColor: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white,
+              backgroundColor: themeChange.isDarkTheme()
+                  ? AppThemData.black
+                  : AppThemData.white,
               appBar: AppBar(
-                shape: Border(bottom: BorderSide(color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100, width: 1)),
+                shape: Border(
+                    bottom: BorderSide(
+                        color: themeChange.isDarkTheme()
+                            ? AppThemData.grey800
+                            : AppThemData.grey100,
+                        width: 1)),
                 title: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -52,7 +59,9 @@ class HomeView extends StatelessWidget {
                     Text(
                       'MyTaxi'.tr,
                       style: GoogleFonts.inter(
-                        color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                        color: themeChange.isDarkTheme()
+                            ? AppThemData.white
+                            : AppThemData.black,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                       ),
@@ -75,58 +84,105 @@ class HomeView extends StatelessWidget {
                     : controller.drawerIndex.value == 2
                         ? const MyWalletView()
                         : controller.drawerIndex.value == 3
-                            ?  const SupportScreenView()
+                            ? const SupportScreenView()
                             : controller.drawerIndex.value == 4
-                                ? HtmlViewScreenView(title: "Privacy & Policy".tr, htmlData: Constant.privacyPolicy)
+                                ? HtmlViewScreenView(
+                                    title: "Privacy & Policy".tr,
+                                    htmlData: Constant.privacyPolicy)
                                 : controller.drawerIndex.value == 5
-                                    ? HtmlViewScreenView(title: "Terms & Condition".tr, htmlData: Constant.termsAndConditions)
+                                    ? HtmlViewScreenView(
+                                        title: "Terms & Condition".tr,
+                                        htmlData: Constant.termsAndConditions)
                                     : controller.drawerIndex.value == 6
                                         ? const LanguageView()
                                         : controller.isLoading.value
                                             ? Constant.loader()
                                             : SingleChildScrollView(
                                                 child: Padding(
-                                                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          16, 12, 16, 12),
                                                   child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    mainAxisSize: MainAxisSize.max,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
                                                     children: [
                                                       InkWell(
                                                         onTap: () {
-                                                          Get.to(const SelectLocationView());
+                                                          Get.to(
+                                                              const SelectLocationView());
                                                         },
                                                         child: Container(
-                                                          width: Responsive.width(100, context),
+                                                          width:
+                                                              Responsive.width(
+                                                                  100, context),
                                                           height: 56,
-                                                          margin: const EdgeInsets.fromLTRB(0, 0, 0, 12),
-                                                          padding: const EdgeInsets.all(16),
-                                                          decoration: ShapeDecoration(
-                                                            color: themeChange.isDarkTheme() ? AppThemData.grey900 : AppThemData.grey50,
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(100),
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .fromLTRB(
+                                                                  0, 0, 0, 12),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(16),
+                                                          decoration:
+                                                              ShapeDecoration(
+                                                            color: themeChange
+                                                                    .isDarkTheme()
+                                                                ? AppThemData
+                                                                    .grey900
+                                                                : AppThemData
+                                                                    .grey50,
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          100),
                                                             ),
                                                           ),
                                                           child: Row(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
                                                             children: [
                                                               Icon(
-                                                                Icons.search_rounded,
-                                                                color:
-                                                                    themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
+                                                                Icons
+                                                                    .search_rounded,
+                                                                color: themeChange.isDarkTheme()
+                                                                    ? AppThemData
+                                                                        .grey400
+                                                                    : AppThemData
+                                                                        .grey500,
                                                               ),
-                                                              const SizedBox(width: 8),
+                                                              const SizedBox(
+                                                                  width: 8),
                                                               Expanded(
                                                                 child: Text(
-                                                                  'Where to?'.tr,
-                                                                  style: GoogleFonts.inter(
+                                                                  'Where to?'
+                                                                      .tr,
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .inter(
                                                                     color: themeChange.isDarkTheme()
-                                                                        ? AppThemData.grey400
-                                                                        : AppThemData.grey500,
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight.w400,
+                                                                        ? AppThemData
+                                                                            .grey400
+                                                                        : AppThemData
+                                                                            .grey500,
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
                                                                   ),
                                                                 ),
                                                               ),
@@ -137,64 +193,118 @@ class HomeView extends StatelessWidget {
                                                       BannerView(),
                                                       Text(
                                                         'Your Rides'.tr,
-                                                        style: GoogleFonts.inter(
-                                                          color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                          color: themeChange
+                                                                  .isDarkTheme()
+                                                              ? AppThemData
+                                                                  .grey25
+                                                              : AppThemData
+                                                                  .grey950,
                                                           fontSize: 18,
-                                                          fontWeight: FontWeight.w600,
+                                                          fontWeight:
+                                                              FontWeight.w600,
                                                         ),
                                                       ),
-                                                      const SizedBox(height: 20),
-                                                      StreamBuilder<List<BookingModel>>(
-                                                          stream: FireStoreUtils().getHomeOngoingBookings(),
-                                                          builder: (context, snapshot) {
+                                                      const SizedBox(
+                                                          height: 20),
+                                                      StreamBuilder<
+                                                              List<
+                                                                  BookingModel>>(
+                                                          stream: FireStoreUtils()
+                                                              .getHomeOngoingBookings(),
+                                                          builder: (context,
+                                                              snapshot) {
                                                             log("State : ${snapshot.connectionState}");
                                                             log("State : ${snapshot.data}");
-                                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                                              return Constant.loader();
+                                                            if (snapshot
+                                                                    .connectionState ==
+                                                                ConnectionState
+                                                                    .waiting) {
+                                                              return Constant
+                                                                  .loader();
                                                             }
-                                                            if (!snapshot.hasData || (snapshot.data?.isEmpty ?? true)) {
+                                                            if (!snapshot
+                                                                    .hasData ||
+                                                                (snapshot.data
+                                                                        ?.isEmpty ??
+                                                                    true)) {
                                                               return NoRidesView(
-                                                                themeChange: themeChange,
-                                                                height: Responsive.height(40, context),
+                                                                themeChange:
+                                                                    themeChange,
+                                                                height: Responsive
+                                                                    .height(40,
+                                                                        context),
                                                               );
                                                             } else {
-                                                              List<BookingModel> bookingModelList = snapshot.data!;
-                                                              return ListView.builder(
-                                                                shrinkWrap: true,
-                                                                physics: const NeverScrollableScrollPhysics(),
-                                                                itemCount: bookingModelList.length,
-                                                                itemBuilder: (context, index) {
+                                                              List<BookingModel>
+                                                                  bookingModelList =
+                                                                  snapshot
+                                                                      .data!;
+                                                              return ListView
+                                                                  .builder(
+                                                                shrinkWrap:
+                                                                    true,
+                                                                physics:
+                                                                    const NeverScrollableScrollPhysics(),
+                                                                itemCount:
+                                                                    bookingModelList
+                                                                        .length,
+                                                                itemBuilder:
+                                                                    (context,
+                                                                        index) {
                                                                   return Column(
-                                                                    mainAxisSize: MainAxisSize.min,
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
                                                                     children: [
                                                                       InkWell(
-                                                                        onTap: () {
-                                                                          MyRideDetailsController detailsController =
+                                                                        onTap:
+                                                                            () {
+                                                                          MyRideDetailsController
+                                                                              detailsController =
                                                                               Get.put(MyRideDetailsController());
-                                                                          detailsController.bookingId.value =
-                                                                              bookingModelList[index].id ?? '';
-                                                                          detailsController.bookingModel.value = bookingModelList[index];
-                                                                          Get.to(const MyRideDetailsView());
+                                                                          detailsController
+                                                                              .bookingId
+                                                                              .value = bookingModelList[index]
+                                                                                  .id ??
+                                                                              '';
+                                                                          detailsController
+                                                                              .bookingModel
+                                                                              .value = bookingModelList[index];
+                                                                          Get.to(
+                                                                              const MyRideDetailsView());
                                                                         },
-                                                                        child: Container(
-                                                                          width: Responsive.width(100, context),
-                                                                          padding: const EdgeInsets.all(16),
-                                                                          decoration: ShapeDecoration(
-                                                                            shape: RoundedRectangleBorder(
-                                                                              side: BorderSide(
-                                                                                  width: 1,
-                                                                                  color: themeChange.isDarkTheme()
-                                                                                      ? AppThemData.grey800
-                                                                                      : AppThemData.grey100),
+                                                                        child:
+                                                                            Container(
+                                                                          width: Responsive.width(
+                                                                              100,
+                                                                              context),
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              16),
+                                                                          decoration:
+                                                                              ShapeDecoration(
+                                                                            shape:
+                                                                                RoundedRectangleBorder(
+                                                                              side: BorderSide(width: 1, color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100),
                                                                               borderRadius: BorderRadius.circular(12),
                                                                             ),
                                                                           ),
-                                                                          child: Column(
-                                                                            mainAxisSize: MainAxisSize.min,
-                                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          child:
+                                                                              Column(
+                                                                            mainAxisSize:
+                                                                                MainAxisSize.min,
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.start,
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.start,
                                                                             children: [
                                                                               Row(
                                                                                 mainAxisSize: MainAxisSize.min,
@@ -202,16 +312,9 @@ class HomeView extends StatelessWidget {
                                                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                                                 children: [
                                                                                   Text(
-                                                                                    bookingModelList[index].bookingTime == null
-                                                                                        ? ""
-                                                                                        : bookingModelList[index]
-                                                                                            .bookingTime!
-                                                                                            .toDate()
-                                                                                            .dateMonthYear(),
+                                                                                    bookingModelList[index].bookingTime == null ? "" : bookingModelList[index].bookingTime!.toDate().dateMonthYear(),
                                                                                     style: GoogleFonts.inter(
-                                                                                      color: themeChange.isDarkTheme()
-                                                                                          ? AppThemData.grey400
-                                                                                          : AppThemData.grey500,
+                                                                                      color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
                                                                                       fontSize: 14,
                                                                                       fontWeight: FontWeight.w400,
                                                                                     ),
@@ -224,9 +327,7 @@ class HomeView extends StatelessWidget {
                                                                                         side: BorderSide(
                                                                                           width: 1,
                                                                                           strokeAlign: BorderSide.strokeAlignCenter,
-                                                                                          color: themeChange.isDarkTheme()
-                                                                                              ? AppThemData.grey800
-                                                                                              : AppThemData.grey100,
+                                                                                          color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100,
                                                                                         ),
                                                                                       ),
                                                                                     ),
@@ -234,16 +335,9 @@ class HomeView extends StatelessWidget {
                                                                                   const SizedBox(width: 8),
                                                                                   Expanded(
                                                                                     child: Text(
-                                                                                      bookingModelList[index].bookingTime == null
-                                                                                          ? ""
-                                                                                          : bookingModelList[index]
-                                                                                              .bookingTime!
-                                                                                              .toDate()
-                                                                                              .time(),
+                                                                                      bookingModelList[index].bookingTime == null ? "" : bookingModelList[index].bookingTime!.toDate().time(),
                                                                                       style: GoogleFonts.inter(
-                                                                                        color: themeChange.isDarkTheme()
-                                                                                            ? AppThemData.grey400
-                                                                                            : AppThemData.grey500,
+                                                                                        color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
                                                                                         fontSize: 14,
                                                                                         fontWeight: FontWeight.w400,
                                                                                       ),
@@ -251,12 +345,10 @@ class HomeView extends StatelessWidget {
                                                                                   ),
                                                                                   const SizedBox(width: 8),
                                                                                   Text(
-                                                                                    BookingStatus.getBookingStatusTitle(
-                                                                                        bookingModelList[index].bookingStatus ?? ''),
+                                                                                    BookingStatus.getBookingStatusTitle(bookingModelList[index].bookingStatus ?? ''),
                                                                                     textAlign: TextAlign.right,
                                                                                     style: GoogleFonts.inter(
-                                                                                      color: BookingStatus.getBookingStatusTitleColor(
-                                                                                          bookingModelList[index].bookingStatus ?? ''),
+                                                                                      color: BookingStatus.getBookingStatusTitleColor(bookingModelList[index].bookingStatus ?? ''),
                                                                                       fontSize: 16,
                                                                                       fontWeight: FontWeight.w600,
                                                                                     ),
@@ -272,9 +364,7 @@ class HomeView extends StatelessWidget {
                                                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                                                   children: [
                                                                                     CachedNetworkImage(
-                                                                                      imageUrl: bookingModelList[index].vehicleType == null
-                                                                                          ? Constant.profileConstant
-                                                                                          : bookingModelList[index].vehicleType!.image,
+                                                                                      imageUrl: bookingModelList[index].vehicleType == null ? Constant.profileConstant : bookingModelList[index].vehicleType!.image,
                                                                                     ),
                                                                                     const SizedBox(width: 12),
                                                                                     Expanded(
@@ -284,30 +374,21 @@ class HomeView extends StatelessWidget {
                                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                                         children: [
                                                                                           Text(
-                                                                                            bookingModelList[index].vehicleType == null
-                                                                                                ? ""
-                                                                                                : bookingModelList[index]
-                                                                                                    .vehicleType!
-                                                                                                    .title,
+                                                                                            bookingModelList[index].vehicleType == null ? "" : bookingModelList[index].vehicleType!.title,
                                                                                             style: GoogleFonts.inter(
-                                                                                              color: themeChange.isDarkTheme()
-                                                                                                  ? AppThemData.grey25
-                                                                                                  : AppThemData.grey950,
+                                                                                              color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
                                                                                               fontSize: 16,
                                                                                               fontWeight: FontWeight.w600,
                                                                                             ),
                                                                                           ),
                                                                                           const SizedBox(height: 2),
-                                                                                          if (bookingModelList[index].bookingStatus ==
-                                                                                              BookingStatus.bookingAccepted)
+                                                                                          if (bookingModelList[index].bookingStatus == BookingStatus.bookingAccepted)
                                                                                             Row(
                                                                                               children: [
                                                                                                 Text(
                                                                                                   'OTP : '.tr,
                                                                                                   style: GoogleFonts.inter(
-                                                                                                    color: themeChange.isDarkTheme()
-                                                                                                        ? AppThemData.grey25
-                                                                                                        : AppThemData.grey950,
+                                                                                                    color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
                                                                                                     fontSize: 14,
                                                                                                     fontWeight: FontWeight.w400,
                                                                                                   ),
@@ -316,7 +397,7 @@ class HomeView extends StatelessWidget {
                                                                                                   bookingModelList[index].otp ?? '',
                                                                                                   textAlign: TextAlign.right,
                                                                                                   style: GoogleFonts.inter(
-                                                                                                    color: AppThemData.primary500,
+                                                                                                    color: AppThemData.primary400,
                                                                                                     fontSize: 16,
                                                                                                     fontWeight: FontWeight.w600,
                                                                                                   ),
@@ -333,15 +414,10 @@ class HomeView extends StatelessWidget {
                                                                                       crossAxisAlignment: CrossAxisAlignment.end,
                                                                                       children: [
                                                                                         Text(
-                                                                                          Constant.amountToShow(
-                                                                                              amount: Constant.calculateFinalAmount(
-                                                                                                      bookingModelList[index])
-                                                                                                  .toStringAsFixed(2)),
+                                                                                          Constant.amountToShow(amount: Constant.calculateFinalAmount(bookingModelList[index]).toStringAsFixed(2)),
                                                                                           textAlign: TextAlign.right,
                                                                                           style: GoogleFonts.inter(
-                                                                                            color: themeChange.isDarkTheme()
-                                                                                                ? AppThemData.grey25
-                                                                                                : AppThemData.grey950,
+                                                                                            color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
                                                                                             fontSize: 16,
                                                                                             fontWeight: FontWeight.w500,
                                                                                           ),
@@ -354,21 +430,13 @@ class HomeView extends StatelessWidget {
                                                                                           children: [
                                                                                             SvgPicture.asset(
                                                                                               "assets/icon/ic_multi_person.svg",
-                                                                                              color: themeChange.isDarkTheme()
-                                                                                                  ? AppThemData.grey25
-                                                                                                  : AppThemData.grey950,
+                                                                                              color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
                                                                                             ),
                                                                                             const SizedBox(width: 6),
                                                                                             Text(
-                                                                                              bookingModelList[index].vehicleType == null
-                                                                                                  ? ""
-                                                                                                  : bookingModelList[index]
-                                                                                                      .vehicleType!
-                                                                                                      .persons,
+                                                                                              bookingModelList[index].vehicleType == null ? "" : bookingModelList[index].vehicleType!.persons,
                                                                                               style: GoogleFonts.inter(
-                                                                                                color: themeChange.isDarkTheme()
-                                                                                                    ? AppThemData.grey25
-                                                                                                    : AppThemData.grey950,
+                                                                                                color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
                                                                                                 fontSize: 16,
                                                                                                 fontWeight: FontWeight.w400,
                                                                                               ),
@@ -384,7 +452,9 @@ class HomeView extends StatelessWidget {
                                                                           ),
                                                                         ),
                                                                       ),
-                                                                      const SizedBox(height: 4),
+                                                                      const SizedBox(
+                                                                          height:
+                                                                              4),
                                                                     ],
                                                                   );
                                                                 },
@@ -408,7 +478,7 @@ class HomeView extends StatelessWidget {
                                                       //       Text(
                                                       //         'Expanded Seating Offer',
                                                       //         style: GoogleFonts.inter(
-                                                      //           color: AppThemData.primary500,
+                                                      //           color: AppThemData.primary400,
                                                       //           fontSize: 18,
                                                       //           fontWeight: FontWeight.w700,
                                                       //         ),
@@ -471,7 +541,10 @@ class BannerView extends StatelessWidget {
                         width: Responsive.width(100, context),
                         margin: const EdgeInsets.only(bottom: 20),
                         decoration: ShapeDecoration(
-                          image: DecorationImage(image: NetworkImage(controller.bannerList[index].image ?? ""), fit: BoxFit.cover),
+                          image: DecorationImage(
+                              image: NetworkImage(
+                                  controller.bannerList[index].image ?? ""),
+                              fit: BoxFit.cover),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -499,9 +572,12 @@ class BannerView extends StatelessWidget {
                               ),
                               Container(
                                 width: Responsive.width(100, context),
-                                margin: const EdgeInsets.only(top: 6, bottom: 6),
+                                margin:
+                                    const EdgeInsets.only(top: 6, bottom: 6),
                                 child: Text(
-                                  controller.bannerList[index].bannerDescription ?? '',
+                                  controller.bannerList[index]
+                                          .bannerDescription ??
+                                      '',
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.inter(
@@ -512,11 +588,13 @@ class BannerView extends StatelessWidget {
                                 ),
                               ),
                               Visibility(
-                                visible: controller.bannerList[index].isOfferBanner ?? false,
+                                visible: controller
+                                        .bannerList[index].isOfferBanner ??
+                                    false,
                                 child: Text(
                                   controller.bannerList[index].offerText ?? '',
                                   style: GoogleFonts.inter(
-                                    color: AppThemData.primary500,
+                                    color: AppThemData.primary400,
                                     fontSize: 12,
                                     fontStyle: FontStyle.italic,
                                     fontWeight: FontWeight.w500,
@@ -545,7 +623,9 @@ class BannerView extends StatelessWidget {
                       width: 8,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: index == controller.curPage.value ? AppThemData.primary500 : AppThemData.grey200,
+                        color: index == controller.curPage.value
+                            ? AppThemData.primary400
+                            : AppThemData.grey200,
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),

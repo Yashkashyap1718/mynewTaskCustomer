@@ -22,9 +22,14 @@ class ReasonForCancelView extends StatelessWidget {
         init: ReasonForCancelController(),
         builder: (controller) {
           return Scaffold(
-            backgroundColor: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white,
+            backgroundColor: themeChange.isDarkTheme()
+                ? AppThemData.black
+                : AppThemData.white,
             appBar: AppBarWithBorder(
-                title: "Reasons for Canceling Ride".tr, bgColor: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white),
+                title: "Reasons for Canceling Ride".tr,
+                bgColor: themeChange.isDarkTheme()
+                    ? AppThemData.black
+                    : AppThemData.white),
             bottomNavigationBar: Padding(
               padding: const EdgeInsets.fromLTRB(16, 10, 16, 10),
               child: Row(
@@ -42,10 +47,11 @@ class ReasonForCancelView extends StatelessWidget {
                   ),
                   RoundShapeButton(
                     title: "Continue",
-                    buttonColor: AppThemData.primary500,
+                    buttonColor: AppThemData.primary400,
                     buttonTextColor: AppThemData.black,
                     onTap: () async {
-                      bool isCancelled = await controller.cancelBooking(controller.bookingModel.value);
+                      bool isCancelled = await controller
+                          .cancelBooking(controller.bookingModel.value);
                       if (isCancelled) {
                         showDialog(
                           context: context,
@@ -53,17 +59,20 @@ class ReasonForCancelView extends StatelessWidget {
                           builder: (context) {
                             return CustomDialogBox(
                               title: "Your ride is successfully cancelled.".tr,
-                              descriptions: "We hope to serve you better next time.".tr,
+                              descriptions:
+                                  "We hope to serve you better next time.".tr,
                               img: Image.asset(
                                 "assets/icon/ic_green_right.png",
                                 height: 58,
                                 width: 58,
                               ),
                               positiveClick: () async {
-                                if (controller.bookingModel.value.driverId != null) {
+                                if (controller.bookingModel.value.driverId !=
+                                    null) {
                                   controller.sendCancelRideNotification();
                                 }
-                                ShowToastDialog.showToast("Ride Cancelled Successfully..");
+                                ShowToastDialog.showToast(
+                                    "Ride Cancelled Successfully..");
                                 Navigator.pop(context);
                                 Get.back();
                                 Get.back();
@@ -109,21 +118,25 @@ class ReasonForCancelView extends StatelessWidget {
                                 value: index,
                                 contentPadding: EdgeInsets.zero,
                                 groupValue: controller.selectedIndex.value,
-                                controlAffinity: ListTileControlAffinity.trailing,
-                                activeColor: AppThemData.primary500,
+                                controlAffinity:
+                                    ListTileControlAffinity.trailing,
+                                activeColor: AppThemData.primary400,
                                 onChanged: (ind) {
                                   controller.selectedIndex.value = ind ?? 0;
                                 },
                                 title: Text(
                                   controller.reasons[index].toString(),
                                   style: GoogleFonts.inter(
-                                    color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                                    color: themeChange.isDarkTheme()
+                                        ? AppThemData.grey25
+                                        : AppThemData.grey950,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w400,
                                   ),
                                 ),
                               ),
-                              if (index != (controller.reasons.length - 1)) const Divider()
+                              if (index != (controller.reasons.length - 1))
+                                const Divider()
                             ],
                           ),
                         );
@@ -132,9 +145,13 @@ class ReasonForCancelView extends StatelessWidget {
                     ),
                     Obx(
                       () => Visibility(
-                        visible: controller.reasons[controller.selectedIndex.value] == "Other",
+                        visible: controller
+                                .reasons[controller.selectedIndex.value] ==
+                            "Other",
                         child: TextFormField(
-                          enabled: controller.reasons[controller.selectedIndex.value] == "Other",
+                          enabled: controller
+                                  .reasons[controller.selectedIndex.value] ==
+                              "Other",
                           textAlign: TextAlign.start,
                           minLines: 3,
                           maxLines: 5,
@@ -142,11 +159,16 @@ class ReasonForCancelView extends StatelessWidget {
                           decoration: InputDecoration(
                               filled: true,
                               hintText: 'Type here...'.tr,
-                              fillColor: themeChange.isDarkTheme() ? AppThemData.grey900 : AppThemData.grey50,
+                              fillColor: themeChange.isDarkTheme()
+                                  ? AppThemData.grey900
+                                  : AppThemData.grey50,
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  borderSide:
-                                      BorderSide(color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100, width: 1))),
+                                  borderSide: BorderSide(
+                                      color: themeChange.isDarkTheme()
+                                          ? AppThemData.grey800
+                                          : AppThemData.grey100,
+                                      width: 1))),
                         ),
                       ),
                     )

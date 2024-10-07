@@ -35,30 +35,44 @@ class TrackRideScreenController extends GetxController {
     if (argumentData != null) {
       bookingModel.value = argumentData['bookingModel'];
 
-      FirebaseFirestore.instance.collection(CollectionName.bookings).doc(bookingModel.value.id).snapshots().listen((event) {
+      FirebaseFirestore.instance
+          .collection(CollectionName.bookings)
+          .doc(bookingModel.value.id)
+          .snapshots()
+          .listen((event) {
         if (event.data() != null) {
           BookingModel orderModelStream = BookingModel.fromJson(event.data()!);
           bookingModel.value = orderModelStream;
-          FirebaseFirestore.instance.collection(CollectionName.drivers).doc(bookingModel.value.driverId).snapshots().listen((event) {
+          FirebaseFirestore.instance
+              .collection(CollectionName.drivers)
+              .doc(bookingModel.value.driverId)
+              .snapshots()
+              .listen((event) {
             if (event.data() != null) {
               driverUserModel.value = DriverUserModel.fromJson(event.data()!);
-              if (bookingModel.value.bookingStatus == BookingStatus.bookingOngoing) {
+              if (bookingModel.value.bookingStatus ==
+                  BookingStatus.bookingOngoing) {
                 getPolyline(
                     sourceLatitude: driverUserModel.value.location!.latitude,
                     sourceLongitude: driverUserModel.value.location!.longitude,
-                    destinationLatitude: bookingModel.value.dropLocation!.latitude,
-                    destinationLongitude: bookingModel.value.dropLocation!.longitude);
+                    destinationLatitude:
+                        bookingModel.value.dropLocation!.latitude,
+                    destinationLongitude:
+                        bookingModel.value.dropLocation!.longitude);
               } else {
                 getPolyline(
                     sourceLatitude: driverUserModel.value.location!.latitude,
                     sourceLongitude: driverUserModel.value.location!.longitude,
-                    destinationLatitude: bookingModel.value.pickUpLocation!.latitude,
-                    destinationLongitude: bookingModel.value.pickUpLocation!.longitude);
+                    destinationLatitude:
+                        bookingModel.value.pickUpLocation!.latitude,
+                    destinationLongitude:
+                        bookingModel.value.pickUpLocation!.longitude);
               }
             }
           });
 
-          if (bookingModel.value.bookingStatus == BookingStatus.bookingCompleted) {
+          if (bookingModel.value.bookingStatus ==
+              BookingStatus.bookingCompleted) {
             Get.back();
           }
         }
@@ -77,7 +91,10 @@ class TrackRideScreenController extends GetxController {
       required double? sourceLongitude,
       required double? destinationLatitude,
       required double? destinationLongitude}) async {
-    if (sourceLatitude != null && sourceLongitude != null && destinationLatitude != null && destinationLongitude != null) {
+    if (sourceLatitude != null &&
+        sourceLongitude != null &&
+        destinationLatitude != null &&
+        destinationLongitude != null) {
       List<LatLng> polylineCoordinates = [];
 
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
@@ -135,15 +152,21 @@ class TrackRideScreenController extends GetxController {
       required BitmapDescriptor descriptor,
       required double? rotation}) {
     MarkerId markerId = MarkerId(id);
-    Marker marker =
-        Marker(markerId: markerId, icon: descriptor, position: LatLng(latitude ?? 0.0, longitude ?? 0.0), rotation: rotation ?? 0.0);
+    Marker marker = Marker(
+        markerId: markerId,
+        icon: descriptor,
+        position: LatLng(latitude ?? 0.0, longitude ?? 0.0),
+        rotation: rotation ?? 0.0);
     markers[markerId] = marker;
   }
 
   addMarkerSetup() async {
-    final Uint8List departure = await Constant().getBytesFromAsset('assets/icon/ic_pick_up_map.png', 100);
-    final Uint8List destination = await Constant().getBytesFromAsset('assets/icon/ic_drop_in_map.png', 100);
-    final Uint8List driver = await Constant().getBytesFromAsset('assets/icon/ic_car.png', 50);
+    final Uint8List departure = await Constant()
+        .getBytesFromAsset('assets/icon/ic_pick_up_map.png', 100);
+    final Uint8List destination = await Constant()
+        .getBytesFromAsset('assets/icon/ic_drop_in_map.png', 100);
+    final Uint8List driver =
+        await Constant().getBytesFromAsset('assets/icon/ic_car.png', 50);
     departureIcon = BitmapDescriptor.fromBytes(departure);
     destinationIcon = BitmapDescriptor.fromBytes(destination);
     driverIcon = BitmapDescriptor.fromBytes(driver);
@@ -160,9 +183,10 @@ class TrackRideScreenController extends GetxController {
         consumeTapEvents: true,
         startCap: Cap.roundCap,
         width: 6,
-        color: AppThemData.primary500);
+        color: AppThemData.primary400);
     polyLines[id] = polyline;
-    updateCameraLocation(polylineCoordinates.first, polylineCoordinates.last, mapController);
+    updateCameraLocation(
+        polylineCoordinates.first, polylineCoordinates.last, mapController);
   }
 
   Future<void> updateCameraLocation(
@@ -174,14 +198,17 @@ class TrackRideScreenController extends GetxController {
 
     LatLngBounds bounds;
 
-    if (source.latitude > destination.latitude && source.longitude > destination.longitude) {
+    if (source.latitude > destination.latitude &&
+        source.longitude > destination.longitude) {
       bounds = LatLngBounds(southwest: destination, northeast: source);
     } else if (source.longitude > destination.longitude) {
       bounds = LatLngBounds(
-          southwest: LatLng(source.latitude, destination.longitude), northeast: LatLng(destination.latitude, source.longitude));
+          southwest: LatLng(source.latitude, destination.longitude),
+          northeast: LatLng(destination.latitude, source.longitude));
     } else if (source.latitude > destination.latitude) {
       bounds = LatLngBounds(
-          southwest: LatLng(destination.latitude, source.longitude), northeast: LatLng(source.latitude, destination.longitude));
+          southwest: LatLng(destination.latitude, source.longitude),
+          northeast: LatLng(source.latitude, destination.longitude));
     } else {
       bounds = LatLngBounds(southwest: source, northeast: destination);
     }
@@ -191,7 +218,8 @@ class TrackRideScreenController extends GetxController {
     return checkCameraLocation(cameraUpdate, mapController);
   }
 
-  Future<void> checkCameraLocation(CameraUpdate cameraUpdate, GoogleMapController mapController) async {
+  Future<void> checkCameraLocation(
+      CameraUpdate cameraUpdate, GoogleMapController mapController) async {
     mapController.animateCamera(cameraUpdate);
     LatLngBounds l1 = await mapController.getVisibleRegion();
     LatLngBounds l2 = await mapController.getVisibleRegion();

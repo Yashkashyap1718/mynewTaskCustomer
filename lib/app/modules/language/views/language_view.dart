@@ -23,19 +23,22 @@ class LanguageView extends GetView<LanguageController> {
       init: LanguageController(),
       builder: (controller) {
         return Scaffold(
-          backgroundColor: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white,
+          backgroundColor:
+              themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white,
           // appBar: AppBarWithBorder(
           //   title: "Language".tr,
           //   bgColor: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white,
           // ),
           bottomNavigationBar: Padding(
-            padding: EdgeInsets.fromLTRB(Responsive.width(45, context) / 2, 10, Responsive.width(45, context) / 2, 10),
+            padding: EdgeInsets.fromLTRB(Responsive.width(45, context) / 2, 10,
+                Responsive.width(45, context) / 2, 10),
             child: RoundShapeButton(
               title: "Save".tr,
-              buttonColor: AppThemData.primary500,
+              buttonColor: AppThemData.primary400,
               buttonTextColor: AppThemData.black,
               onTap: () {
-                LocalizationService().changeLocale(controller.selectedLanguage.value.code.toString());
+                LocalizationService().changeLocale(
+                    controller.selectedLanguage.value.code.toString());
                 Preferences.setString(
                   Preferences.languageCodeKey,
                   jsonEncode(
@@ -53,7 +56,11 @@ class LanguageView extends GetView<LanguageController> {
             margin: const EdgeInsets.all(16),
             decoration: ShapeDecoration(
               shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1, color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100),
+                side: BorderSide(
+                    width: 1,
+                    color: themeChange.isDarkTheme()
+                        ? AppThemData.grey800
+                        : AppThemData.grey100),
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
@@ -69,20 +76,23 @@ class LanguageView extends GetView<LanguageController> {
                         contentPadding: EdgeInsets.zero,
                         groupValue: controller.selectedLanguage.value,
                         controlAffinity: ListTileControlAffinity.trailing,
-                        activeColor: AppThemData.primary500,
+                        activeColor: AppThemData.primary400,
                         onChanged: (value) {
                           controller.selectedLanguage.value = value!;
                         },
                         title: Text(
                           controller.languageList[index].name.toString(),
                           style: GoogleFonts.inter(
-                            color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                            color: themeChange.isDarkTheme()
+                                ? AppThemData.grey25
+                                : AppThemData.grey950,
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
                       ),
-                      if (index != (controller.languageList.length - 1)) const Divider()
+                      if (index != (controller.languageList.length - 1))
+                        const Divider()
                     ],
                   ),
                 );

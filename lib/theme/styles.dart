@@ -7,7 +7,7 @@ class Styles {
       scaffoldBackgroundColor:
           isDarkTheme ? AppThemData.grey950 : AppThemData.grey25,
       primaryColor:
-          isDarkTheme ? AppThemData.primary400 : AppThemData.primary500,
+          isDarkTheme ? AppThemData.primary400 : AppThemData.primary400,
       brightness: isDarkTheme ? Brightness.dark : Brightness.light,
       drawerTheme: DrawerThemeData(
         backgroundColor: isDarkTheme ? AppThemData.grey950 : AppThemData.grey25,

@@ -23,7 +23,10 @@ class SplashScreenView extends StatelessWidget {
                       image: AssetImage("assets/images/splash_background.jpeg"),
                       fit: BoxFit.fill)),
               child: Center(
-                child: SvgPicture.asset("assets/images/taxi.png"),
+                child: Image.asset(
+                  "assets/images/taxi.png",
+                  scale: 9,
+                ),
               ),
             ),
           );

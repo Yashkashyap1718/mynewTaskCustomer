@@ -1,4 +1,7 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'package:customer/app/models/user_model.dart';
+import 'package:customer/app/modules/signup/views/signup_view.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -123,10 +126,19 @@ class VerifyOtpController extends GetxController {
 
       if (response.statusCode == 200) {
         final String token = data['token'];
+        final String msg = data['msg'];
         final String id = data['id'];
         final String roleType = data['type'];
         final String firstDigit = id.substring(0, 1);
         final int firstDigitAsInt = int.parse(firstDigit, radix: 16);
+        ShowToastDialog.closeLoader();
+        UserModel userModel =
+            UserModel(id: id, loginType: roleType, fcmToken: token);
+        Get.off(const SignupView(), arguments: {
+          "userModel": userModel,
+        });
+
+        log('-----------------usermode-------${userModel.loginType}');
 
         // Show success message with Animated SnackBar
         AnimatedSnackBar.material(
@@ -167,7 +179,7 @@ class VerifyOtpController extends GetxController {
           await FirebaseAuth.instance.signInWithCredential(credential);
 
       if (userCredential.user != null) {
-        confirmOTP(context, otpCode.value, phoneNumber.value);
+        // confirmOTP(context, otpCode.value, phoneNumber.value);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(

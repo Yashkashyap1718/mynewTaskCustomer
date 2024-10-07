@@ -35,18 +35,24 @@ class NoRidesView extends StatelessWidget {
             'No Rides Found'.tr,
             textAlign: TextAlign.center,
             style: GoogleFonts.inter(
-              color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+              color: themeChange.isDarkTheme()
+                  ? AppThemData.grey25
+                  : AppThemData.grey950,
               fontSize: 18,
               fontWeight: FontWeight.w700,
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 4, bottom: 24),
+            padding:
+                const EdgeInsets.only(left: 20, right: 20, top: 4, bottom: 24),
             child: Text(
-              'Your ride history is currently empty. Start your journey with MyTaxi by booking your first ride now!'.tr,
+              'Your ride history is currently empty. Start your journey with MyTaxi by booking your first ride now!'
+                  .tr,
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(
-                color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                color: themeChange.isDarkTheme()
+                    ? AppThemData.grey25
+                    : AppThemData.grey950,
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
               ),
@@ -56,7 +62,7 @@ class NoRidesView extends StatelessWidget {
             child: RoundShapeButton(
                 size: const Size(200, 45),
                 title: "Book Now".tr,
-                buttonColor: AppThemData.primary500,
+                buttonColor: AppThemData.primary300,
                 buttonTextColor: AppThemData.black,
                 onTap: () {
                   Get.to(const SelectLocationView());

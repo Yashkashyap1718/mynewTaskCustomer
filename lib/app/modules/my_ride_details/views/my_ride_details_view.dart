@@ -187,7 +187,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                           ),
                           RoundShapeButton(
                             title: "Track Ride".tr,
-                            buttonColor: AppThemData.primary500,
+                            buttonColor: AppThemData.primary400,
                             buttonTextColor: AppThemData.black,
                             onTap: () {
                               Get.toNamed(Routes.TRACK_RIDE_SCREEN, arguments: {
@@ -300,7 +300,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                           ),
                           RoundShapeButton(
                             title: "Track Ride".tr,
-                            buttonColor: AppThemData.primary500,
+                            buttonColor: AppThemData.primary400,
                             buttonTextColor: AppThemData.black,
                             onTap: () {
                               Get.toNamed(Routes.TRACK_RIDE_SCREEN, arguments: {
@@ -316,7 +316,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                             BookingStatus.bookingOngoing)
                       RoundShapeButton(
                         title: "Track Ride".tr,
-                        buttonColor: AppThemData.primary500,
+                        buttonColor: AppThemData.primary400,
                         buttonTextColor: AppThemData.black,
                         onTap: () {
                           Get.toNamed(Routes.TRACK_RIDE_SCREEN, arguments: {
@@ -330,7 +330,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                             BookingStatus.bookingCompleted)
                       RoundShapeButton(
                         title: "Review".tr,
-                        buttonColor: AppThemData.primary500,
+                        buttonColor: AppThemData.primary400,
                         buttonTextColor: AppThemData.black,
                         onTap: () {
                           Get.to(const ReviewScreenView(), arguments: {
@@ -410,7 +410,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                   controller.bookingModel.value.otp ?? '',
                                   textAlign: TextAlign.right,
                                   style: GoogleFonts.inter(
-                                    color: AppThemData.primary500,
+                                    color: AppThemData.primary400,
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -544,7 +544,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                                 : controller.bookingModel.value
                                                     .vehicleType!.persons,
                                             style: GoogleFonts.inter(
-                                              color: AppThemData.primary500,
+                                              color: AppThemData.primary400,
                                               fontSize: 16,
                                               fontWeight: FontWeight.w400,
                                             ),
@@ -987,7 +987,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                                 controller.bookingModel.value)
                                             .toString()),
                                     title: "Total Amount".tr,
-                                    priceColor: AppThemData.primary500,
+                                    priceColor: AppThemData.primary400,
                                     titleColor: themeChange.isDarkTheme()
                                         ? AppThemData.grey25
                                         : AppThemData.grey950,

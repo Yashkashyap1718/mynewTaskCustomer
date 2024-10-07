@@ -41,7 +41,7 @@ class PaymentMethodView extends StatelessWidget {
                   right: ((Responsive.width(100, context) - 208) / 2)),
               child: RoundShapeButton(
                 title: "Confirm".tr,
-                buttonColor: AppThemData.primary500,
+                buttonColor: AppThemData.primary400,
                 buttonTextColor: AppThemData.black,
                 onTap: () {
                   Get.back();
@@ -149,7 +149,7 @@ class PaymentMethodView extends StatelessWidget {
                                           controller.bookingModel.value)
                                       .toString()),
                               title: "Total Amount".tr,
-                              priceColor: AppThemData.primary500,
+                              priceColor: AppThemData.primary400,
                               titleColor: themeChange.isDarkTheme()
                                   ? AppThemData.grey25
                                   : AppThemData.grey950,
@@ -238,7 +238,7 @@ class PaymentMethodView extends StatelessWidget {
                     //                   'Apply',
                     //                   textAlign: TextAlign.right,
                     //                   style: GoogleFonts.inter(
-                    //                     color: AppThemData.primary500,
+                    //                     color: AppThemData.primary400,
                     //                     fontSize: 16,
                     //                     fontWeight: FontWeight.w600,
                     //                   ),
@@ -284,7 +284,7 @@ class PaymentMethodView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         SvgPicture.asset(
@@ -339,7 +339,7 @@ class PaymentMethodView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         SvgPicture.asset(
@@ -397,7 +397,7 @@ class PaymentMethodView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(
@@ -455,7 +455,7 @@ class PaymentMethodView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(
@@ -514,7 +514,7 @@ class PaymentMethodView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(
@@ -574,7 +574,7 @@ class PaymentMethodView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(
@@ -636,7 +636,7 @@ class PaymentMethodView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(
@@ -698,7 +698,7 @@ class PaymentMethodView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(
@@ -760,7 +760,7 @@ class PaymentMethodView extends StatelessWidget {
                                     controlAffinity:
                                         ListTileControlAffinity.trailing,
                                     contentPadding: EdgeInsets.zero,
-                                    activeColor: AppThemData.primary500,
+                                    activeColor: AppThemData.primary400,
                                     title: Row(
                                       children: [
                                         Image.asset(

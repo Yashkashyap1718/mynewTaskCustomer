@@ -29,10 +29,14 @@ class EditProfileView extends StatelessWidget {
         init: EditProfileController(),
         builder: (controller) {
           return Scaffold(
-            backgroundColor: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white,
+            backgroundColor: themeChange.isDarkTheme()
+                ? AppThemData.black
+                : AppThemData.white,
             appBar: AppBarWithBorder(
               title: "Edit Profile",
-              bgColor: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white,
+              bgColor: themeChange.isDarkTheme()
+                  ? AppThemData.black
+                  : AppThemData.white,
             ),
             body: Padding(
               padding: const EdgeInsets.all(20.0),
@@ -70,7 +74,7 @@ class EditProfileView extends StatelessWidget {
                       //       margin: const EdgeInsets.only(bottom: 8),
                       //       clipBehavior: Clip.antiAlias,
                       //       decoration: ShapeDecoration(
-                      //         color: AppThemData.primary500,
+                      //         color: AppThemData.primary400,
                       //         shape: RoundedRectangleBorder(
                       //             borderRadius: BorderRadius.circular(200), side: const BorderSide(color: AppThemData.white, width: 3)),
                       //       ),
@@ -88,7 +92,9 @@ class EditProfileView extends StatelessWidget {
                           controller.name.value,
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
-                            color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                            color: themeChange.isDarkTheme()
+                                ? AppThemData.white
+                                : AppThemData.black,
                             fontSize: 18,
                             fontWeight: FontWeight.w500,
                           ),
@@ -101,7 +107,9 @@ class EditProfileView extends StatelessWidget {
                           controller.phoneNumber.value,
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
-                            color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
+                            color: themeChange.isDarkTheme()
+                                ? AppThemData.grey400
+                                : AppThemData.grey500,
                             fontSize: 14,
                             fontWeight: FontWeight.w400,
                           ),
@@ -131,10 +139,12 @@ class EditProfileView extends StatelessWidget {
                       children: [
                         CountryCodeSelectorView(
                           isCountryNameShow: true,
-                          countryCodeController: controller.countryCodeController,
+                          countryCodeController:
+                              controller.countryCodeController,
                           isEnable: false,
                           onChanged: (value) {
-                            controller.countryCodeController.text = value.dialCode.toString();
+                            controller.countryCodeController.text =
+                                value.dialCode.toString();
                           },
                         ),
                         Container(
@@ -145,17 +155,36 @@ class EditProfileView extends StatelessWidget {
                             keyboardType: TextInputType.number,
                             controller: controller.phoneNumberController,
                             inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(RegExp("[0-9]")),
+                              FilteringTextInputFormatter.allow(
+                                  RegExp("[0-9]")),
                             ],
-                            style: GoogleFonts.inter(fontSize: 14, color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.grey950, fontWeight: FontWeight.w400),
+                            style: GoogleFonts.inter(
+                                fontSize: 14,
+                                color: themeChange.isDarkTheme()
+                                    ? AppThemData.white
+                                    : AppThemData.grey950,
+                                fontWeight: FontWeight.w400),
                             decoration: InputDecoration(
-                              border: const UnderlineInputBorder(borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
-                              focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
-                              enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
-                              errorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
-                              disabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
+                              border: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: AppThemData.grey500, width: 1)),
+                              focusedBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: AppThemData.grey500, width: 1)),
+                              enabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: AppThemData.grey500, width: 1)),
+                              errorBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: AppThemData.grey500, width: 1)),
+                              disabledBorder: const UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: AppThemData.grey500, width: 1)),
                               hintText: "Enter your Phone Number".tr,
-                              hintStyle: GoogleFonts.inter(fontSize: 14, color: AppThemData.grey500, fontWeight: FontWeight.w400),
+                              hintStyle: GoogleFonts.inter(
+                                  fontSize: 14,
+                                  color: AppThemData.grey500,
+                                  fontWeight: FontWeight.w400),
                             ),
                           ),
                         )
@@ -164,7 +193,12 @@ class EditProfileView extends StatelessWidget {
                     const SizedBox(height: 20),
                     Text(
                       "Gender".tr,
-                      style: GoogleFonts.inter(fontSize: 14, color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.grey950, fontWeight: FontWeight.w500),
+                      style: GoogleFonts.inter(
+                          fontSize: 14,
+                          color: themeChange.isDarkTheme()
+                              ? AppThemData.white
+                              : AppThemData.grey950,
+                          fontWeight: FontWeight.w500),
                     ),
                     Obx(
                       () => Row(
@@ -173,7 +207,7 @@ class EditProfileView extends StatelessWidget {
                           Radio(
                             value: 1,
                             groupValue: controller.selectedGender.value,
-                            activeColor: AppThemData.primary500,
+                            activeColor: AppThemData.primary400,
                             onChanged: (value) {
                               controller.selectedGender.value = value ?? 1;
                               // _radioVal = 'male';
@@ -198,7 +232,7 @@ class EditProfileView extends StatelessWidget {
                           Radio(
                             value: 2,
                             groupValue: controller.selectedGender.value,
-                            activeColor: AppThemData.primary500,
+                            activeColor: AppThemData.primary400,
                             onChanged: (value) {
                               controller.selectedGender.value = value ?? 2;
                               // _radioVal = 'female';
@@ -227,7 +261,7 @@ class EditProfileView extends StatelessWidget {
                     Center(
                       child: RoundShapeButton(
                         title: "Save",
-                        buttonColor: AppThemData.primary500,
+                        buttonColor: AppThemData.primary400,
                         buttonTextColor: AppThemData.black,
                         onTap: () {
                           controller.saveUserData();
@@ -263,7 +297,8 @@ class EditProfileView extends StatelessWidget {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(60),
-                        child: CachedNetworkImage(imageUrl: controller.profileImage.value),
+                        child: CachedNetworkImage(
+                            imageUrl: controller.profileImage.value),
                       ),
                     )
                   : (Constant().hasValidUrl(controller.profileImage.value))
@@ -314,7 +349,7 @@ class EditProfileView extends StatelessWidget {
                     radius: 19,
                     backgroundColor: Colors.white,
                     child: CircleAvatar(
-                      backgroundColor: AppThemData.primary500,
+                      backgroundColor: AppThemData.primary400,
                       radius: 18,
                       child: SvgPicture.asset("assets/icon/ic_drawer_edit.svg"),
                     ),
@@ -354,7 +389,8 @@ class EditProfileView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () => controller.pickFile(source: ImageSource.camera),
+                                onPressed: () => controller.pickFile(
+                                    source: ImageSource.camera),
                                 icon: const Icon(
                                   Icons.camera_alt,
                                   size: 32,
@@ -376,7 +412,8 @@ class EditProfileView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () => controller.pickFile(source: ImageSource.gallery),
+                                onPressed: () => controller.pickFile(
+                                    source: ImageSource.gallery),
                                 icon: const Icon(
                                   Icons.photo_library_sharp,
                                   size: 32,

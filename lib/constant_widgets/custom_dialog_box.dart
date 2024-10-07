@@ -46,7 +46,9 @@ class CustomDialogBox extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.only(left: 20, top: 20, right: 20, bottom: 20),
       decoration: BoxDecoration(
-          shape: BoxShape.rectangle, color: themeChange.isDarkTheme() ? Colors.black : Colors.white, borderRadius: BorderRadius.circular(20)),
+          shape: BoxShape.rectangle,
+          color: themeChange.isDarkTheme() ? Colors.black : Colors.white,
+          borderRadius: BorderRadius.circular(20)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -59,7 +61,11 @@ class CustomDialogBox extends StatelessWidget {
             child: Text(
               title,
               textAlign: TextAlign.center,
-              style: GoogleFonts.inter(fontSize: 20, color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950),
+              style: GoogleFonts.inter(
+                  fontSize: 20,
+                  color: themeChange.isDarkTheme()
+                      ? AppThemData.grey25
+                      : AppThemData.grey950),
             ),
           ),
           const SizedBox(
@@ -69,7 +75,11 @@ class CustomDialogBox extends StatelessWidget {
             visible: descriptions.isNotEmpty,
             child: Text(
               descriptions,
-              style: GoogleFonts.inter(fontSize: 14, color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950),
+              style: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: themeChange.isDarkTheme()
+                      ? AppThemData.grey25
+                      : AppThemData.grey950),
               textAlign: TextAlign.center,
             ),
           ),
@@ -122,7 +132,7 @@ class CustomDialogBox extends StatelessWidget {
                     width: Responsive.width(100, context),
                     height: 45,
                     decoration: ShapeDecoration(
-                      color: positiveButtonColor ?? AppThemData.primary500,
+                      color: positiveButtonColor ?? AppThemData.primary400,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(200),
                       ),

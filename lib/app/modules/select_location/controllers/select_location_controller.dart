@@ -28,7 +28,8 @@ class SelectLocationController extends GetxController {
   FocusNode pickUpFocusNode = FocusNode();
   FocusNode dropFocusNode = FocusNode();
   TextEditingController dropLocationController = TextEditingController();
-  TextEditingController pickupLocationController = TextEditingController(text: 'Current Location');
+  TextEditingController pickupLocationController =
+      TextEditingController(text: 'Current Location');
   LatLng? sourceLocation;
   LatLng? destination;
   Position? currentLocationPosition;
@@ -53,7 +54,8 @@ class SelectLocationController extends GetxController {
   changeVehicleType(int index) {
     selectVehicleTypeIndex.value = index;
     bookingModel.value.vehicleType = Constant.vehicleTypeList![index];
-    bookingModel.value.subTotal = amountShow(Constant.vehicleTypeList![index], mapModel.value!);
+    bookingModel.value.subTotal =
+        amountShow(Constant.vehicleTypeList![index], mapModel.value!);
     if (bookingModel.value.coupon != null) {
       bookingModel.value.discount = applyCoupon().toString();
     }
@@ -78,10 +80,14 @@ class SelectLocationController extends GetxController {
 
   getData() async {
     currentLocationPosition = await Utils.getCurrentLocation();
-    Constant.country =
-        (await placemarkFromCoordinates(currentLocationPosition!.latitude, currentLocationPosition!.longitude))[0].country ?? 'Unknown';
+    Constant.country = (await placemarkFromCoordinates(
+                currentLocationPosition!.latitude,
+                currentLocationPosition!.longitude))[0]
+            .country ??
+        'Unknown';
     getTax();
-    sourceLocation = LatLng(currentLocationPosition!.latitude, currentLocationPosition!.longitude);
+    sourceLocation = LatLng(
+        currentLocationPosition!.latitude, currentLocationPosition!.longitude);
     await addMarkerSetup();
     if (destination != null && sourceLocation != null) {
       getPolyline(
@@ -91,7 +97,12 @@ class SelectLocationController extends GetxController {
           destinationLongitude: destination!.longitude);
     } else {
       if (destination != null) {
-        addMarker(latitude: destination!.latitude, longitude: destination!.longitude, id: "drop", descriptor: dropIcon!, rotation: 0.0);
+        addMarker(
+            latitude: destination!.latitude,
+            longitude: destination!.longitude,
+            id: "drop",
+            descriptor: dropIcon!,
+            rotation: 0.0);
         updateCameraLocation(destination!, destination!, mapController);
       } else {
         MarkerId markerId = const MarkerId("drop");
@@ -102,7 +113,11 @@ class SelectLocationController extends GetxController {
       }
       if (sourceLocation != null) {
         addMarker(
-            latitude: sourceLocation!.latitude, longitude: sourceLocation!.longitude, id: "pickUp", descriptor: pickUpIcon!, rotation: 0.0);
+            latitude: sourceLocation!.latitude,
+            longitude: sourceLocation!.longitude,
+            id: "pickUp",
+            descriptor: pickUpIcon!,
+            rotation: 0.0);
         updateCameraLocation(sourceLocation!, sourceLocation!, mapController);
       } else {
         MarkerId markerId = const MarkerId("pickUp");
@@ -123,18 +138,27 @@ class SelectLocationController extends GetxController {
     } else {
       bookingModel.value.customerId = FireStoreUtils.getCurrentUid();
       bookingModel.value.bookingStatus = BookingStatus.bookingPlaced;
-      bookingModel.value.pickUpLocation = LocationLatLng(latitude: sourceLocation!.latitude, longitude: sourceLocation!.longitude);
-      bookingModel.value.dropLocation = LocationLatLng(latitude: destination!.latitude, longitude: destination!.longitude);
-      GeoFirePoint position = GeoFlutterFire().point(latitude: sourceLocation!.latitude, longitude: sourceLocation!.longitude);
+      bookingModel.value.pickUpLocation = LocationLatLng(
+          latitude: sourceLocation!.latitude,
+          longitude: sourceLocation!.longitude);
+      bookingModel.value.dropLocation = LocationLatLng(
+          latitude: destination!.latitude, longitude: destination!.longitude);
+      GeoFirePoint position = GeoFlutterFire().point(
+          latitude: sourceLocation!.latitude,
+          longitude: sourceLocation!.longitude);
 
-      bookingModel.value.position = Positions(geoPoint: position.geoPoint, geohash: position.hash);
+      bookingModel.value.position =
+          Positions(geoPoint: position.geoPoint, geohash: position.hash);
 
       bookingModel.value.distance = DistanceModel(
         distance: distanceCalculate(mapModel.value),
         distanceType: Constant.distanceType,
       );
-      bookingModel.value.vehicleType = Constant.vehicleTypeList![selectVehicleTypeIndex.value];
-      bookingModel.value.subTotal = amountShow(Constant.vehicleTypeList![selectVehicleTypeIndex.value], mapModel.value!);
+      bookingModel.value.vehicleType =
+          Constant.vehicleTypeList![selectVehicleTypeIndex.value];
+      bookingModel.value.subTotal = amountShow(
+          Constant.vehicleTypeList![selectVehicleTypeIndex.value],
+          mapModel.value!);
       bookingModel.value.otp = Constant.getOTPCode();
       bookingModel.value.paymentType = Constant.paymentModel!.cash!.name;
       bookingModel.value.paymentStatus = false;
@@ -152,43 +176,64 @@ class SelectLocationController extends GetxController {
           destinationLatitude: destination!.latitude,
           destinationLongitude: destination!.longitude);
       ShowToastDialog.showLoader("Please wait".tr);
-      mapModel.value = await Constant.getDurationDistance(sourceLocation!, destination!);
-      bookingModel.value.dropLocationAddress = mapModel.value!.destinationAddresses!.first;
-      bookingModel.value.pickUpLocationAddress = mapModel.value!.originAddresses!.first;
+      mapModel.value =
+          await Constant.getDurationDistance(sourceLocation!, destination!);
+      bookingModel.value.dropLocationAddress =
+          mapModel.value!.destinationAddresses!.first;
+      bookingModel.value.pickUpLocationAddress =
+          mapModel.value!.originAddresses!.first;
       bookingModel.value = BookingModel.fromJson(bookingModel.value.toJson());
 
       ShowToastDialog.closeLoader();
       log("Data : ${mapModel.value!.toJson()}");
       if (mapModel.value == null) {
         popupIndex.value = 0;
-        ShowToastDialog.showToast("Something went wrong!,Please select location again");
+        ShowToastDialog.showToast(
+            "Something went wrong!,Please select location again");
       } else {
         if (popupIndex.value == 0) popupIndex.value = 1;
         setBookingData(false);
       }
     } else {
       if (destination != null) {
-        addMarker(latitude: destination!.latitude, longitude: destination!.longitude, id: "drop", descriptor: dropIcon!, rotation: 0.0);
+        addMarker(
+            latitude: destination!.latitude,
+            longitude: destination!.longitude,
+            id: "drop",
+            descriptor: dropIcon!,
+            rotation: 0.0);
         updateCameraLocation(destination!, destination!, mapController);
       } else {
         MarkerId markerId = const MarkerId("drop");
         if (markers.containsKey(markerId)) {
           markers.removeWhere((key, value) => key == markerId);
-          updateCameraLocation(LatLng(currentLocationPosition!.latitude, currentLocationPosition!.longitude),
-              LatLng(currentLocationPosition!.latitude, currentLocationPosition!.longitude), mapController);
+          updateCameraLocation(
+              LatLng(currentLocationPosition!.latitude,
+                  currentLocationPosition!.longitude),
+              LatLng(currentLocationPosition!.latitude,
+                  currentLocationPosition!.longitude),
+              mapController);
         }
         log("==> ${markers.containsKey(markerId)}");
       }
       if (sourceLocation != null) {
         addMarker(
-            latitude: sourceLocation!.latitude, longitude: sourceLocation!.longitude, id: "pickUp", descriptor: pickUpIcon!, rotation: 0.0);
+            latitude: sourceLocation!.latitude,
+            longitude: sourceLocation!.longitude,
+            id: "pickUp",
+            descriptor: pickUpIcon!,
+            rotation: 0.0);
         updateCameraLocation(sourceLocation!, sourceLocation!, mapController);
       } else {
         MarkerId markerId = const MarkerId("pickUp");
         if (markers.containsKey(markerId)) {
           markers.removeWhere((key, value) => key == markerId);
-          updateCameraLocation(LatLng(currentLocationPosition!.latitude, currentLocationPosition!.longitude),
-              LatLng(currentLocationPosition!.latitude, currentLocationPosition!.longitude), mapController);
+          updateCameraLocation(
+              LatLng(currentLocationPosition!.latitude,
+                  currentLocationPosition!.longitude),
+              LatLng(currentLocationPosition!.latitude,
+                  currentLocationPosition!.longitude),
+              mapController);
         }
         log("==> ${markers.containsKey(markerId)}");
       }
@@ -203,7 +248,10 @@ class SelectLocationController extends GetxController {
       required double? sourceLongitude,
       required double? destinationLatitude,
       required double? destinationLongitude}) async {
-    if (sourceLatitude != null && sourceLongitude != null && destinationLatitude != null && destinationLongitude != null) {
+    if (sourceLatitude != null &&
+        sourceLongitude != null &&
+        destinationLatitude != null &&
+        destinationLongitude != null) {
       List<LatLng> polylineCoordinates = [];
 
       PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
@@ -229,8 +277,18 @@ class SelectLocationController extends GetxController {
         log(result.errorMessage.toString());
       }
 
-      addMarker(latitude: sourceLatitude, longitude: sourceLongitude, id: "pickUp", descriptor: pickUpIcon!, rotation: 0.0);
-      addMarker(latitude: destinationLatitude, longitude: destinationLongitude, id: "drop", descriptor: dropIcon!, rotation: 0.0);
+      addMarker(
+          latitude: sourceLatitude,
+          longitude: sourceLongitude,
+          id: "pickUp",
+          descriptor: pickUpIcon!,
+          rotation: 0.0);
+      addMarker(
+          latitude: destinationLatitude,
+          longitude: destinationLongitude,
+          id: "drop",
+          descriptor: dropIcon!,
+          rotation: 0.0);
 
       _addPolyLine(polylineCoordinates);
     }
@@ -245,14 +303,19 @@ class SelectLocationController extends GetxController {
       required BitmapDescriptor descriptor,
       required double? rotation}) {
     MarkerId markerId = MarkerId(id);
-    Marker marker =
-        Marker(markerId: markerId, icon: descriptor, position: LatLng(latitude ?? 0.0, longitude ?? 0.0), rotation: rotation ?? 0.0);
+    Marker marker = Marker(
+        markerId: markerId,
+        icon: descriptor,
+        position: LatLng(latitude ?? 0.0, longitude ?? 0.0),
+        rotation: rotation ?? 0.0);
     markers[markerId] = marker;
   }
 
   addMarkerSetup() async {
-    final Uint8List pickUpUint8List = await Constant().getBytesFromAsset('assets/icon/ic_pick_up_map.png', 100);
-    final Uint8List dropUint8List = await Constant().getBytesFromAsset('assets/icon/ic_drop_in_map.png', 100);
+    final Uint8List pickUpUint8List = await Constant()
+        .getBytesFromAsset('assets/icon/ic_pick_up_map.png', 100);
+    final Uint8List dropUint8List = await Constant()
+        .getBytesFromAsset('assets/icon/ic_drop_in_map.png', 100);
     pickUpIcon = BitmapDescriptor.fromBytes(pickUpUint8List);
     dropIcon = BitmapDescriptor.fromBytes(dropUint8List);
   }
@@ -266,12 +329,13 @@ class SelectLocationController extends GetxController {
       polylineId: id,
       points: polylineCoordinates,
       consumeTapEvents: true,
-      color: AppThemData.primary500,
+      color: AppThemData.primary400,
       startCap: Cap.roundCap,
       width: 4,
     );
     polyLines[id] = polyline;
-    updateCameraLocation(polylineCoordinates.first, polylineCoordinates.last, mapController);
+    updateCameraLocation(
+        polylineCoordinates.first, polylineCoordinates.last, mapController);
   }
 
   Future<void> updateCameraLocation(
@@ -283,14 +347,17 @@ class SelectLocationController extends GetxController {
 
     LatLngBounds bounds;
 
-    if (source.latitude > destination.latitude && source.longitude > destination.longitude) {
+    if (source.latitude > destination.latitude &&
+        source.longitude > destination.longitude) {
       bounds = LatLngBounds(southwest: destination, northeast: source);
     } else if (source.longitude > destination.longitude) {
       bounds = LatLngBounds(
-          southwest: LatLng(source.latitude, destination.longitude), northeast: LatLng(destination.latitude, source.longitude));
+          southwest: LatLng(source.latitude, destination.longitude),
+          northeast: LatLng(destination.latitude, source.longitude));
     } else if (source.latitude > destination.latitude) {
       bounds = LatLngBounds(
-          southwest: LatLng(destination.latitude, source.longitude), northeast: LatLng(source.latitude, destination.longitude));
+          southwest: LatLng(destination.latitude, source.longitude),
+          northeast: LatLng(source.latitude, destination.longitude));
     } else {
       bounds = LatLngBounds(southwest: source, northeast: destination);
     }
@@ -300,7 +367,8 @@ class SelectLocationController extends GetxController {
     return checkCameraLocation(cameraUpdate, mapController);
   }
 
-  Future<void> checkCameraLocation(CameraUpdate cameraUpdate, GoogleMapController mapController) async {
+  Future<void> checkCameraLocation(
+      CameraUpdate cameraUpdate, GoogleMapController mapController) async {
     mapController.animateCamera(cameraUpdate);
     LatLngBounds l1 = await mapController.getVisibleRegion();
     LatLngBounds l2 = await mapController.getVisibleRegion();
@@ -312,21 +380,32 @@ class SelectLocationController extends GetxController {
 
   String amountShow(VehicleTypeModel vehicleType, MapModel value) {
     if (Constant.distanceType == "Km") {
-      var distance = (value.rows!.first.elements!.first.distance!.value!.toInt() / 1000);
-      if (distance > double.parse(vehicleType.charges.fareMinimumChargesWithinKm)) {
-        return Constant.amountCalculate(vehicleType.charges.farePerKm.toString(), distance.toString())
+      var distance =
+          (value.rows!.first.elements!.first.distance!.value!.toInt() / 1000);
+      if (distance >
+          double.parse(vehicleType.charges.fareMinimumChargesWithinKm)) {
+        return Constant.amountCalculate(
+                vehicleType.charges.farePerKm.toString(), distance.toString())
             .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
       } else {
-        return Constant.amountCalculate(vehicleType.charges.farMinimumCharges.toString(), distance.toString())
+        return Constant.amountCalculate(
+                vehicleType.charges.farMinimumCharges.toString(),
+                distance.toString())
             .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
       }
     } else {
-      var distance = (value.rows!.first.elements!.first.distance!.value!.toInt() / 1609.34);
-      if (distance > double.parse(vehicleType.charges.fareMinimumChargesWithinKm)) {
-        return Constant.amountCalculate(vehicleType.charges.farePerKm.toString(), distance.toString())
+      var distance =
+          (value.rows!.first.elements!.first.distance!.value!.toInt() /
+              1609.34);
+      if (distance >
+          double.parse(vehicleType.charges.fareMinimumChargesWithinKm)) {
+        return Constant.amountCalculate(
+                vehicleType.charges.farePerKm.toString(), distance.toString())
             .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
       } else {
-        return Constant.amountCalculate(vehicleType.charges.farMinimumCharges.toString(), distance.toString())
+        return Constant.amountCalculate(
+                vehicleType.charges.farMinimumCharges.toString(),
+                distance.toString())
             .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
       }
     }
@@ -334,9 +413,13 @@ class SelectLocationController extends GetxController {
 
   String distanceCalculate(MapModel? value) {
     if (Constant.distanceType == "Km") {
-      return (value!.rows!.first.elements!.first.distance!.value!.toInt() / 1000).toString();
+      return (value!.rows!.first.elements!.first.distance!.value!.toInt() /
+              1000)
+          .toString();
     } else {
-      return (value!.rows!.first.elements!.first.distance!.value!.toInt() / 1609.34).toString();
+      return (value!.rows!.first.elements!.first.distance!.value!.toInt() /
+              1609.34)
+          .toString();
     }
   }
 
@@ -346,7 +429,9 @@ class SelectLocationController extends GetxController {
         if (bookingModel.value.coupon!.isFix == true) {
           return double.parse(bookingModel.value.coupon!.amount.toString());
         } else {
-          return double.parse(bookingModel.value.subTotal ?? '0.0') * double.parse(bookingModel.value.coupon!.amount.toString()) / 100;
+          return double.parse(bookingModel.value.subTotal ?? '0.0') *
+              double.parse(bookingModel.value.coupon!.amount.toString()) /
+              100;
         }
       } else {
         return 0.0;

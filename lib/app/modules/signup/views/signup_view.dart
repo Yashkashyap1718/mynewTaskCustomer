@@ -185,7 +185,7 @@ class SignupView extends StatelessWidget {
                                 Radio(
                                   value: 1,
                                   groupValue: controller.selectedGender.value,
-                                  activeColor: AppThemData.primary500,
+                                  activeColor: AppThemData.primary400,
                                   onChanged: (value) {
                                     controller.selectedGender.value =
                                         value ?? 1;
@@ -212,7 +212,7 @@ class SignupView extends StatelessWidget {
                                 Radio(
                                   value: 2,
                                   groupValue: controller.selectedGender.value,
-                                  activeColor: AppThemData.primary500,
+                                  activeColor: AppThemData.primary400,
                                   onChanged: (value) {
                                     controller.selectedGender.value =
                                         value ?? 2;
@@ -244,7 +244,7 @@ class SignupView extends StatelessWidget {
                             child: RoundShapeButton(
                                 size: const Size(200, 45),
                                 title: "Sign Up".tr,
-                                buttonColor: AppThemData.primary500,
+                                buttonColor: AppThemData.primary400,
                                 buttonTextColor: AppThemData.black,
                                 onTap: () {
                                   if (controller.formKey.value.currentState!

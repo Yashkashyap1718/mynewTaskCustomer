@@ -140,11 +140,12 @@ class LoginView extends StatelessWidget {
                         child: RoundShapeButton(
                           size: const Size(200, 45),
                           title: "Send OTP".tr,
-                          buttonColor: AppThemData.primary400,
+                          buttonColor: AppThemData.primary300,
                           buttonTextColor: AppThemData.black,
                           onTap: () {
                             print(
                                 'Button tapped!'); // Check if the button is tapped
+                            controller.sendOTP(context);
 
                             if (controller.formKey.value.currentState!
                                 .validate()) {
@@ -152,7 +153,6 @@ class LoginView extends StatelessWidget {
                                   'Form validation passed!'); // Check if form validation passes
 
                               // Call sendOTP function
-                              controller.sendOTP(context);
 
                               print(
                                   'OTP function called!'); // Check if the sendOTP function is called

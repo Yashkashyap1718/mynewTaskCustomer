@@ -27,15 +27,23 @@ class CouponScreenView extends StatelessWidget {
         init: CouponScreenController(),
         builder: (controller) {
           return Scaffold(
-              backgroundColor: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white,
-              appBar: AppBarWithBorder(title: "Coupons".tr, bgColor: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white),
+              backgroundColor: themeChange.isDarkTheme()
+                  ? AppThemData.black
+                  : AppThemData.white,
+              appBar: AppBarWithBorder(
+                  title: "Coupons".tr,
+                  bgColor: themeChange.isDarkTheme()
+                      ? AppThemData.black
+                      : AppThemData.white),
               body: Obx(
                 () => controller.couponList.isEmpty
                     ? Center(
                         child: Text(
                           'No available coupons',
                           style: GoogleFonts.inter(
-                            color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                            color: themeChange.isDarkTheme()
+                                ? AppThemData.white
+                                : AppThemData.black,
                             fontSize: 18,
                             fontWeight: FontWeight.w600,
                             height: 0.08,
@@ -46,7 +54,8 @@ class CouponScreenView extends StatelessWidget {
                         itemCount: controller.couponList.length,
                         padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
                         itemBuilder: (context, index) {
-                          CouponModel couponModel = controller.couponList[index];
+                          CouponModel couponModel =
+                              controller.couponList[index];
                           return Container(
                             width: Responsive.width(100, context),
                             margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
@@ -66,7 +75,8 @@ class CouponScreenView extends StatelessWidget {
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         couponModel.title ?? 'No Title'.tr,
@@ -78,7 +88,8 @@ class CouponScreenView extends StatelessWidget {
                                       ),
                                       const SizedBox(height: 6),
                                       Text(
-                                        'This offer can only be used once and cannot be combined with any other promotions.'.tr,
+                                        'This offer can only be used once and cannot be combined with any other promotions.'
+                                            .tr,
                                         style: GoogleFonts.inter(
                                           color: AppThemData.grey950,
                                           fontSize: 12,
@@ -88,8 +99,10 @@ class CouponScreenView extends StatelessWidget {
                                       const SizedBox(height: 8),
                                       Row(
                                         mainAxisSize: MainAxisSize.min,
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           const Icon(Icons.copy, size: 18),
                                           const SizedBox(width: 8),
@@ -113,26 +126,35 @@ class CouponScreenView extends StatelessWidget {
                                 Stack(
                                   alignment: Alignment.center,
                                   children: [
-                                    const DottedLineWidget(color: AppThemData.grey400),
+                                    const DottedLineWidget(
+                                        color: AppThemData.grey400),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Container(
                                           width: 16,
                                           height: 16,
-                                          transform: Matrix4.translationValues(-5.0, 0.0, 0.0),
+                                          transform: Matrix4.translationValues(
+                                              -5.0, 0.0, 0.0),
                                           decoration: ShapeDecoration(
-                                            color: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white,
+                                            color: themeChange.isDarkTheme()
+                                                ? AppThemData.black
+                                                : AppThemData.white,
                                             shape: const OvalBorder(),
                                           ),
                                         ),
                                         Container(
                                           width: 16,
                                           height: 16,
-                                          transform: Matrix4.translationValues(5.0, 0.0, 0.0),
+                                          transform: Matrix4.translationValues(
+                                              5.0, 0.0, 0.0),
                                           decoration: ShapeDecoration(
-                                            color: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white,
+                                            color: themeChange.isDarkTheme()
+                                                ? AppThemData.black
+                                                : AppThemData.white,
                                             shape: const OvalBorder(),
                                           ),
                                         ),
@@ -141,11 +163,13 @@ class CouponScreenView extends StatelessWidget {
                                   ],
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.fromLTRB(16, 14, 16, 18),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(16, 14, 16, 18),
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Expanded(
                                         child: Text(
@@ -161,32 +185,57 @@ class CouponScreenView extends StatelessWidget {
                                       const SizedBox(width: 12),
                                       RoundShapeButton(
                                           title: "Apply".tr,
-                                          buttonColor: AppThemData.primary500,
+                                          buttonColor: AppThemData.primary400,
                                           buttonTextColor: AppThemData.black,
                                           onTap: () {
-                                            SelectLocationController controller = Get.put(SelectLocationController());
+                                            SelectLocationController
+                                                controller = Get.put(
+                                                    SelectLocationController());
 
-                                            if (double.parse(controller.bookingModel.value.subTotal.toString()) <
-                                                double.parse(couponModel.minAmount.toString())) {
+                                            if (double.parse(controller
+                                                    .bookingModel.value.subTotal
+                                                    .toString()) <
+                                                double.parse(couponModel
+                                                    .minAmount
+                                                    .toString())) {
                                               ShowToastDialog.showToast(
                                                   "${"Minimum amount".tr}${" ${Constant.amountToShow(amount: couponModel.minAmount)}".tr} required");
                                               return;
                                             }
-                                            controller.selectedCouponModel.value = couponModel;
-                                            controller.couponCode.value = controller.selectedCouponModel.value.code.toString();
+                                            controller.selectedCouponModel
+                                                .value = couponModel;
+                                            controller.couponCode.value =
+                                                controller.selectedCouponModel
+                                                    .value.code
+                                                    .toString();
                                             if (couponModel.isFix == true) {
-                                              controller.bookingModel.value.discount =
-                                                  double.parse(couponModel.amount.toString()).toString();
+                                              controller.bookingModel.value
+                                                  .discount = double.parse(
+                                                      couponModel.amount
+                                                          .toString())
+                                                  .toString();
                                             } else {
-                                              controller.bookingModel.value.discount =
-                                                  (double.parse(controller.bookingModel.value.subTotal.toString()) *
-                                                          double.parse(couponModel.amount.toString()) /
-                                                          100)
-                                                      .toString();
+                                              controller.bookingModel.value
+                                                  .discount = (double.parse(
+                                                          controller
+                                                              .bookingModel
+                                                              .value
+                                                              .subTotal
+                                                              .toString()) *
+                                                      double.parse(couponModel
+                                                          .amount
+                                                          .toString()) /
+                                                      100)
+                                                  .toString();
                                             }
-                                            controller.bookingModel.value.coupon = couponModel;
-                                            controller.isCouponCode.value = true;
-                                            controller.bookingModel.value = BookingModel.fromJson(controller.bookingModel.value.toJson());
+                                            controller.bookingModel.value
+                                                .coupon = couponModel;
+                                            controller.isCouponCode.value =
+                                                true;
+                                            controller.bookingModel.value =
+                                                BookingModel.fromJson(controller
+                                                    .bookingModel.value
+                                                    .toJson());
                                             Get.back();
                                           },
                                           size: const Size(100, 40))

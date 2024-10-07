@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:customer/app/models/user_model.dart';
@@ -37,77 +38,6 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
-
-    confirmOTP(context, String otp, String phoneNumber) async {
-      // final prrovider = Provider.of<HomeProvider>(context, listen: false);
-
-      // Check if otp or phoneNumber is null
-      final Map<String, String> payload = {
-        "otp": otp,
-        "mobile_number": phoneNumber
-      };
-
-      try {
-        // prrovider.showLoader();
-
-        final http.Response response = await http.post(
-          Uri.parse(baseURL + veriftOtpEndpoint),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(payload),
-        );
-
-        final Map<String, dynamic> data = jsonDecode(response.body);
-
-        final String token = data['token'];
-        final String id = data['id'];
-        final String roleType = data['type'];
-        final String firstDigit = id.substring(0, 1);
-        final int firstDigitAsInt = int.parse(firstDigit, radix: 16);
-        // final String userId = data['_id'];
-
-        print(response.body);
-
-        String confirmToken = token;
-        // print("  -----response-----token-----------${confirmToken}");
-        // prrovider.setAccessToken(confirmToken);
-        // prrovider.setTempNumber(phoneNumber);
-        if (response.statusCode == 200) {
-          // await saveLoginStatus(true);
-          // Navigator.push(context,
-          //     MaterialPageRoute(builder: (context) => const HomeScreen()));
-
-          // final UserModel user = UserModel(
-          //     id: firstDigitAsInt, accessToken: confirmToken, role: roleType);
-
-          // final databaseProvider = DatabaseProvider();
-          // await databaseProvider.insertUser(user);
-
-          AnimatedSnackBar.material(
-            'Welcome! User $phoneNumber',
-            type: AnimatedSnackBarType.success,
-            duration: const Duration(seconds: 5),
-            mobileSnackBarPosition: MobileSnackBarPosition.top,
-          ).show(context);
-
-          // prrovider.hideLoader();
-        } else {
-          throw Exception('Failed to confirm OTP');
-        }
-
-        // prrovider.hideLoader();
-      } catch (e) {
-        // prrovider.hideLoader();
-
-        debugPrint('Error: during OTP confirmation----------- $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error occurred while confirming OTP.'),
-          ),
-        );
-      }
-    }
 
     return GetBuilder<VerifyOtpController>(
         init: VerifyOtpController(),
@@ -154,7 +84,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 8, bottom: 33),
-                      child:  Text(
+                      child: Text(
                         "Enter  6-digit code sent to your mobile number to complete verification."
                             .tr,
                         textAlign: TextAlign.center,
@@ -178,12 +108,13 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                           fontWeight: FontWeight.w500),
                       textFieldAlignment: MainAxisAlignment.spaceAround,
                       otpFieldStyle: OtpFieldStyle(
-                        focusBorderColor: AppThemData.primary500,
+                        focusBorderColor: AppThemData.primary400,
                         borderColor: AppThemData.grey100,
                         enabledBorderColor: AppThemData.grey100,
                       ),
                       fieldStyle: FieldStyle.underline,
                       onCompleted: (pin) async {
+                        log('---otp--${widget.oTP}---num--${widget.phoneNumder}');
                         if (pin.length == 4) {
                           ShowToastDialog.showLoader("verify_OTP".tr);
                           controller
@@ -273,74 +204,87 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                     RoundShapeButton(
                         size: const Size(200, 45),
                         title: "verify_OTP".tr,
-                        buttonColor: AppThemData.primary500,
+                        buttonColor: AppThemData.primary400,
                         buttonTextColor: AppThemData.black,
                         onTap: () async {
                           if (controller.otpCode.value.length == 4) {
                             ShowToastDialog.showLoader("verify_OTP".tr);
-                            PhoneAuthCredential credential =
-                                PhoneAuthProvider.credential(
-                                    verificationId:
-                                        controller.verificationId.value,
-                                    smsCode: controller.otpCode.value);
-                            String fcmToken =
-                                await NotificationService.getToken();
-                            await FirebaseAuth.instance
-                                .signInWithCredential(credential)
-                                .then((value) async {
-                              if (value.additionalUserInfo!.isNewUser) {
-                                UserModel userModel = UserModel();
-                                userModel.id = value.user!.uid;
-                                userModel.countryCode =
-                                    controller.countryCode.value;
-                                userModel.phoneNumber =
-                                    controller.phoneNumber.value;
-                                userModel.loginType = Constant.phoneLoginType;
-                                userModel.fcmToken = fcmToken;
 
-                                ShowToastDialog.closeLoader();
-                                Get.off(const SignupView(), arguments: {
-                                  "userModel": userModel,
-                                });
-                              } else {
-                                await FireStoreUtils.userExistOrNot(
-                                        value.user!.uid)
-                                    .then((userExit) async {
-                                  ShowToastDialog.closeLoader();
-                                  if (userExit == true) {
-                                    UserModel? userModel =
-                                        await FireStoreUtils.getUserProfile(
-                                            value.user!.uid);
-                                    if (userModel != null) {
-                                      if (userModel.isActive == true) {
-                                        Get.offAll(const HomeView());
-                                      } else {
-                                        await FirebaseAuth.instance.signOut();
-                                        ShowToastDialog.showToast(
-                                            "user_disable_admin_contact".tr);
-                                      }
-                                    }
-                                  } else {
-                                    UserModel userModel = UserModel();
-                                    userModel.id = value.user!.uid;
-                                    userModel.countryCode =
-                                        controller.countryCode.value;
-                                    userModel.phoneNumber =
-                                        controller.phoneNumber.value;
-                                    userModel.loginType =
-                                        Constant.phoneLoginType;
-                                    userModel.fcmToken = fcmToken;
+                            ShowToastDialog.showLoader("verify_OTP".tr);
+                            controller.confirmOTP(
+                                context,
+                                widget.oTP.toString(),
+                                widget.phoneNumder.toString());
+                            // .then((value) async {
+                            // ShowToastDialog.closeLoader();
+                            // Get.off(
+                            //   const HomeView(),
+                            // );
 
-                                    Get.off(const SignupView(), arguments: {
-                                      "userModel": userModel,
-                                    });
-                                  }
-                                });
-                              }
-                            }).catchError((error) {
-                              ShowToastDialog.closeLoader();
-                              ShowToastDialog.showToast("invalid_code".tr);
-                            });
+                            // });
+                            // PhoneAuthCredential credential =
+                            //     PhoneAuthProvider.credential(
+                            //         verificationId:
+                            //             controller.verificationId.value,
+                            //         smsCode: controller.otpCode.value);
+                            // String fcmToken =
+                            //     await NotificationService.getToken();
+                            // await FirebaseAuth.instance
+                            //     .signInWithCredential(credential)
+                            //     .then((value) async {
+                            //   if (value.additionalUserInfo!.isNewUser) {
+                            //     UserModel userModel = UserModel();
+                            //     userModel.id = value.user!.uid;
+                            //     userModel.countryCode =
+                            //         controller.countryCode.value;
+                            //     userModel.phoneNumber =
+                            //         controller.phoneNumber.value;
+                            //     userModel.loginType = Constant.phoneLoginType;
+                            //     userModel.fcmToken = fcmToken;
+
+                            //     ShowToastDialog.closeLoader();
+                            //     Get.off(const SignupView(), arguments: {
+                            //       "userModel": userModel,
+                            //     });
+                            //   } else {
+                            //     await FireStoreUtils.userExistOrNot(
+                            //             value.user!.uid)
+                            //         .then((userExit) async {
+                            //       ShowToastDialog.closeLoader();
+                            //       if (userExit == true) {
+                            //         UserModel? userModel =
+                            //             await FireStoreUtils.getUserProfile(
+                            //                 value.user!.uid);
+                            //         if (userModel != null) {
+                            //           if (userModel.isActive == true) {
+                            //             Get.offAll(const HomeView());
+                            //           } else {
+                            //             await FirebaseAuth.instance.signOut();
+                            //             ShowToastDialog.showToast(
+                            //                 "user_disable_admin_contact".tr);
+                            //           }
+                            //         }
+                            //       } else {
+                            //         UserModel userModel = UserModel();
+                            //         userModel.id = value.user!.uid;
+                            //         userModel.countryCode =
+                            //             controller.countryCode.value;
+                            //         userModel.phoneNumber =
+                            //             controller.phoneNumber.value;
+                            //         userModel.loginType =
+                            //             Constant.phoneLoginType;
+                            //         userModel.fcmToken = fcmToken;
+
+                            //         Get.off(const SignupView(), arguments: {
+                            //           "userModel": userModel,
+                            //         });
+                            //       }
+                            //     });
+                            //   }
+                            // }).catchError((error) {
+                            //   ShowToastDialog.closeLoader();
+                            //   ShowToastDialog.showToast("invalid_code".tr);
+                            // });
                           } else {
                             ShowToastDialog.showToast("enter_valid_otp".tr);
                           }

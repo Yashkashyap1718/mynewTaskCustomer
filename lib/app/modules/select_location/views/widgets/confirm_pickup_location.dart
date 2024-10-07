@@ -179,7 +179,7 @@ class ConfirmPickupBottomSheet extends StatelessWidget {
                           RoundShapeButton(
                               size: Size(Responsive.width(100, context), 45),
                               title: "Confirm pick-up".tr,
-                              buttonColor: AppThemData.primary500,
+                              buttonColor: AppThemData.primary400,
                               buttonTextColor: AppThemData.black,
                               onTap: () async {
                                 ShowToastDialog.showLoader("Please wait...");

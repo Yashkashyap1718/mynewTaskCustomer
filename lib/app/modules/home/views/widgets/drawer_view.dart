@@ -37,7 +37,7 @@ class DrawerView extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     children: <Widget>[
                       Container(
-                        color: AppThemData.primary500,
+                        color: AppThemData.primary400,
                         padding: const EdgeInsets.only(
                             top: 50, bottom: 30, left: 16, right: 24),
                         child: InkWell(
