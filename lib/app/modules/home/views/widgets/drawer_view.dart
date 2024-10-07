@@ -381,7 +381,7 @@ class DrawerView extends StatelessWidget {
                       //         fontWeight: FontWeight.w400),
                       //   ),
                       //   onTap: () {
-                      //     Get.back();
+                      //     Get.back;
                       //     controller.drawerIndex.value = 6;
                       //     // Get.to(const LanguageView());
                       //   },
