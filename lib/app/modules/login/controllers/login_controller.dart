@@ -38,71 +38,76 @@ class LoginController extends GetxController {
   @override
   void onClose() {}
 
+  Future<void> sendOTP(BuildContext context) async {
+    final Map<String, String> payload = {
+      "country_code": "91", // Assuming you want to keep this static for now
+      "mobile_number": phoneNumberController.text, // Dynamic phone number input
+    };
 
-Future<void> sendOTP(BuildContext context) async {
-  final Map<String, String> payload = {
-    "country_code": "91", // Assuming you want to keep this static for now
-    "mobile_number": phoneNumberController.text, // Dynamic phone number input
-  };
-
-  try {
-    
-    // Make the POST request
-    final  response = await http.post(
-      Uri.parse("http://172.93.54.177:3001/users/signin"),
-      headers: {
-        "Content-Type": "application/json; charset=UTF-8", // Make sure the server understands the request is JSON
-      },
-      body: jsonEncode(payload), // Encode the payload to JSON
-    );
-     log('Response Status Code: ${response.statusCode}');
-    log('Response Body: ${response.body}');
-
-    print('----sendOTP----');
-
-print('---pay--$payload');
-    log(response.body); // Log the response body for debugging
-
-    if (response.statusCode == 200) {
-      // Parse the response body
-      final Map<String, dynamic> responseData = jsonDecode(response.body);
-      
-      // Extract the "msg" field which contains the OTP
-      final String msg = responseData['msg'];
-      
-      // Split the message by comma to get the OTP (the first part)
-      final List<String> parts = msg.split(',');
-      final String otp = parts.first.trim(); // Trim to remove any surrounding spaces
-
-      print('Extracted OTP: $otp');
-
-      // Navigate to OTP verification screen with the phone number and OTP
-      Get.to(
-        VerifyOtpView(
-          phoneNumder: phoneNumberController.text,
-          oTP: otp, // Pass the extracted OTP
-        ),
+    try {
+      // Make the POST request
+      final response = await http.post(
+        Uri.parse("http://172.93.54.177:3001/users/signin"),
+        headers: {
+          "Content-Type":
+              "application/json; charset=UTF-8", // Make sure the server understands the request is JSON
+        },
+        body: jsonEncode(payload), // Encode the payload to JSON
       );
-    } else {
-      // Handle unsuccessful response
+      log('Response Status Code: ${response.statusCode}');
+      log('Response Body: ${response.body}');
+
+      print('----sendOTP----');
+
+      print('---pay--$payload');
+      log(response.body); // Log the response body for debugging
+
+      if (response.statusCode == 200) {
+        // Parse the response body
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+        // Extract the "msg" field which contains the OTP
+        final String msg = responseData['msg'];
+
+        // Split the message by comma to get the OTP (the first part)
+        final List<String> parts = msg.split(',');
+        final String otp =
+            parts.first.trim(); // Trim to remove any surrounding spaces
+
+        print('Extracted OTP: $otp');
+
+        // Navigate to OTP verification screen with the phone number and OTP
+        Get.to(
+          VerifyOtpView(
+            phoneNumder: phoneNumberController.text,
+            oTP: otp, // Pass the extracted OTP
+          ),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(otp),
+          ),
+        );
+      } else {
+        // Handle unsuccessful response
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to send OTP: ${response.reasonPhrase}'),
+          ),
+        );
+      }
+    } catch (e) {
+      log('Error: $e'); // Log any errors
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to send OTP: ${response.reasonPhrase}'),
+        const SnackBar(
+          content: Text('Error occurred while sending request.'),
         ),
       );
+
+      print(e);
     }
-  } catch (e) {
-    log('Error: $e'); // Log any errors
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Error occurred while sending request.'),
-      ),
-    );
-
-
-    print(e);
   }
-}
 
   // Function for Firebase phone number verification
   sendCode() async {

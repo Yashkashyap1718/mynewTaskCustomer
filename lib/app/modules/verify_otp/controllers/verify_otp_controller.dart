@@ -15,6 +15,8 @@ class VerifyOtpController extends GetxController {
   RxInt resendToken = 0.obs;
   RxBool isLoading = true.obs;
 
+  String otp = '';
+
   @override
   void onInit() {
     getArgument();
@@ -56,10 +58,12 @@ class VerifyOtpController extends GetxController {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         final String msg = responseData['msg'];
         final List<String> parts = msg.split(',');
-        final String otp = parts.first.trim();
+        otp = parts.first.trim();
 
         print(otp);
-
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(otp)),
+        );
         // Get.to(
         //   VerifyOtpView(
         //     phoneNumder: phoneNumberController.text,

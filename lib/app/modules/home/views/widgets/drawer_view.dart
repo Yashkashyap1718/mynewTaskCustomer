@@ -38,11 +38,13 @@ class DrawerView extends StatelessWidget {
                     children: <Widget>[
                       Container(
                         color: AppThemData.primary500,
-                        padding: const EdgeInsets.only(top: 50, bottom: 30, left: 16, right: 24),
+                        padding: const EdgeInsets.only(
+                            top: 50, bottom: 30, left: 16, right: 24),
                         child: InkWell(
                           onTap: () async {
                             Get.back();
-                            bool? isSave = await Get.to(const EditProfileView());
+                            bool? isSave =
+                                await Get.to(const EditProfileView());
                             if ((isSave ?? false)) {
                               log("===> ");
                               controller.getUserData();
@@ -60,12 +62,15 @@ class DrawerView extends StatelessWidget {
                                   margin: const EdgeInsets.only(right: 10),
                                   clipBehavior: Clip.antiAlias,
                                   decoration: ShapeDecoration(
-                                    color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                                    color: themeChange.isDarkTheme()
+                                        ? AppThemData.white
+                                        : AppThemData.black,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(200),
                                     ),
                                     image: DecorationImage(
-                                      image: NetworkImage(controller.profilePic.value),
+                                      image: NetworkImage(
+                                          controller.profilePic.value),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -73,22 +78,26 @@ class DrawerView extends StatelessWidget {
                                 Expanded(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
                                         controller.name.value,
                                         style: GoogleFonts.inter(
-                                          color:themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                                          color: themeChange.isDarkTheme()
+                                              ? AppThemData.white
+                                              : AppThemData.black,
                                           fontSize: 18,
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
-                                      
-                                    Text(
+                                      Text(
                                         controller.phoneNumber.value,
                                         style: GoogleFonts.inter(
-                                          color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                                          color: themeChange.isDarkTheme()
+                                              ? AppThemData.white
+                                              : AppThemData.black,
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400,
                                         ),
@@ -96,7 +105,8 @@ class DrawerView extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                SvgPicture.asset("assets/icon/ic_drawer_edit.svg")
+                                SvgPicture.asset(
+                                    "assets/icon/ic_drawer_edit.svg")
                               ],
                             ),
                           ),
@@ -108,21 +118,30 @@ class DrawerView extends StatelessWidget {
                           'Services'.tr,
                           style: GoogleFonts.inter(
                               fontSize: 16,
-                              color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                              color: themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
                               fontWeight: FontWeight.w600),
                         ),
                       ),
                       ListTile(
                         leading: SvgPicture.asset(
                           "assets/icon/ic_my_rides.svg",
-                          colorFilter: ColorFilter.mode(themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black, BlendMode.srcIn),
+                          colorFilter: ColorFilter.mode(
+                              themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
+                              BlendMode.srcIn),
                         ),
-                        trailing: const Icon(Icons.keyboard_arrow_right_rounded, size: 30),
+                        trailing: const Icon(Icons.keyboard_arrow_right_rounded,
+                            size: 30),
                         title: Text(
                           'Home'.tr,
                           style: GoogleFonts.inter(
                               fontSize: 16,
-                              color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                              color: themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
                               fontWeight: FontWeight.w400),
                         ),
                         onTap: () {
@@ -138,14 +157,21 @@ class DrawerView extends StatelessWidget {
                       ListTile(
                         leading: SvgPicture.asset(
                           "assets/icon/ic_my_rides.svg",
-                          colorFilter: ColorFilter.mode(themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black, BlendMode.srcIn),
+                          colorFilter: ColorFilter.mode(
+                              themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
+                              BlendMode.srcIn),
                         ),
-                        trailing: const Icon(Icons.keyboard_arrow_right_rounded, size: 30),
+                        trailing: const Icon(Icons.keyboard_arrow_right_rounded,
+                            size: 30),
                         title: Text(
                           'My Rides'.tr,
                           style: GoogleFonts.inter(
                               fontSize: 16,
-                              color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                              color: themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
                               fontWeight: FontWeight.w400),
                         ),
                         onTap: () {
@@ -183,13 +209,19 @@ class DrawerView extends StatelessWidget {
                       ),
                       ListTile(
                         onTap: () async {
-                          PackageInfo packageInfo = await PackageInfo.fromPlatform();
+                          PackageInfo packageInfo =
+                              await PackageInfo.fromPlatform();
                           String packageName = packageInfo.packageName;
-                          String appStoreUrl = 'https://apps.apple.com/app/$packageName';
-                          String playStoreUrl = 'https://play.google.com/store/apps/details?id=$packageName';
-                          if (await canLaunchUrl(Uri.parse(appStoreUrl)) && !Platform.isAndroid) {
+                          String appStoreUrl =
+                              'https://apps.apple.com/app/$packageName';
+                          String playStoreUrl =
+                              'https://play.google.com/store/apps/details?id=$packageName';
+                          if (await canLaunchUrl(Uri.parse(appStoreUrl)) &&
+                              !Platform.isAndroid) {
                             await launchUrl(Uri.parse(appStoreUrl));
-                          } else if (await canLaunchUrl(Uri.parse(playStoreUrl)) && Platform.isAndroid) {
+                          } else if (await canLaunchUrl(
+                                  Uri.parse(playStoreUrl)) &&
+                              Platform.isAndroid) {
                             await launchUrl(Uri.parse(playStoreUrl));
                           } else {
                             throw 'Could not launch store';
@@ -197,14 +229,19 @@ class DrawerView extends StatelessWidget {
                         },
                         leading: Icon(
                           Icons.star_border_rounded,
-                          color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                          color: themeChange.isDarkTheme()
+                              ? AppThemData.white
+                              : AppThemData.black,
                         ),
-                        trailing: const Icon(Icons.keyboard_arrow_right_rounded, size: 30),
+                        trailing: const Icon(Icons.keyboard_arrow_right_rounded,
+                            size: 30),
                         title: Text(
                           'Rate Us'.tr,
                           style: GoogleFonts.inter(
                               fontSize: 16,
-                              color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                              color: themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
                               fontWeight: FontWeight.w400),
                         ),
                       ),
@@ -242,7 +279,9 @@ class DrawerView extends StatelessWidget {
                           'About'.tr,
                           style: GoogleFonts.inter(
                               fontSize: 16,
-                              color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                              color: themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
                               fontWeight: FontWeight.w600),
                         ),
                       ),
@@ -253,12 +292,15 @@ class DrawerView extends StatelessWidget {
                           // Get.to(HtmlViewScreenView(title: "Privacy & Policy".tr, htmlData: Constant.privacyPolicy));
                         },
                         leading: const Icon(Icons.privacy_tip_outlined),
-                        trailing: const Icon(Icons.keyboard_arrow_right_rounded, size: 30),
+                        trailing: const Icon(Icons.keyboard_arrow_right_rounded,
+                            size: 30),
                         title: Text(
                           'Privacy & Policy'.tr,
                           style: GoogleFonts.inter(
                               fontSize: 16,
-                              color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                              color: themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
                               fontWeight: FontWeight.w400),
                         ),
                       ),
@@ -273,12 +315,15 @@ class DrawerView extends StatelessWidget {
                           // Get.to(HtmlViewScreenView(title: "Terms & Condition".tr, htmlData: Constant.termsAndConditions));
                         },
                         leading: const Icon(Icons.contact_support_outlined),
-                        trailing: const Icon(Icons.keyboard_arrow_right_rounded, size: 30),
+                        trailing: const Icon(Icons.keyboard_arrow_right_rounded,
+                            size: 30),
                         title: Text(
                           'Terms & Condition'.tr,
                           style: GoogleFonts.inter(
                               fontSize: 16,
-                              color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                              color: themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
                               fontWeight: FontWeight.w400),
                         ),
                       ),
@@ -292,7 +337,9 @@ class DrawerView extends StatelessWidget {
                           'App Setting'.tr,
                           style: GoogleFonts.inter(
                               fontSize: 16,
-                              color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                              color: themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
                               fontWeight: FontWeight.w600),
                         ),
                       ),
@@ -310,7 +357,9 @@ class DrawerView extends StatelessWidget {
                           'Light Mode'.tr,
                           style: GoogleFonts.inter(
                               fontSize: 16,
-                              color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                              color: themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
                               fontWeight: FontWeight.w400),
                         ),
                       ),
@@ -355,11 +404,13 @@ class DrawerView extends StatelessWidget {
                             return CustomDialogBox(
                               themeChange: themeChange,
                               title: "Logout".tr,
-                              descriptions: "Are you sure you want to logout?".tr,
+                              descriptions:
+                                  "Are you sure you want to logout?".tr,
                               positiveString: "Log out".tr,
                               negativeString: "Cancel".tr,
                               positiveClick: () async {
                                 await FirebaseAuth.instance.signOut();
+
                                 Navigator.pop(context);
                                 Get.offAll(const LoginView());
                               },
@@ -380,7 +431,10 @@ class DrawerView extends StatelessWidget {
                     ),
                     title: Text(
                       'Logout'.tr,
-                      style: GoogleFonts.inter(fontSize: 16, color: AppThemData.error07, fontWeight: FontWeight.w400),
+                      style: GoogleFonts.inter(
+                          fontSize: 16,
+                          color: AppThemData.error07,
+                          fontWeight: FontWeight.w400),
                     ),
                   ),
                 ),
