@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_overrides
 
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/constant/api_constant.dart';
@@ -103,7 +104,13 @@ class EditProfileController extends GetxController {
       File compressedFile = File(image.path);
       await compressedFile.writeAsBytes(compressedBytes!);
 
+
+
+
       profileImage.value = compressedFile.path;
+      uploadProfile("");
+
+      log('----image----${profileImage.value}');
     } on PlatformException catch (e) {
       ShowToastDialog.showToast("${"failed_to_pick".tr} : \n $e");
     }
@@ -111,12 +118,12 @@ class EditProfileController extends GetxController {
 
 // complete SignUp Profile
   Future<void> completeSignupProfile(
-      String token, String name, String gender, String referralCode) async {
-    const String url = '${baseURL}users/complete';
+      String token, String referralCode) async {
+    const String url = '$baseURL/users/complete';
 
     final Map<String, String> payload = {
-      "name": name,
-      "gender": gender,
+      "name": nameController.text,
+      "gender": selectedGender.value == 1 ? "Male" : "Female",
       "referral_code": referralCode,
     };
 
@@ -156,39 +163,45 @@ class EditProfileController extends GetxController {
 
   // Upload Profile
   Future<void> uploadProfile(String token) async {
-    const String url = '${baseURL}users/profile/upload';
+    const String url = '$baseURL/users/profile/upload';
 
-    // Read the image file and convert it to base64
-    String base64Image = '';
-    if (profileImage.value.isNotEmpty) {
-      final bytes = File(profileImage.value).readAsBytesSync();
-      base64Image = base64Encode(bytes);
+    // Check if the profile image path is not empty
+    if (profileImage.value.isEmpty) {
+      print('No image selected');
+      return;
     }
-
-    final Map<String, String> payload = {
-      "profile": base64Image,
-    };
 
     try {
       ShowToastDialog.showLoader("Uploading profile...".tr);
 
-      final http.Response response = await http.put(
-        Uri.parse(url),
-        headers: {
-          'Content-Type': 'application/json',
-          'token': token,
-        },
-        body: jsonEncode(payload),
-      );
+      // Create a multipart request
+      var request = http.MultipartRequest('PUT', Uri.parse(url));
 
+      // Add headers to the request
+      request.headers.addAll({
+        'Content-Type': 'multipart/form-data',
+        'token': token,
+      });
+
+      // Attach the image file to the request
+      request.files.add(await http.MultipartFile.fromPath(
+        'profile', // The name of the field in your backend for the image
+        profileImage.value,
+      ));
+
+      // Send the request
+      final http.StreamedResponse response = await request.send();
+
+      // Process the response
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = jsonDecode(response.body);
+        final responseBody = await response.stream.bytesToString();
+        final Map<String, dynamic> data = jsonDecode(responseBody);
+
         if (data['status']) {
           ShowToastDialog.closeLoader();
           ScaffoldMessenger.of(Get.context!).showSnackBar(
             SnackBar(content: Text(data['msg'])),
           );
-          // Optionally, you can update the user's profile image URL in your app here
         } else {
           throw Exception(data['msg']);
         }
@@ -199,9 +212,10 @@ class EditProfileController extends GetxController {
       ShowToastDialog.closeLoader();
       debugPrint('Error uploading profile: $e');
       ScaffoldMessenger.of(Get.context!).showSnackBar(
-        const SnackBar(
-            content: Text('Error occurred while uploading profile.')),
+        const SnackBar(content: Text('Error occurred while uploading profile.')),
       );
     }
   }
+
+
 }

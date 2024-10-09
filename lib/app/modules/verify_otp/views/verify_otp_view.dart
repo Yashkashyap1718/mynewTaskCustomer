@@ -35,6 +35,8 @@ class VerifyOtpView extends StatefulWidget {
 }
 
 class _VerifyOtpViewState extends State<VerifyOtpView> {
+
+  TextEditingController otpCont = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
@@ -85,7 +87,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                     Padding(
                       padding: const EdgeInsets.only(top: 8, bottom: 33),
                       child: Text(
-                        "Enter  6-digit code sent to your mobile number to complete verification."
+                        "Enter  4-digit code sent to your mobile number to complete verification."
                             .tr,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.inter(
@@ -97,6 +99,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                       ),
                     ),
                     OTPTextField(
+
                       length: 4,
                       width: MediaQuery.of(context).size.width,
                       fieldWidth: 40,
@@ -108,7 +111,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                           fontWeight: FontWeight.w500),
                       textFieldAlignment: MainAxisAlignment.spaceAround,
                       otpFieldStyle: OtpFieldStyle(
-                        focusBorderColor: AppThemData.primary400,
+                        focusBorderColor: AppThemData.primary300,
                         borderColor: AppThemData.grey100,
                         enabledBorderColor: AppThemData.grey100,
                       ),
@@ -201,94 +204,99 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                       },
                     ),
                     const SizedBox(height: 90),
-                    RoundShapeButton(
-                        size: const Size(200, 45),
-                        title: "verify_OTP".tr,
-                        buttonColor: AppThemData.primary400,
-                        buttonTextColor: AppThemData.black,
-                        onTap: () async {
-                          if (controller.otpCode.value.length == 4) {
-                            ShowToastDialog.showLoader("verify_OTP".tr);
+                    // RoundShapeButton(
+                    //     size: const Size(200, 45),
+                    //     title: "verify_OTP".tr,
+                    //     buttonColor: AppThemData.primary400,
+                    //     buttonTextColor: AppThemData.black,
+                        // onTap: () async {
+                        //   if (controller.otpCode.value.length == 4) {
+                        //     ShowToastDialog.showLoader("verify_OTP".tr);
+                        //
+                        //     ShowToastDialog.showLoader("verify_OTP".tr);
+                        //     controller.confirmOTP(
+                        //         context,
+                        //         widget.oTP.toString(),
+                        //         widget.phoneNumder.toString());
+                        //     // .then((value) async {
+                        //     // ShowToastDialog.closeLoader();
+                        //     // Get.off(
+                        //     //   const HomeView(),
+                        //     // );
+                        //
+                        //     // });
+                        //     // PhoneAuthCredential credential =
+                        //     //     PhoneAuthProvider.credential(
+                        //     //         verificationId:
+                        //     //             controller.verificationId.value,
+                        //     //         smsCode: controller.otpCode.value);
+                        //     // String fcmToken =
+                        //     //     await NotificationService.getToken();
+                        //     // await FirebaseAuth.instance
+                        //     //     .signInWithCredential(credential)
+                        //     //     .then((value) async {
+                        //     //   if (value.additionalUserInfo!.isNewUser) {
+                        //     //     UserModel userModel = UserModel();
+                        //     //     userModel.id = value.user!.uid;
+                        //     //     userModel.countryCode =
+                        //     //         controller.countryCode.value;
+                        //     //     userModel.phoneNumber =
+                        //     //         controller.phoneNumber.value;
+                        //     //     userModel.loginType = Constant.phoneLoginType;
+                        //     //     userModel.fcmToken = fcmToken;
+                        //
+                        //     //     ShowToastDialog.closeLoader();
+                        //     //     Get.off(const SignupView(), arguments: {
+                        //     //       "userModel": userModel,
+                        //     //     });
+                        //     //   } else {
+                        //     //     await FireStoreUtils.userExistOrNot(
+                        //     //             value.user!.uid)
+                        //     //         .then((userExit) async {
+                        //     //       ShowToastDialog.closeLoader();
+                        //     //       if (userExit == true) {
+                        //     //         UserModel? userModel =
+                        //     //             await FireStoreUtils.getUserProfile(
+                        //     //                 value.user!.uid);
+                        //     //         if (userModel != null) {
+                        //     //           if (userModel.isActive == true) {
+                        //     //             Get.offAll(const HomeView());
+                        //     //           } else {
+                        //     //             await FirebaseAuth.instance.signOut();
+                        //     //             ShowToastDialog.showToast(
+                        //     //                 "user_disable_admin_contact".tr);
+                        //     //           }
+                        //     //         }
+                        //     //       } else {
+                        //     //         UserModel userModel = UserModel();
+                        //     //         userModel.id = value.user!.uid;
+                        //     //         userModel.countryCode =
+                        //     //             controller.countryCode.value;
+                        //     //         userModel.phoneNumber =
+                        //     //             controller.phoneNumber.value;
+                        //     //         userModel.loginType =
+                        //     //             Constant.phoneLoginType;
+                        //     //         userModel.fcmToken = fcmToken;
+                        //
+                        //     //         Get.off(const SignupView(), arguments: {
+                        //     //           "userModel": userModel,
+                        //     //         });
+                        //     //       }
+                        //     //     });
+                        //     //   }
+                        //     // }).catchError((error) {
+                        //     //   ShowToastDialog.closeLoader();
+                        //     //   ShowToastDialog.showToast("invalid_code".tr);
+                        //     // });
+                        //   } else {
+                        //     ShowToastDialog.showToast("enter_valid_otp".tr);
+                        //   }
+                        // }
+                        //
 
-                            ShowToastDialog.showLoader("verify_OTP".tr);
-                            controller.confirmOTP(
-                                context,
-                                widget.oTP.toString(),
-                                widget.phoneNumder.toString());
-                            // .then((value) async {
-                            // ShowToastDialog.closeLoader();
-                            // Get.off(
-                            //   const HomeView(),
-                            // );
+                        // ),
 
-                            // });
-                            // PhoneAuthCredential credential =
-                            //     PhoneAuthProvider.credential(
-                            //         verificationId:
-                            //             controller.verificationId.value,
-                            //         smsCode: controller.otpCode.value);
-                            // String fcmToken =
-                            //     await NotificationService.getToken();
-                            // await FirebaseAuth.instance
-                            //     .signInWithCredential(credential)
-                            //     .then((value) async {
-                            //   if (value.additionalUserInfo!.isNewUser) {
-                            //     UserModel userModel = UserModel();
-                            //     userModel.id = value.user!.uid;
-                            //     userModel.countryCode =
-                            //         controller.countryCode.value;
-                            //     userModel.phoneNumber =
-                            //         controller.phoneNumber.value;
-                            //     userModel.loginType = Constant.phoneLoginType;
-                            //     userModel.fcmToken = fcmToken;
 
-                            //     ShowToastDialog.closeLoader();
-                            //     Get.off(const SignupView(), arguments: {
-                            //       "userModel": userModel,
-                            //     });
-                            //   } else {
-                            //     await FireStoreUtils.userExistOrNot(
-                            //             value.user!.uid)
-                            //         .then((userExit) async {
-                            //       ShowToastDialog.closeLoader();
-                            //       if (userExit == true) {
-                            //         UserModel? userModel =
-                            //             await FireStoreUtils.getUserProfile(
-                            //                 value.user!.uid);
-                            //         if (userModel != null) {
-                            //           if (userModel.isActive == true) {
-                            //             Get.offAll(const HomeView());
-                            //           } else {
-                            //             await FirebaseAuth.instance.signOut();
-                            //             ShowToastDialog.showToast(
-                            //                 "user_disable_admin_contact".tr);
-                            //           }
-                            //         }
-                            //       } else {
-                            //         UserModel userModel = UserModel();
-                            //         userModel.id = value.user!.uid;
-                            //         userModel.countryCode =
-                            //             controller.countryCode.value;
-                            //         userModel.phoneNumber =
-                            //             controller.phoneNumber.value;
-                            //         userModel.loginType =
-                            //             Constant.phoneLoginType;
-                            //         userModel.fcmToken = fcmToken;
-
-                            //         Get.off(const SignupView(), arguments: {
-                            //           "userModel": userModel,
-                            //         });
-                            //       }
-                            //     });
-                            //   }
-                            // }).catchError((error) {
-                            //   ShowToastDialog.closeLoader();
-                            //   ShowToastDialog.showToast("invalid_code".tr);
-                            // });
-                          } else {
-                            ShowToastDialog.showToast("enter_valid_otp".tr);
-                          }
-                        }),
                     const SizedBox(height: 24),
                     Text.rich(
                       TextSpan(

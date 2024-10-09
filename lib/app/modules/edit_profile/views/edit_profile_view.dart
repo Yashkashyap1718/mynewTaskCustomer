@@ -123,73 +123,77 @@ class EditProfileView extends StatelessWidget {
                       prefixIcon: const Icon(Icons.person_outline_rounded),
                       controller: controller.nameController,
                     ),
-                    const SizedBox(height: 20),
-                    TextFieldWithTitle(
-                      title: "Email".tr,
-                      hintText: "Enter Email".tr,
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      keyboardType: TextInputType.emailAddress,
-                      controller: controller.emailController,
-                      isEnable: false,
-                    ),
-                    const SizedBox(height: 20),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CountryCodeSelectorView(
-                          isCountryNameShow: true,
-                          countryCodeController:
-                              controller.countryCodeController,
-                          isEnable: false,
-                          onChanged: (value) {
-                            controller.countryCodeController.text =
-                                value.dialCode.toString();
-                          },
-                        ),
-                        Container(
-                          transform: Matrix4.translationValues(0.0, -05.0, 0.0),
-                          child: TextFormField(
-                            cursorColor: Colors.black,
-                            enabled: false,
-                            keyboardType: TextInputType.number,
-                            controller: controller.phoneNumberController,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(
-                                  RegExp("[0-9]")),
-                            ],
-                            style: GoogleFonts.inter(
-                                fontSize: 14,
-                                color: themeChange.isDarkTheme()
-                                    ? AppThemData.white
-                                    : AppThemData.grey950,
-                                fontWeight: FontWeight.w400),
-                            decoration: InputDecoration(
-                              border: const UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppThemData.grey500, width: 1)),
-                              focusedBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppThemData.grey500, width: 1)),
-                              enabledBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppThemData.grey500, width: 1)),
-                              errorBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppThemData.grey500, width: 1)),
-                              disabledBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: AppThemData.grey500, width: 1)),
-                              hintText: "Enter your Phone Number".tr,
-                              hintStyle: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  color: AppThemData.grey500,
-                                  fontWeight: FontWeight.w400),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                    // const SizedBox(height: 20),
+                    // TextFieldWithTitle(
+                    //   title: "Email".tr,
+                    //   hintText: "Enter Email".tr,
+                    //   prefixIcon: const Icon(Icons.email_outlined),
+                    //   keyboardType: TextInputType.emailAddress,
+                    //   controller: controller.emailController,
+                    //   isEnable: false,
+                    // ),
+                    // const SizedBox(height: 20),
+                    // Column(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     // CountryCodeSelectorView(
+                    //     //
+                    //     //
+                    //     //   isCountryNameShow: true,
+                    //     //   countryCodeController:
+                    //     //       controller.countryCodeController,
+                    //     //   isEnable: false,
+                    //     //   onChanged: (value) {
+                    //     //     controller.countryCodeController.text =
+                    //     //         value.dialCode.toString();
+                    //     //   },
+                    //     // ),
+                    //     Container(
+                    //       transform: Matrix4.translationValues(0.0, -05.0, 0.0),
+                    //       child: TextFormField(
+                    //         cursorColor: Colors.black,
+                    //         // enabled: false,
+                    //         keyboardType: TextInputType.number,
+                    //         controller: controller.phoneNumberController,
+                    //         inputFormatters: <TextInputFormatter>[
+                    //           FilteringTextInputFormatter.allow(
+                    //               RegExp("[0-9]")),
+                    //         ],
+                    //         style: GoogleFonts.inter(
+                    //
+                    //             fontSize: 14,
+                    //             color: themeChange.isDarkTheme()
+                    //                 ? AppThemData.white
+                    //                 : AppThemData.grey950,
+                    //             fontWeight: FontWeight.w400),
+                    //         decoration: InputDecoration(
+                    //           border: const UnderlineInputBorder(
+                    //               borderSide: BorderSide(
+                    //                   color: AppThemData.grey500, width: 1)),
+                    //           focusedBorder: const UnderlineInputBorder(
+                    //               borderSide: BorderSide(
+                    //                   color: AppThemData.grey500, width: 1)),
+                    //           enabledBorder: const UnderlineInputBorder(
+                    //               borderSide: BorderSide(
+                    //                   color: AppThemData.grey500, width: 1)),
+                    //           errorBorder: const UnderlineInputBorder(
+                    //               borderSide: BorderSide(
+                    //                   color: AppThemData.grey500, width: 1)),
+                    //           disabledBorder: const UnderlineInputBorder(
+                    //               borderSide: BorderSide(
+                    //                   color: AppThemData.grey500, width: 1)),
+                    //           hintText: "Enter your Phone Number".tr,
+                    //           hintStyle: GoogleFonts.inter(
+                    //               fontSize: 14,
+                    //               color: AppThemData.primary300,
+                    //               fontWeight: FontWeight.w400),
+                    //         ),
+                    //       ),
+                    //     )
+                    //   ],
+                    // ),
+                    //
                     const SizedBox(height: 20),
                     Text(
                       "Gender".tr,
@@ -207,7 +211,7 @@ class EditProfileView extends StatelessWidget {
                           Radio(
                             value: 1,
                             groupValue: controller.selectedGender.value,
-                            activeColor: AppThemData.primary400,
+                            activeColor: AppThemData.primary300,
                             onChanged: (value) {
                               controller.selectedGender.value = value ?? 1;
                               // _radioVal = 'male';
@@ -232,7 +236,7 @@ class EditProfileView extends StatelessWidget {
                           Radio(
                             value: 2,
                             groupValue: controller.selectedGender.value,
-                            activeColor: AppThemData.primary400,
+                            activeColor: AppThemData.primary300,
                             onChanged: (value) {
                               controller.selectedGender.value = value ?? 2;
                               // _radioVal = 'female';
@@ -261,10 +265,12 @@ class EditProfileView extends StatelessWidget {
                     Center(
                       child: RoundShapeButton(
                         title: "Save",
-                        buttonColor: AppThemData.primary400,
+                        buttonColor: AppThemData.primary300,
                         buttonTextColor: AppThemData.black,
                         onTap: () {
-                          controller.saveUserData();
+                          // controller.saveUserData();
+
+                          controller.completeSignupProfile("token", "referralCode");
                         },
                         size: const Size(208, 52),
                       ),
@@ -438,4 +444,6 @@ class EditProfileView extends StatelessWidget {
       },
     );
   }
+
+
 }

@@ -11,6 +11,8 @@ import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 
 class VerifyOtpController extends GetxController {
+
+  TextEditingController otpConytroller = TextEditingController();
   RxString otpCode = "".obs;
   RxString countryCode = "".obs;
   RxString phoneNumber = "".obs;
@@ -113,9 +115,12 @@ class VerifyOtpController extends GetxController {
       "mobile_number": phoneNumber,
     };
 
+
+
+    log('---paylod---$otp---$phoneNumber');
     try {
       final http.Response response = await http.post(
-        Uri.parse(baseURL + veriftOtpEndpoint),
+        Uri.parse("$baseURL/veriftOtpEndpoint"),
         headers: {
           'Content-Type': 'application/json',
         },
