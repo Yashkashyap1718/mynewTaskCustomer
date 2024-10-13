@@ -1,17 +1,17 @@
 import 'dart:convert';
 import 'dart:developer';
+
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/signup/views/signup_view.dart';
 import 'package:customer/constant/api_constant.dart';
+import 'package:customer/constant_widgets/show_toast_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
-import 'package:animated_snack_bar/animated_snack_bar.dart';
-import 'package:customer/constant_widgets/show_toast_dialog.dart';
 
 class VerifyOtpController extends GetxController {
-
   TextEditingController otpConytroller = TextEditingController();
   RxString otpCode = "".obs;
   RxString countryCode = "".obs;
@@ -42,10 +42,10 @@ class VerifyOtpController extends GetxController {
     update();
   }
 
-  Future<void> reSendOTP(BuildContext context) async {
+  Future<void> reSendOTP(BuildContext context, String phoneNumbe) async {
     final Map<String, String> payload = {
       "country_code": "91",
-      "mobile_number": phoneNumber.toString()
+      "mobile_number": phoneNumbe
     };
 
     try {
@@ -115,12 +115,10 @@ class VerifyOtpController extends GetxController {
       "mobile_number": phoneNumber,
     };
 
-
-
     log('---paylod---$otp---$phoneNumber');
     try {
       final http.Response response = await http.post(
-        Uri.parse("$baseURL/veriftOtpEndpoint"),
+        Uri.parse("http://172.93.54.177:3001/users/confirmation"),
         headers: {
           'Content-Type': 'application/json',
         },

@@ -15,8 +15,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:http/http.dart' as http;
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginController extends GetxController {
   TextEditingController countryCodeController =
@@ -79,7 +79,7 @@ class LoginController extends GetxController {
         Get.to(
           VerifyOtpView(
             phoneNumder: phoneNumberController.text,
-            oTP: otp, // Pass the extracted OTP
+            // Pass the extracted OTP
           ),
         );
         ShowToastDialog.showToast(msg.tr);

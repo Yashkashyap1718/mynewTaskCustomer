@@ -1,19 +1,7 @@
-import 'dart:convert';
-import 'dart:developer';
-
-import 'package:animated_snack_bar/animated_snack_bar.dart';
-import 'package:customer/app/models/user_model.dart';
-import 'package:customer/app/modules/home/views/home_view.dart';
-import 'package:customer/app/modules/signup/views/signup_view.dart';
-import 'package:customer/constant/api_constant.dart';
-import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
-import 'package:customer/utils/fire_store_utils.dart';
-import 'package:customer/utils/notification_service.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,22 +9,23 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
+
 import '../controllers/verify_otp_controller.dart';
 
 class VerifyOtpView extends StatefulWidget {
   final String? phoneNumder;
-  final String? oTP;
-  const VerifyOtpView(
-      {super.key, required this.phoneNumder, required this.oTP});
+  // final String? oTP;
+  const VerifyOtpView({
+    super.key,
+    required this.phoneNumder,
+  });
 
   @override
   State<VerifyOtpView> createState() => _VerifyOtpViewState();
 }
 
 class _VerifyOtpViewState extends State<VerifyOtpView> {
-
-  TextEditingController otpCont = TextEditingController();
+  TextEditingController otpController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
@@ -99,7 +88,6 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                       ),
                     ),
                     OTPTextField(
-
                       length: 4,
                       width: MediaQuery.of(context).size.width,
                       fieldWidth: 40,
@@ -117,21 +105,21 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                       ),
                       fieldStyle: FieldStyle.underline,
                       onCompleted: (pin) async {
-                        log('---otp--${widget.oTP}---num--${widget.phoneNumder}');
-                        if (pin.length == 4) {
-                          ShowToastDialog.showLoader("verify_OTP".tr);
-                          controller
-                              .confirmOTP(context, widget.oTP.toString(),
-                                  widget.phoneNumder.toString())
-                              .then((value) async {
-                            ShowToastDialog.closeLoader();
-                            Get.off(
-                              const HomeView(),
-                            );
-                          });
-                        } else {
-                          controller.otpCode.value = pin;
-                        }
+                        // log('---otp--${widget.oTP}---num--${widget.phoneNumder}');
+                        // if (pin.length == 4) {
+                        //   ShowToastDialog.showLoader("verify_OTP".tr);
+                        //   controller
+                        //       .confirmOTP(context, widget.oTP.toString(),
+                        //           widget.phoneNumder.toString())
+                        //       .then((value) async {
+                        //     ShowToastDialog.closeLoader();
+                        //     Get.off(
+                        //       const HomeView(),
+                        //     );
+                        //   });
+                        // } else {
+                        //   controller.otpCode.value = pin;
+                        // }
                         //   if (pin.length == 6) {
                         //     ShowToastDialog.showLoader("verify_OTP".tr);
                         //     PhoneAuthCredential credential =
@@ -204,99 +192,90 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                       },
                     ),
                     const SizedBox(height: 90),
-                    // RoundShapeButton(
-                    //     size: const Size(200, 45),
-                    //     title: "verify_OTP".tr,
-                    //     buttonColor: AppThemData.primary400,
-                    //     buttonTextColor: AppThemData.black,
-                        // onTap: () async {
-                        //   if (controller.otpCode.value.length == 4) {
-                        //     ShowToastDialog.showLoader("verify_OTP".tr);
-                        //
-                        //     ShowToastDialog.showLoader("verify_OTP".tr);
-                        //     controller.confirmOTP(
-                        //         context,
-                        //         widget.oTP.toString(),
-                        //         widget.phoneNumder.toString());
-                        //     // .then((value) async {
-                        //     // ShowToastDialog.closeLoader();
-                        //     // Get.off(
-                        //     //   const HomeView(),
-                        //     // );
-                        //
-                        //     // });
-                        //     // PhoneAuthCredential credential =
-                        //     //     PhoneAuthProvider.credential(
-                        //     //         verificationId:
-                        //     //             controller.verificationId.value,
-                        //     //         smsCode: controller.otpCode.value);
-                        //     // String fcmToken =
-                        //     //     await NotificationService.getToken();
-                        //     // await FirebaseAuth.instance
-                        //     //     .signInWithCredential(credential)
-                        //     //     .then((value) async {
-                        //     //   if (value.additionalUserInfo!.isNewUser) {
-                        //     //     UserModel userModel = UserModel();
-                        //     //     userModel.id = value.user!.uid;
-                        //     //     userModel.countryCode =
-                        //     //         controller.countryCode.value;
-                        //     //     userModel.phoneNumber =
-                        //     //         controller.phoneNumber.value;
-                        //     //     userModel.loginType = Constant.phoneLoginType;
-                        //     //     userModel.fcmToken = fcmToken;
-                        //
-                        //     //     ShowToastDialog.closeLoader();
-                        //     //     Get.off(const SignupView(), arguments: {
-                        //     //       "userModel": userModel,
-                        //     //     });
-                        //     //   } else {
-                        //     //     await FireStoreUtils.userExistOrNot(
-                        //     //             value.user!.uid)
-                        //     //         .then((userExit) async {
-                        //     //       ShowToastDialog.closeLoader();
-                        //     //       if (userExit == true) {
-                        //     //         UserModel? userModel =
-                        //     //             await FireStoreUtils.getUserProfile(
-                        //     //                 value.user!.uid);
-                        //     //         if (userModel != null) {
-                        //     //           if (userModel.isActive == true) {
-                        //     //             Get.offAll(const HomeView());
-                        //     //           } else {
-                        //     //             await FirebaseAuth.instance.signOut();
-                        //     //             ShowToastDialog.showToast(
-                        //     //                 "user_disable_admin_contact".tr);
-                        //     //           }
-                        //     //         }
-                        //     //       } else {
-                        //     //         UserModel userModel = UserModel();
-                        //     //         userModel.id = value.user!.uid;
-                        //     //         userModel.countryCode =
-                        //     //             controller.countryCode.value;
-                        //     //         userModel.phoneNumber =
-                        //     //             controller.phoneNumber.value;
-                        //     //         userModel.loginType =
-                        //     //             Constant.phoneLoginType;
-                        //     //         userModel.fcmToken = fcmToken;
-                        //
-                        //     //         Get.off(const SignupView(), arguments: {
-                        //     //           "userModel": userModel,
-                        //     //         });
-                        //     //       }
-                        //     //     });
-                        //     //   }
-                        //     // }).catchError((error) {
-                        //     //   ShowToastDialog.closeLoader();
-                        //     //   ShowToastDialog.showToast("invalid_code".tr);
-                        //     // });
-                        //   } else {
-                        //     ShowToastDialog.showToast("enter_valid_otp".tr);
-                        //   }
-                        // }
-                        //
+                    RoundShapeButton(
+                        size: const Size(200, 45),
+                        title: "verify_OTP".tr,
+                        buttonColor: AppThemData.primary300,
+                        buttonTextColor: AppThemData.black,
+                        onTap: () async {
+                          // if (controller.otpCode.value.length == 4) {
+                          ShowToastDialog.showLoader("verify_OTP".tr);
+                          controller.confirmOTP(context, otpController.text,
+                              widget.phoneNumder.toString());
+                          // .then((value) async {
+                          // ShowToastDialog.closeLoader();
+                          // Get.off(
+                          //   const HomeView(),
+                          // );
 
-                        // ),
+                          // });
+                          // PhoneAuthCredential credential =
+                          //     PhoneAuthProvider.credential(
+                          //         verificationId:
+                          //             controller.verificationId.value,
+                          //         smsCode: controller.otpCode.value);
+                          // String fcmToken =
+                          //     await NotificationService.getToken();
+                          // await FirebaseAuth.instance
+                          //     .signInWithCredential(credential)
+                          //     .then((value) async {
+                          //   if (value.additionalUserInfo!.isNewUser) {
+                          //     UserModel userModel = UserModel();
+                          //     userModel.id = value.user!.uid;
+                          //     userModel.countryCode =
+                          //         controller.countryCode.value;
+                          //     userModel.phoneNumber =
+                          //         controller.phoneNumber.value;
+                          //     userModel.loginType = Constant.phoneLoginType;
+                          //     userModel.fcmToken = fcmToken;
 
+                          //     ShowToastDialog.closeLoader();
+                          //     Get.off(const SignupView(), arguments: {
+                          //       "userModel": userModel,
+                          //     });
+                          //   } else {
+                          //     await FireStoreUtils.userExistOrNot(
+                          //             value.user!.uid)
+                          //         .then((userExit) async {
+                          //       ShowToastDialog.closeLoader();
+                          //       if (userExit == true) {
+                          //         UserModel? userModel =
+                          //             await FireStoreUtils.getUserProfile(
+                          //                 value.user!.uid);
+                          //         if (userModel != null) {
+                          //           if (userModel.isActive == true) {
+                          //             Get.offAll(const HomeView());
+                          //           } else {
+                          //             await FirebaseAuth.instance.signOut();
+                          //             ShowToastDialog.showToast(
+                          //                 "user_disable_admin_contact".tr);
+                          //           }
+                          //         }
+                          //       } else {
+                          //         UserModel userModel = UserModel();
+                          //         userModel.id = value.user!.uid;
+                          //         userModel.countryCode =
+                          //             controller.countryCode.value;
+                          //         userModel.phoneNumber =
+                          //             controller.phoneNumber.value;
+                          //         userModel.loginType =
+                          //             Constant.phoneLoginType;
+                          //         userModel.fcmToken = fcmToken;
 
+                          //         Get.off(const SignupView(), arguments: {
+                          //           "userModel": userModel,
+                          //         });
+                          //       }
+                          //     });
+                          //   }
+                          // }).catchError((error) {
+                          //   ShowToastDialog.closeLoader();
+                          //   ShowToastDialog.showToast("invalid_code".tr);
+                          // });
+                          // } else {
+                          //   ShowToastDialog.showToast("enter_valid_otp".tr);
+                          // }
+                        }),
                     const SizedBox(height: 24),
                     Text.rich(
                       TextSpan(
@@ -322,7 +301,8 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                                 fontWeight: FontWeight.w600),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                controller.reSendOTP(context);
+                                controller.reSendOTP(
+                                    context, widget.phoneNumder.toString());
                               },
                           ),
                         ],

@@ -19,6 +19,7 @@ import 'package:http/http.dart' as http;
 
 class EditProfileController extends GetxController {
   //TODO: Implement EditProfileController
+
   RxString profileImage =
       "https://firebasestorage.googleapis.com/v0/b/mytaxi-a8627.appspot.com/o/constant_assets%2F59.png?alt=media&token=a0b1aebd-9c01-45f6-9569-240c4bc08e23"
           .obs;
@@ -104,9 +105,6 @@ class EditProfileController extends GetxController {
       File compressedFile = File(image.path);
       await compressedFile.writeAsBytes(compressedBytes!);
 
-
-
-
       profileImage.value = compressedFile.path;
       uploadProfile("");
 
@@ -117,8 +115,7 @@ class EditProfileController extends GetxController {
   }
 
 // complete SignUp Profile
-  Future<void> completeSignupProfile(
-      String token, String referralCode) async {
+  Future<void> completeSignupProfile(String token, String referralCode) async {
     const String url = '$baseURL/users/complete';
 
     final Map<String, String> payload = {
@@ -212,10 +209,9 @@ class EditProfileController extends GetxController {
       ShowToastDialog.closeLoader();
       debugPrint('Error uploading profile: $e');
       ScaffoldMessenger.of(Get.context!).showSnackBar(
-        const SnackBar(content: Text('Error occurred while uploading profile.')),
+        const SnackBar(
+            content: Text('Error occurred while uploading profile.')),
       );
     }
   }
-
-
 }
