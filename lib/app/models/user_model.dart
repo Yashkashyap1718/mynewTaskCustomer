@@ -14,6 +14,8 @@ class UserModel {
   String? walletAmount;
   String? totalEarning;
   String? gender;
+  String? referralCode;
+
   bool? isActive;
   Timestamp? createdAt;
 
@@ -27,19 +29,20 @@ class UserModel {
       this.loginType,
       this.profilePic,
       this.fcmToken,
+      this.referralCode,
       this.countryCode,
       this.phoneNumber,
       this.walletAmount,
-       this.totalEarning,
+      this.totalEarning,
       this.createdAt});
 
   @override
   String toString() {
-    return 'UserModel{fullName: $fullName,slug: $slug, id: $id, email: $email, loginType: $loginType, profilePic: $profilePic, dateOfBirth: $dateOfBirth, fcmToken: $fcmToken, countryCode: $countryCode, phoneNumber: $phoneNumber, walletAmount: $walletAmount,totalEarning: $totalEarning, gender: $gender, isActive: $isActive, createdAt: $createdAt}';
+    return 'UserModel{fullName: $fullName,slug: $slug, id: $id, email: $email, loginType: $loginType, profilePic: $profilePic, dateOfBirth: $dateOfBirth, fcmToken: $fcmToken, countryCode: $countryCode, phoneNumber: $phoneNumber, walletAmount: $walletAmount,totalEarning: $totalEarning, gender: $gender, isActive: $isActive, referralCode: $referralCode , createdAt: $createdAt}';
   }
 
   UserModel.fromJson(Map<String, dynamic> json) {
-    fullName = json['fullName'];
+    fullName = json['fullName'] ?? "";
     slug = json['slug'];
     id = json['id'];
     email = json['email'];
@@ -54,6 +57,7 @@ class UserModel {
     gender = json['gender'];
     dateOfBirth = json['dateOfBirth'] ?? '';
     isActive = json['isActive'];
+    referralCode = json['referralCode'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
@@ -73,6 +77,7 @@ class UserModel {
     data['gender'] = gender;
     data['dateOfBirth'] = dateOfBirth;
     data['isActive'] = isActive;
+    data['referralCode'] = referralCode;
     return data;
   }
 }

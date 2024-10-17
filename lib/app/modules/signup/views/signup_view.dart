@@ -1,24 +1,24 @@
-import 'package:customer/constant/constant.dart';
-import 'package:customer/constant_widgets/country_code_selector_view.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
 import 'package:customer/constant_widgets/text_field_with_title.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
-import 'package:customer/utils/validate_mobile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/signup_controller.dart';
 
-class SignupView extends StatelessWidget {
-  const SignupView({super.key});
+class SignupView extends StatefulWidget {
+  final String? userToken;
+  const SignupView({super.key, this.userToken});
 
+  @override
+  State<SignupView> createState() => _SignupViewState();
+}
+
+class _SignupViewState extends State<SignupView> {
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
@@ -53,10 +53,12 @@ class SignupView extends StatelessWidget {
                             padding: EdgeInsets.only(
                                 top: Responsive.height(5, context), bottom: 32),
                             child: Center(
-                                child: SvgPicture.asset(
-                                    themeChange.isDarkTheme()
-                                        ? "assets/images/taxi.png"
-                                        : "assets/icon/logo_black.svg")),
+                                child: Image.asset(
+                              themeChange.isDarkTheme()
+                                  ? "assets/images/taxi.png"
+                                  : "assets/images/taxi.png",
+                              scale: 6,
+                            )),
                           ),
                           Text(
                             "Create Account".tr,
@@ -88,44 +90,54 @@ class SignupView extends StatelessWidget {
                                     ? null
                                     : 'This field required'.tr,
                           ),
+                          // const SizedBox(height: 20),
+                          // TextFieldWithTitle(
+                          //   title: "Email Address".tr,
+                          //   hintText: "Enter Email Address".tr,
+                          //   prefixIcon: const Icon(Icons.email_outlined),
+                          //   keyboardType: TextInputType.emailAddress,
+                          //   controller: controller.emailController,
+                          //   // isEnable: controller.loginType.value ==
+                          //   //     Constant.phoneLoginType,
+                          //   validator: (value) =>
+                          //       Constant().validateEmail(value),
+                          // ),
                           const SizedBox(height: 20),
                           TextFieldWithTitle(
-                            title: "Email Address".tr,
-                            hintText: "Enter Email Address".tr,
-                            prefixIcon: const Icon(Icons.email_outlined),
-                            keyboardType: TextInputType.emailAddress,
-                            controller: controller.emailController,
-                            isEnable: controller.loginType.value ==
-                                Constant.phoneLoginType,
+                            title: "Referral Code".tr,
+                            hintText: "Enter referral code".tr,
+                            prefixIcon: const Icon(Icons.code),
+                            controller: controller.referralController,
                             validator: (value) =>
-                                Constant().validateEmail(value),
+                                value != null && value.isNotEmpty
+                                    ? null
+                                    : 'This field required'.tr,
                           ),
-                          const SizedBox(height: 20),
-                          TextFieldWithTitle(
-                            title: "Phone Number".tr,
-                            hintText: "Enter Phone Number".tr,
-                            prefixIcon: CountryCodeSelectorView(
-                              isCountryNameShow: false,
-                              countryCodeController:
-                                  controller.countryCodeController,
-                              isEnable: controller.loginType.value !=
-                                  Constant.phoneLoginType,
-                              onChanged: (value) {
-                                controller.countryCodeController.text =
-                                    value.dialCode.toString();
-                              },
-                            ),
-                            keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.allow(
-                                  RegExp("[0-9]")),
-                            ],
-                            controller: controller.phoneNumberController,
-                            validator: (value) => validateMobile(value,
-                                controller.countryCodeController.value.text),
-                            isEnable: controller.loginType.value !=
-                                Constant.phoneLoginType,
-                          ),
+                          // TextFieldWithTitle(
+                          //   title: "Phone Number".tr,
+                          //   hintText: "Enter Phone Number".tr,
+                          //   prefixIcon: CountryCodeSelectorView(
+                          //     isCountryNameShow: false,
+                          //     countryCodeController:
+                          //         controller.countryCodeController,
+                          //     isEnable: controller.loginType.value !=
+                          //         Constant.phoneLoginType,
+                          //     onChanged: (value) {
+                          //       controller.countryCodeController.text =
+                          //           value.dialCode.toString();
+                          //     },
+                          //   ),
+                          //   keyboardType: TextInputType.number,
+                          //   inputFormatters: <TextInputFormatter>[
+                          //     FilteringTextInputFormatter.allow(
+                          //         RegExp("[0-9]")),
+                          //   ],
+                          //   controller: controller.phoneNumberController,
+                          //   validator: (value) => validateMobile(value,
+                          //       controller.countryCodeController.value.text),
+                          //   isEnable: controller.loginType.value !=
+                          //       Constant.phoneLoginType,
+                          // ),
                           // Column(
                           //   mainAxisAlignment: MainAxisAlignment.spaceAround,
                           //   crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,7 +197,7 @@ class SignupView extends StatelessWidget {
                                 Radio(
                                   value: 1,
                                   groupValue: controller.selectedGender.value,
-                                  activeColor: AppThemData.primary400,
+                                  activeColor: AppThemData.primary300,
                                   onChanged: (value) {
                                     controller.selectedGender.value =
                                         value ?? 1;
@@ -212,7 +224,7 @@ class SignupView extends StatelessWidget {
                                 Radio(
                                   value: 2,
                                   groupValue: controller.selectedGender.value,
-                                  activeColor: AppThemData.primary400,
+                                  activeColor: AppThemData.primary300,
                                   onChanged: (value) {
                                     controller.selectedGender.value =
                                         value ?? 2;
@@ -244,12 +256,16 @@ class SignupView extends StatelessWidget {
                             child: RoundShapeButton(
                                 size: const Size(200, 45),
                                 title: "Sign Up".tr,
-                                buttonColor: AppThemData.primary400,
+                                buttonColor: AppThemData.primary300,
                                 buttonTextColor: AppThemData.black,
                                 onTap: () {
                                   if (controller.formKey.value.currentState!
                                       .validate()) {
-                                    controller.createAccount();
+                                    // controller.createAccount();
+                                    controller.creatCompleteAccorunt(
+                                        controller.selectedGender.value
+                                            .toString(),
+                                        widget.userToken.toString());
                                   }
                                 }),
                           ),

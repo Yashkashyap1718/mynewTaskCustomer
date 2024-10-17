@@ -1,7 +1,5 @@
 import 'dart:developer';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:get/get.dart';
 import 'package:customer/app/models/currencies_model.dart';
 import 'package:customer/app/models/language_model.dart';
 import 'package:customer/app/models/user_model.dart';
@@ -12,6 +10,8 @@ import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/Preferences.dart';
 import 'package:customer/utils/fire_store_utils.dart';
 import 'package:customer/utils/notification_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:get/get.dart';
 
 class GlobalSettingController extends GetxController {
   @override
@@ -87,6 +87,7 @@ class GlobalSettingController extends GetxController {
       LocalizationService().changeLocale(languageModel.code.toString());
     }
   }
+
   // getTax() async {
   //   await FireStoreUtils().getTaxList().then((value) {
   //     if (value != null) {

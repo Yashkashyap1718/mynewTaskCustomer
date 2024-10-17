@@ -3,12 +3,14 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/edit_profile/views/edit_profile_view.dart';
 import 'package:customer/app/modules/home/controllers/home_controller.dart';
 import 'package:customer/app/modules/login/views/login_view.dart';
 import 'package:customer/constant_widgets/custom_dialog_box.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
+import 'package:customer/utils/database_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -18,15 +20,42 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class DrawerView extends StatelessWidget {
+import '../../../../../constant/constant.dart';
+import '../../../html_view_screen/views/html_view_screen_view.dart';
+
+class DrawerView extends StatefulWidget {
   const DrawerView({super.key});
+
+  @override
+  State<DrawerView> createState() => _DrawerViewState();
+}
+
+class _DrawerViewState extends State<DrawerView> {
+  UserModel user = UserModel();
+  DatabaseHelper db = DatabaseHelper();
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  Future<void> getUser() async {
+    UserModel? retrievedUser = await db.retrieveUserFromTable();
+    if (retrievedUser != null) {
+      setState(() {
+        user = retrievedUser; // Assign the retrieved user to the local user
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
+
     return GetBuilder(
         init: HomeController(),
         builder: (controller) {
+          log("------------------userName---------------${user.fullName}");
           return Drawer(
             child: Stack(
               children: [
@@ -37,7 +66,7 @@ class DrawerView extends StatelessWidget {
                     padding: EdgeInsets.zero,
                     children: <Widget>[
                       Container(
-                        color: AppThemData.primary400,
+                        color: AppThemData.primary300,
                         padding: const EdgeInsets.only(
                             top: 50, bottom: 30, left: 16, right: 24),
                         child: InkWell(
@@ -69,8 +98,9 @@ class DrawerView extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(200),
                                     ),
                                     image: DecorationImage(
-                                      image: NetworkImage(
-                                          controller.profilePic.value),
+                                      image: NetworkImage(controller
+                                              .profilePic.value ??
+                                          "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngegg.com%2Fen%2Fsearch%3Fq%3Duser&psig=AOvVaw1N5jfjCo7kz2U2tohFaTMd&ust=1729279101833000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCODU_uaQlokDFQAAAAAdAAAAABAE"),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -83,7 +113,7 @@ class DrawerView extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        controller.name.value,
+                                        user.fullName.toString().toUpperCase(),
                                         style: GoogleFonts.inter(
                                           color: themeChange.isDarkTheme()
                                               ? AppThemData.white
@@ -289,7 +319,9 @@ class DrawerView extends StatelessWidget {
                         onTap: () {
                           controller.drawerIndex.value = 4;
                           Get.back();
-                          // Get.to(HtmlViewScreenView(title: "Privacy & Policy".tr, htmlData: Constant.privacyPolicy));
+                          Get.to(HtmlViewScreenView(
+                              title: "Privacy & Policy".tr,
+                              htmlData: Constant.privacyPolicy));
                         },
                         leading: const Icon(Icons.privacy_tip_outlined),
                         trailing: const Icon(Icons.keyboard_arrow_right_rounded,
@@ -312,7 +344,9 @@ class DrawerView extends StatelessWidget {
                         onTap: () {
                           controller.drawerIndex.value = 5;
                           Get.back();
-                          // Get.to(HtmlViewScreenView(title: "Terms & Condition".tr, htmlData: Constant.termsAndConditions));
+                          Get.to(HtmlViewScreenView(
+                              title: "Terms & Condition".tr,
+                              htmlData: Constant.termsAndConditions));
                         },
                         leading: const Icon(Icons.contact_support_outlined),
                         trailing: const Icon(Icons.keyboard_arrow_right_rounded,
@@ -410,7 +444,7 @@ class DrawerView extends StatelessWidget {
                               negativeString: "Cancel".tr,
                               positiveClick: () async {
                                 await controller.logOutUser(context, '');
-                                // await FirebaseAuth.instance.signOut();
+                                await FirebaseAuth.instance.signOut();
 
                                 Navigator.pop(context);
                                 Get.offAll(const LoginView());

@@ -118,7 +118,7 @@ class VerifyOtpController extends GetxController {
     log('---paylod---$otp---$phoneNumber');
     try {
       final http.Response response = await http.post(
-        Uri.parse("http://172.93.54.177:3001/users/confirmation"),
+        Uri.parse(baseURL + veriftOtpEndpoint),
         headers: {
           'Content-Type': 'application/json',
         },
@@ -127,21 +127,22 @@ class VerifyOtpController extends GetxController {
 
       final Map<String, dynamic> data = jsonDecode(response.body);
 
-      if (response.statusCode == 200) {
+      if (data['status'] == true) {
         final String token = data['token'];
         final String msg = data['msg'];
         final String id = data['id'];
         final String roleType = data['type'];
         final String firstDigit = id.substring(0, 1);
         final int firstDigitAsInt = int.parse(firstDigit, radix: 16);
-        ShowToastDialog.closeLoader();
-        UserModel userModel =
-            UserModel(id: id, loginType: roleType, fcmToken: token);
-        Get.off(const SignupView(), arguments: {
+        UserModel userModel = UserModel(fcmToken: token);
+
+        log(payload.toString());
+        log('----------------user-token-------${userModel.fcmToken}');
+
+        Get.off(SignupView(userToken: token), arguments: {
           "userModel": userModel,
         });
-
-        log('-----------------usermode-------${userModel.loginType}');
+        ShowToastDialog.closeLoader();
 
         // Show success message with Animated SnackBar
         AnimatedSnackBar.material(
@@ -150,7 +151,6 @@ class VerifyOtpController extends GetxController {
           duration: const Duration(seconds: 5),
           mobileSnackBarPosition: MobileSnackBarPosition.top,
         ).show(context);
-
         // Store token or other relevant data in provider or local storage
         // prrovider.setAccessToken(token);
 

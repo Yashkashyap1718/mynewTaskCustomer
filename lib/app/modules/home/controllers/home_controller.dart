@@ -15,8 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
+import 'package:location/location.dart';
 
 class HomeController extends GetxController {
   final count = 0.obs;
@@ -30,6 +30,7 @@ class HomeController extends GetxController {
   RxInt curPage = 0.obs;
   RxInt drawerIndex = 0.obs;
   RxBool isLoading = false.obs;
+  var userModel = UserModel().obs;
 
   @override
   void onInit() {
@@ -45,6 +46,10 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {}
+  // Method to update the user data
+  void updateUser(UserModel user) {
+    userModel.value = user;
+  }
 
   getUserData() async {
     isLoading.value = true;
@@ -160,6 +165,7 @@ class HomeController extends GetxController {
   logOutUser(BuildContext context, String token) async {
     try {
       final res = await http.post(Uri.parse(baseURL + logOutEndpoint),
+          headers: {"Content-Type": "application/json"},
           body: jsonEncode({'token': token}));
 
       if (res.statusCode == 200) {

@@ -8,6 +8,7 @@ import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/home/views/home_view.dart';
 import 'package:customer/app/modules/signup/views/signup_view.dart';
 import 'package:customer/app/modules/verify_otp/views/verify_otp_view.dart';
+import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/utils/fire_store_utils.dart';
@@ -44,18 +45,14 @@ class LoginController extends GetxController {
     };
 
     try {
-      // Make the POST request
+      ShowToastDialog.showLoader("Please wait".tr);
       final response = await http.post(
-        Uri.parse("http://172.93.54.177:3001/users/signin"),
-        headers: {
-          "Content-Type":
-              "application/json; charset=UTF-8", // Make sure the server understands the request is JSON
-        },
-        body: jsonEncode(payload), // Encode the payload to JSON
+        Uri.parse(baseURL + sendOtpEndpoint),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(payload),
       );
       log('Response Status Code: ${response.statusCode}');
       log('Response Body: ${response.body}');
-
       print('----sendOTP----');
 
       print('---pay--$payload');
@@ -67,22 +64,22 @@ class LoginController extends GetxController {
 
         // Extract the "msg" field which contains the OTP
         final String msg = responseData['msg'];
-
         // Split the message by comma to get the OTP (the first part)
         final List<String> parts = msg.split(',');
         final String otp =
             parts.first.trim(); // Trim to remove any surrounding spaces
-
         print('Extracted OTP: $otp');
-
         // Navigate to OTP verification screen with the phone number and OTP
         Get.to(
-          VerifyOtpView(
+          () => VerifyOtpView(
+            oTP: otp,
             phoneNumder: phoneNumberController.text,
+
             // Pass the extracted OTP
           ),
         );
-        ShowToastDialog.showToast(msg.tr);
+        ShowToastDialog.closeLoader();
+
         // ScaffoldMessenger.of(context).showSnackBar(
         //   SnackBar(
         //     content: Text(otp),

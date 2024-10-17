@@ -1,26 +1,48 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
 import 'package:customer/constant_widgets/app_bar_with_border.dart';
-import 'package:customer/constant_widgets/country_code_selector_view.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
 import 'package:customer/constant_widgets/text_field_with_title.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../constant/constant.dart';
+import '../../../../utils/database_helper.dart';
+import '../../../models/user_model.dart';
 import '../controllers/edit_profile_controller.dart';
 
-class EditProfileView extends StatelessWidget {
+class EditProfileView extends StatefulWidget {
   const EditProfileView({super.key});
+
+  @override
+  State<EditProfileView> createState() => _EditProfileViewState();
+}
+
+class _EditProfileViewState extends State<EditProfileView> {
+  UserModel user = UserModel();
+  DatabaseHelper db = DatabaseHelper();
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  Future<void> getUser() async {
+    UserModel? retrievedUser = await db.retrieveUserFromTable();
+    if (retrievedUser != null) {
+      setState(() {
+        user = retrievedUser; // Assign the retrieved user to the local user
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,55 +63,56 @@ class EditProfileView extends StatelessWidget {
             body: Padding(
               padding: const EdgeInsets.all(20.0),
               child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: myProfileView(controller, context),
-                      // Stack(
-                      //   alignment: Alignment.bottomRight,
-                      //   children: [
-                      //     Obx(
-                      //       () => Container(
-                      //         width: 110,
-                      //         height: 110,
-                      //         clipBehavior: Clip.antiAlias,
-                      //         decoration: ShapeDecoration(
-                      //           color: Colors.white,
-                      //           shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(200),
-                      //           ),
-                      //           image: DecorationImage(
-                      //             image: NetworkImage(controller.profilePic.value),
-                      //             fit: BoxFit.cover,
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     Container(
-                      //       width: 26,
-                      //       height: 26,
-                      //       padding: const EdgeInsets.all(5),
-                      //       margin: const EdgeInsets.only(bottom: 8),
-                      //       clipBehavior: Clip.antiAlias,
-                      //       decoration: ShapeDecoration(
-                      //         color: AppThemData.primary400,
-                      //         shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(200), side: const BorderSide(color: AppThemData.white, width: 3)),
-                      //       ),
-                      //       child: SvgPicture.asset(
-                      //         "assets/icon/ic_drawer_edit.svg",
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
-                    ),
-                    const SizedBox(height: 12),
-                    Obx(
-                      () => Center(
+                child: Form(
+                  key: controller.formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: myProfileView(controller, context),
+                        // Stack(
+                        //   alignment: Alignment.bottomRight,
+                        //   children: [
+                        //     Obx(
+                        //       () => Container(
+                        //         width: 110,
+                        //         height: 110,
+                        //         clipBehavior: Clip.antiAlias,
+                        //         decoration: ShapeDecoration(
+                        //           color: Colors.white,
+                        //           shape: RoundedRectangleBorder(
+                        //             borderRadius: BorderRadius.circular(200),
+                        //           ),
+                        //           image: DecorationImage(
+                        //             image: NetworkImage(controller.profilePic.value),
+                        //             fit: BoxFit.cover,
+                        //           ),
+                        //         ),
+                        //       ),
+                        //     ),
+                        //     Container(
+                        //       width: 26,
+                        //       height: 26,
+                        //       padding: const EdgeInsets.all(5),
+                        //       margin: const EdgeInsets.only(bottom: 8),
+                        //       clipBehavior: Clip.antiAlias,
+                        //       decoration: ShapeDecoration(
+                        //         color: AppThemData.primary400,
+                        //         shape: RoundedRectangleBorder(
+                        //             borderRadius: BorderRadius.circular(200), side: const BorderSide(color: AppThemData.white, width: 3)),
+                        //       ),
+                        //       child: SvgPicture.asset(
+                        //         "assets/icon/ic_drawer_edit.svg",
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                      ),
+                      const SizedBox(height: 12),
+                      Center(
                         child: Text(
-                          controller.name.value,
+                          user.fullName.toString().toUpperCase(),
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
                             color: themeChange.isDarkTheme()
@@ -100,182 +123,202 @@ class EditProfileView extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ),
-                    Obx(
-                      () => Center(
-                        child: Text(
-                          controller.phoneNumber.value,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(
-                            color: themeChange.isDarkTheme()
-                                ? AppThemData.grey400
-                                : AppThemData.grey500,
+
+                      // Obx(
+                      //   () => Center(
+                      //     child: Text(
+                      //       controller.phoneNumber.value,
+                      //       textAlign: TextAlign.center,
+                      //       style: GoogleFonts.inter(
+                      //         color: themeChange.isDarkTheme()
+                      //             ? AppThemData.grey400
+                      //             : AppThemData.grey500,
+                      //         fontSize: 14,
+                      //         fontWeight: FontWeight.w400,
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      const SizedBox(height: 24),
+                      TextFieldWithTitle(
+                        title: "Name".tr,
+                        hintText: "Enter Name".tr,
+                        prefixIcon: const Icon(Icons.person_outline_rounded),
+                        controller: controller.nameController,
+                        validator: (value) => value != null && value.isNotEmpty
+                            ? null
+                            : 'This field required'.tr,
+                      ),
+                      const SizedBox(height: 20),
+                      TextFieldWithTitle(
+                        title: "Email".tr,
+                        hintText: "Enter Email".tr,
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        keyboardType: TextInputType.emailAddress,
+                        controller: controller.emailController,
+                        validator: (value) => value != null && value.isNotEmpty
+                            ? null
+                            : 'This field required'.tr,
+                      ),
+                      const SizedBox(height: 20),
+                      TextFieldWithTitle(
+                        title: "Date of Birth".tr,
+                        hintText: "Enter Date of Birth".tr,
+                        prefixIcon: const Icon(Icons.date_range),
+                        keyboardType: TextInputType.text,
+                        controller: controller.dobController,
+                        validator: (value) => value != null && value.isNotEmpty
+                            ? null
+                            : 'This field required'.tr,
+                      ),
+                      // const SizedBox(height: 20),
+                      // Column(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      //   crossAxisAlignment: CrossAxisAlignment.start,
+                      //   children: [
+                      //     // CountryCodeSelectorView(
+                      //     //
+                      //     //
+                      //     //   isCountryNameShow: true,
+                      //     //   countryCodeController:
+                      //     //       controller.countryCodeController,
+                      //     //   isEnable: false,
+                      //     //   onChanged: (value) {
+                      //     //     controller.countryCodeController.text =
+                      //     //         value.dialCode.toString();
+                      //     //   },
+                      //     // ),
+                      //     Container(
+                      //       transform: Matrix4.translationValues(0.0, -05.0, 0.0),
+                      //       child: TextFormField(
+                      //         cursorColor: Colors.black,
+                      //         // enabled: false,
+                      //         keyboardType: TextInputType.number,
+                      //         controller: controller.phoneNumberController,
+                      //         inputFormatters: <TextInputFormatter>[
+                      //           FilteringTextInputFormatter.allow(
+                      //               RegExp("[0-9]")),
+                      //         ],
+                      //         style: GoogleFonts.inter(
+                      //
+                      //             fontSize: 14,
+                      //             color: themeChange.isDarkTheme()
+                      //                 ? AppThemData.white
+                      //                 : AppThemData.grey950,
+                      //             fontWeight: FontWeight.w400),
+                      //         decoration: InputDecoration(
+                      //           border: const UnderlineInputBorder(
+                      //               borderSide: BorderSide(
+                      //                   color: AppThemData.grey500, width: 1)),
+                      //           focusedBorder: const UnderlineInputBorder(
+                      //               borderSide: BorderSide(
+                      //                   color: AppThemData.grey500, width: 1)),
+                      //           enabledBorder: const UnderlineInputBorder(
+                      //               borderSide: BorderSide(
+                      //                   color: AppThemData.grey500, width: 1)),
+                      //           errorBorder: const UnderlineInputBorder(
+                      //               borderSide: BorderSide(
+                      //                   color: AppThemData.grey500, width: 1)),
+                      //           disabledBorder: const UnderlineInputBorder(
+                      //               borderSide: BorderSide(
+                      //                   color: AppThemData.grey500, width: 1)),
+                      //           hintText: "Enter your Phone Number".tr,
+                      //           hintStyle: GoogleFonts.inter(
+                      //               fontSize: 14,
+                      //               color: AppThemData.primary300,
+                      //               fontWeight: FontWeight.w400),
+                      //         ),
+                      //       ),
+                      //     )
+                      //   ],
+                      // ),
+                      //
+                      const SizedBox(height: 20),
+                      Text(
+                        "Gender".tr,
+                        style: GoogleFonts.inter(
                             fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                          ),
+                            color: themeChange.isDarkTheme()
+                                ? AppThemData.white
+                                : AppThemData.grey950,
+                            fontWeight: FontWeight.w500),
+                      ),
+                      Obx(
+                        () => Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Radio(
+                              value: 1,
+                              groupValue: controller.selectedGender.value,
+                              activeColor: AppThemData.primary300,
+                              onChanged: (value) {
+                                controller.selectedGender.value = value ?? 1;
+                                // _radioVal = 'male';
+                              },
+                            ),
+                            InkWell(
+                              onTap: () {
+                                controller.selectedGender.value = 1;
+                              },
+                              child: Text(
+                                'Male'.tr,
+                                style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    color: controller.selectedGender.value == 1
+                                        ? themeChange.isDarkTheme()
+                                            ? AppThemData.white
+                                            : AppThemData.grey950
+                                        : AppThemData.grey500,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                            Radio(
+                              value: 2,
+                              groupValue: controller.selectedGender.value,
+                              activeColor: AppThemData.primary300,
+                              onChanged: (value) {
+                                controller.selectedGender.value = value ?? 2;
+                                // _radioVal = 'female';
+                              },
+                            ),
+                            InkWell(
+                              onTap: () {
+                                controller.selectedGender.value = 2;
+                              },
+                              child: Text(
+                                'Female'.tr,
+                                style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    color: controller.selectedGender.value == 2
+                                        ? themeChange.isDarkTheme()
+                                            ? AppThemData.white
+                                            : AppThemData.grey950
+                                        : AppThemData.grey500,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    TextFieldWithTitle(
-                      title: "Name".tr,
-                      hintText: "Enter Name".tr,
-                      prefixIcon: const Icon(Icons.person_outline_rounded),
-                      controller: controller.nameController,
-                    ),
-                    // const SizedBox(height: 20),
-                    // TextFieldWithTitle(
-                    //   title: "Email".tr,
-                    //   hintText: "Enter Email".tr,
-                    //   prefixIcon: const Icon(Icons.email_outlined),
-                    //   keyboardType: TextInputType.emailAddress,
-                    //   controller: controller.emailController,
-                    //   isEnable: false,
-                    // ),
-                    // const SizedBox(height: 20),
-                    // Column(
-                    //   mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    //   crossAxisAlignment: CrossAxisAlignment.start,
-                    //   children: [
-                    //     // CountryCodeSelectorView(
-                    //     //
-                    //     //
-                    //     //   isCountryNameShow: true,
-                    //     //   countryCodeController:
-                    //     //       controller.countryCodeController,
-                    //     //   isEnable: false,
-                    //     //   onChanged: (value) {
-                    //     //     controller.countryCodeController.text =
-                    //     //         value.dialCode.toString();
-                    //     //   },
-                    //     // ),
-                    //     Container(
-                    //       transform: Matrix4.translationValues(0.0, -05.0, 0.0),
-                    //       child: TextFormField(
-                    //         cursorColor: Colors.black,
-                    //         // enabled: false,
-                    //         keyboardType: TextInputType.number,
-                    //         controller: controller.phoneNumberController,
-                    //         inputFormatters: <TextInputFormatter>[
-                    //           FilteringTextInputFormatter.allow(
-                    //               RegExp("[0-9]")),
-                    //         ],
-                    //         style: GoogleFonts.inter(
-                    //
-                    //             fontSize: 14,
-                    //             color: themeChange.isDarkTheme()
-                    //                 ? AppThemData.white
-                    //                 : AppThemData.grey950,
-                    //             fontWeight: FontWeight.w400),
-                    //         decoration: InputDecoration(
-                    //           border: const UnderlineInputBorder(
-                    //               borderSide: BorderSide(
-                    //                   color: AppThemData.grey500, width: 1)),
-                    //           focusedBorder: const UnderlineInputBorder(
-                    //               borderSide: BorderSide(
-                    //                   color: AppThemData.grey500, width: 1)),
-                    //           enabledBorder: const UnderlineInputBorder(
-                    //               borderSide: BorderSide(
-                    //                   color: AppThemData.grey500, width: 1)),
-                    //           errorBorder: const UnderlineInputBorder(
-                    //               borderSide: BorderSide(
-                    //                   color: AppThemData.grey500, width: 1)),
-                    //           disabledBorder: const UnderlineInputBorder(
-                    //               borderSide: BorderSide(
-                    //                   color: AppThemData.grey500, width: 1)),
-                    //           hintText: "Enter your Phone Number".tr,
-                    //           hintStyle: GoogleFonts.inter(
-                    //               fontSize: 14,
-                    //               color: AppThemData.primary300,
-                    //               fontWeight: FontWeight.w400),
-                    //         ),
-                    //       ),
-                    //     )
-                    //   ],
-                    // ),
-                    //
-                    const SizedBox(height: 20),
-                    Text(
-                      "Gender".tr,
-                      style: GoogleFonts.inter(
-                          fontSize: 14,
-                          color: themeChange.isDarkTheme()
-                              ? AppThemData.white
-                              : AppThemData.grey950,
-                          fontWeight: FontWeight.w500),
-                    ),
-                    Obx(
-                      () => Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Radio(
-                            value: 1,
-                            groupValue: controller.selectedGender.value,
-                            activeColor: AppThemData.primary300,
-                            onChanged: (value) {
-                              controller.selectedGender.value = value ?? 1;
-                              // _radioVal = 'male';
-                            },
-                          ),
-                          InkWell(
-                            onTap: () {
-                              controller.selectedGender.value = 1;
-                            },
-                            child: Text(
-                              'Male'.tr,
-                              style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  color: controller.selectedGender.value == 1
-                                      ? themeChange.isDarkTheme()
-                                          ? AppThemData.white
-                                          : AppThemData.grey950
-                                      : AppThemData.grey500,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          Radio(
-                            value: 2,
-                            groupValue: controller.selectedGender.value,
-                            activeColor: AppThemData.primary300,
-                            onChanged: (value) {
-                              controller.selectedGender.value = value ?? 2;
-                              // _radioVal = 'female';
-                            },
-                          ),
-                          InkWell(
-                            onTap: () {
-                              controller.selectedGender.value = 2;
-                            },
-                            child: Text(
-                              'Female'.tr,
-                              style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  color: controller.selectedGender.value == 2
-                                      ? themeChange.isDarkTheme()
-                                          ? AppThemData.white
-                                          : AppThemData.grey950
-                                      : AppThemData.grey500,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 35),
-                    Center(
-                      child: RoundShapeButton(
-                        title: "Save",
-                        buttonColor: AppThemData.primary300,
-                        buttonTextColor: AppThemData.black,
-                        onTap: () {
-                          // controller.saveUserData();
+                      const SizedBox(height: 35),
+                      Center(
+                        child: RoundShapeButton(
+                          title: "Save",
+                          buttonColor: AppThemData.primary300,
+                          buttonTextColor: AppThemData.black,
+                          onTap: () {
+                            if (controller.formKey.currentState!.validate()) {
+                              // controller.saveUserData();
 
-                          controller.completeSignupProfile("token", "referralCode");
-                        },
-                        size: const Size(208, 52),
-                      ),
-                    )
-                  ],
+                              // controller.completeSignupProfile(
+                              //     "token", "referralCode");
+                            }
+                          },
+                          size: const Size(208, 52),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -396,7 +439,8 @@ class EditProfileView extends StatelessWidget {
                           children: [
                             IconButton(
                                 onPressed: () => controller.pickFile(
-                                    source: ImageSource.camera),
+                                    source: ImageSource.camera,
+                                    token: user.fcmToken.toString()),
                                 icon: const Icon(
                                   Icons.camera_alt,
                                   size: 32,
@@ -419,7 +463,8 @@ class EditProfileView extends StatelessWidget {
                           children: [
                             IconButton(
                                 onPressed: () => controller.pickFile(
-                                    source: ImageSource.gallery),
+                                    source: ImageSource.gallery,
+                                    token: user.fcmToken.toString()),
                                 icon: const Icon(
                                   Icons.photo_library_sharp,
                                   size: 32,
@@ -444,6 +489,4 @@ class EditProfileView extends StatelessWidget {
       },
     );
   }
-
-
 }

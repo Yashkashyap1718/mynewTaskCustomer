@@ -14,10 +14,11 @@ import '../controllers/verify_otp_controller.dart';
 
 class VerifyOtpView extends StatefulWidget {
   final String? phoneNumder;
-  // final String? oTP;
+  final String? oTP;
   const VerifyOtpView({
     super.key,
     required this.phoneNumder,
+    required this.oTP,
   });
 
   @override
@@ -88,7 +89,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                       ),
                     ),
                     OTPTextField(
-                      length: 4,
+                      length: 6,
                       width: MediaQuery.of(context).size.width,
                       fieldWidth: 40,
                       style: GoogleFonts.inter(
@@ -200,7 +201,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                         onTap: () async {
                           // if (controller.otpCode.value.length == 4) {
                           ShowToastDialog.showLoader("verify_OTP".tr);
-                          controller.confirmOTP(context, otpController.text,
+                          controller.confirmOTP(context, widget.oTP.toString(),
                               widget.phoneNumder.toString());
                           // .then((value) async {
                           // ShowToastDialog.closeLoader();

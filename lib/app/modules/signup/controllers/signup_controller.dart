@@ -1,13 +1,21 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/home/views/home_view.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/extension/string_extensions.dart';
+import 'package:customer/utils/database_helper.dart';
 import 'package:customer/utils/fire_store_utils.dart';
 import 'package:customer/utils/notification_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+
+import '../../../../constant/api_constant.dart';
+import '../../home/controllers/home_controller.dart';
 
 class SignupController extends GetxController {
   Rx<GlobalKey<FormState>> formKey = GlobalKey<FormState>().obs;
@@ -16,6 +24,8 @@ class SignupController extends GetxController {
       TextEditingController(text: '+91');
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController nameController = TextEditingController();
+  TextEditingController referralController = TextEditingController();
+
   TextEditingController emailController = TextEditingController();
   RxInt selectedGender = 1.obs;
   RxString loginType = "".obs;
@@ -30,6 +40,47 @@ class SignupController extends GetxController {
   @override
   void onClose() {}
   Rx<UserModel> userModel = UserModel().obs;
+  final HomeController userController = Get.put(HomeController());
+  creatCompleteAccorunt(String gender, String token) async {
+    final Map<String, String> payload = {
+      "name": nameController.text,
+      "gender": gender,
+      "referral_code": referralController.text,
+    };
+    try {
+      ShowToastDialog.showLoader("Please wait".tr);
+      final http.Response response = await http.post(
+        Uri.parse(baseURL + complpeteSignUpEndpoint),
+        headers: {'Content-Type': 'application/json', 'token': token},
+        body: jsonEncode(payload),
+      );
+
+      log('***************${response.body}');
+
+      final Map<String, dynamic> data = jsonDecode(response.body);
+
+      if (data['status'] == true && data['data'] != null) {
+        UserModel userModel = UserModel();
+
+        userModel.id = data['data']['_id'];
+        userModel.fullName = data['data']['name'];
+        userModel.gender = data['data']['gender'];
+        userModel.referralCode = data['data']['referral_code'];
+        DatabaseHelper().insertUser(userModel);
+        Get.offAll(() => const HomeView());
+        // You can proceed with further operations like saving the user model or updating UI
+        print('User data loaded successfully');
+      } else {
+        // Handle the error case
+        print(data['msg']); // Example: "Please sign in to continue."
+      }
+
+      ShowToastDialog.closeLoader();
+    } catch (e) {
+      log(e.toString());
+      ShowToastDialog.showToast(e.toString());
+    }
+  }
 
   getArgument() async {
     dynamic argumentData = Get.arguments;
@@ -40,7 +91,7 @@ class SignupController extends GetxController {
         phoneNumberController.text = userModel.value.phoneNumber.toString();
         countryCodeController.text = userModel.value.countryCode.toString();
       } else {
-        emailController.text = userModel.value.email.toString();
+        referralController.text = userModel.value.email.toString();
         nameController.text = userModel.value.fullName.toString();
       }
     }
@@ -61,6 +112,7 @@ class SignupController extends GetxController {
     userModelData.fcmToken = fcmToken;
     userModelData.createdAt = Timestamp.now();
     userModelData.isActive = true;
+    userModelData.referralCode = referralController.text;
 
     await FireStoreUtils.updateUser(userModelData).then((value) {
       ShowToastDialog.closeLoader();

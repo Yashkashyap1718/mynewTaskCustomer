@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
+
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/constant.dart';
@@ -13,9 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
-import 'package:http/http.dart' as http;
+import '../../../../utils/database_helper.dart';
 
 class EditProfileController extends GetxController {
   //TODO: Implement EditProfileController
@@ -28,11 +30,13 @@ class EditProfileController extends GetxController {
   TextEditingController phoneNumberController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  TextEditingController dobController = TextEditingController();
+
   RxInt selectedGender = 1.obs;
   RxString name = ''.obs;
   RxString phoneNumber = ''.obs;
   final ImagePicker imagePicker = ImagePicker();
-
+  final formKey = GlobalKey<FormState>();
   @override
   void onInit() {
     getUserData();
@@ -87,7 +91,8 @@ class EditProfileController extends GetxController {
     Get.back(result: true);
   }
 
-  Future<void> pickFile({required ImageSource source}) async {
+  Future<void> pickFile(
+      {required ImageSource source, required String token}) async {
     try {
       XFile? image =
           await imagePicker.pickImage(source: source, imageQuality: 100);
@@ -106,7 +111,7 @@ class EditProfileController extends GetxController {
       await compressedFile.writeAsBytes(compressedBytes!);
 
       profileImage.value = compressedFile.path;
-      uploadProfile("");
+      uploadProfile(token);
 
       log('----image----${profileImage.value}');
     } on PlatformException catch (e) {
@@ -208,6 +213,59 @@ class EditProfileController extends GetxController {
     } catch (e) {
       ShowToastDialog.closeLoader();
       debugPrint('Error uploading profile: $e');
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        const SnackBar(
+            content: Text('Error occurred while uploading profile.')),
+      );
+    }
+  }
+
+  // update Profile
+
+  profileUpdation(String token) async {
+    final Map<String, String> payload = {
+      "name": nameController.text,
+      "gender": selectedGender.value == 1 ? "Male" : "Female",
+      "date_of_birth": dobController.text,
+      "email": emailController.text
+    };
+    try {
+      ShowToastDialog.showLoader("Update profile...".tr);
+
+      final http.Response response = await http.post(
+        Uri.parse(baseURL + updatePofileEndpoint),
+        headers: {
+          'Content-Type': 'application/json',
+          'token': token,
+        },
+        body: jsonEncode(payload),
+      );
+
+      final Map<String, dynamic> data = jsonDecode(response.body);
+
+      if (data['status'] == true && data['data'] != null) {
+        UserModel userModel = UserModel();
+
+        userModel.id = data['data']['_id'];
+        userModel.fullName = data['data']['name'];
+        userModel.gender = data['data']['gender'];
+        userModel.referralCode = data['data']['referral_code'];
+        userModel.dateOfBirth = data['data']['date_of_birth'];
+        userModel.email = data['data']['email'];
+        userModel.profilePic = data['data']['profile'];
+
+        DatabaseHelper().insertUser(userModel);
+
+        // You can proceed with further operations like saving the user model or updating UI
+        print('User data loaded successfully');
+        ShowToastDialog.closeLoader();
+      } else {
+        // Handle the error case
+        print(data['msg']); // Example: "Please sign in to continue."
+      }
+    } catch (e) {
+      ShowToastDialog.closeLoader();
+      debugPrint('Error while update: $e');
       ScaffoldMessenger.of(Get.context!).showSnackBar(
         const SnackBar(
             content: Text('Error occurred while uploading profile.')),

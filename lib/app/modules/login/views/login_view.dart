@@ -24,7 +24,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
-    bool isload = false;
+
     final TextEditingController phoneController = TextEditingController();
 
     return GetBuilder<LoginController>(
@@ -158,20 +158,9 @@ class _LoginViewState extends State<LoginView> {
                             buttonColor: AppThemData.primary300,
                             buttonTextColor: AppThemData.black,
                             onTap: () {
-                              setState(() {
-                                isload = true;
-                              });
-
-                              print(
-                                  'Button tapped!'); // Check if the button is tapped
-
                               if (controller.formKey.value.currentState!
                                   .validate()) {
                                 controller.sendOTP(context);
-
-                                setState(() {
-                                  isload = false;
-                                });
                               } else {
                                 print(
                                     'Form validation failed!'); // Handle form validation failure
