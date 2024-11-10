@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:timelines_plus/timelines_plus.dart';
@@ -24,7 +24,9 @@ class PickDropPointView extends StatelessWidget {
       width: Responsive.width(100, context),
       padding: const EdgeInsets.all(16),
       decoration: ShapeDecoration(
-        color: themeChange.isDarkTheme() ? AppThemData.primary950 : AppThemData.primary50,
+        color: themeChange.isDarkTheme()
+            ? AppThemData.primary950
+            : AppThemData.primary50,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -39,11 +41,15 @@ class PickDropPointView extends StatelessWidget {
         builder: TimelineTileBuilder.connected(
           contentsAlign: ContentsAlign.basic,
           indicatorBuilder: (context, index) {
-            return index == 0 ? SvgPicture.asset("assets/icon/ic_pick_up.svg") : SvgPicture.asset("assets/icon/ic_drop_in.svg");
+            return index == 0
+                ? SvgPicture.asset("assets/icon/ic_pick_up.svg")
+                : SvgPicture.asset("assets/icon/ic_drop_in.svg");
           },
           connectorBuilder: (context, index, connectorType) {
             return DashedLineConnector(
-              color: themeChange.isDarkTheme() ? AppThemData.grey600 : AppThemData.grey300,
+              color: themeChange.isDarkTheme()
+                  ? AppThemData.grey600
+                  : AppThemData.grey300,
             );
           },
           contentsBuilder: (context, index) => index == 0
@@ -59,7 +65,9 @@ class PickDropPointView extends StatelessWidget {
                       Text(
                         'Pickup Point',
                         style: GoogleFonts.inter(
-                          color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                          color: themeChange.isDarkTheme()
+                              ? AppThemData.grey25
+                              : AppThemData.grey950,
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                         ),
@@ -69,7 +77,9 @@ class PickDropPointView extends StatelessWidget {
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.inter(
-                          color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                          color: themeChange.isDarkTheme()
+                              ? AppThemData.grey25
+                              : AppThemData.grey950,
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
@@ -89,7 +99,9 @@ class PickDropPointView extends StatelessWidget {
                       Text(
                         'Dropout Point',
                         style: GoogleFonts.inter(
-                          color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                          color: themeChange.isDarkTheme()
+                              ? AppThemData.grey25
+                              : AppThemData.grey950,
                           fontSize: 14,
                           fontWeight: FontWeight.w400,
                         ),
@@ -99,7 +111,9 @@ class PickDropPointView extends StatelessWidget {
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
                         style: GoogleFonts.inter(
-                          color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                          color: themeChange.isDarkTheme()
+                              ? AppThemData.grey25
+                              : AppThemData.grey950,
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),

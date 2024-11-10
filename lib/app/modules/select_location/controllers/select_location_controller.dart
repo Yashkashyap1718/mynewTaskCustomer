@@ -1,5 +1,22 @@
 import 'dart:async';
 import 'dart:developer';
+
+import 'package:customer/app/models/booking_model.dart';
+import 'package:customer/app/models/coupon_model.dart';
+import 'package:customer/app/models/distance_model.dart';
+import 'package:customer/app/models/location_lat_lng.dart';
+import 'package:customer/app/models/map_model.dart';
+import 'package:customer/app/models/positions.dart';
+import 'package:customer/app/models/tax_model.dart';
+import 'package:customer/app/models/user_model.dart';
+import 'package:customer/app/models/vehicle_type_model.dart';
+import 'package:customer/constant/booking_status.dart';
+import 'package:customer/constant/constant.dart';
+import 'package:customer/constant_widgets/show_toast_dialog.dart';
+import 'package:customer/theme/app_them_data.dart';
+import 'package:customer/utils/database_helper.dart';
+import 'package:customer/utils/fire_store_utils.dart';
+import 'package:customer/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -8,20 +25,6 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
-import 'package:customer/app/models/booking_model.dart';
-import 'package:customer/app/models/coupon_model.dart';
-import 'package:customer/app/models/distance_model.dart';
-import 'package:customer/app/models/location_lat_lng.dart';
-import 'package:customer/app/models/map_model.dart';
-import 'package:customer/app/models/positions.dart';
-import 'package:customer/app/models/tax_model.dart';
-import 'package:customer/app/models/vehicle_type_model.dart';
-import 'package:customer/constant/booking_status.dart';
-import 'package:customer/constant/constant.dart';
-import 'package:customer/constant_widgets/show_toast_dialog.dart';
-import 'package:customer/theme/app_them_data.dart';
-import 'package:customer/utils/fire_store_utils.dart';
-import 'package:customer/utils/utils.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SelectLocationController extends GetxController {
@@ -38,6 +41,7 @@ class SelectLocationController extends GetxController {
   RxInt popupIndex = 0.obs;
   RxInt selectVehicleTypeIndex = 0.obs;
   Rx<MapModel?> mapModel = MapModel().obs;
+  Rx<UserModel?> userModel = UserModel().obs;
   Rx<BookingModel> bookingModel = BookingModel().obs;
 
   BitmapDescriptor sourceIcon = BitmapDescriptor.defaultMarker;
@@ -132,11 +136,13 @@ class SelectLocationController extends GetxController {
     isLoading.value = false;
   }
 
-  setBookingData(bool isClear) {
+  setBookingData(bool isClear) async {
+    DatabaseHelper db = DatabaseHelper();
     if (isClear) {
       bookingModel.value = BookingModel();
     } else {
-      bookingModel.value.customerId = FireStoreUtils.getCurrentUid();
+      UserModel? user = await db.retrieveUserFromTable();
+      bookingModel.value.customerId = user!.id;
       bookingModel.value.bookingStatus = BookingStatus.bookingPlaced;
       bookingModel.value.pickUpLocation = LocationLatLng(
           latitude: sourceLocation!.latitude,
@@ -169,74 +175,87 @@ class SelectLocationController extends GetxController {
   }
 
   updateData() async {
+    // Check if both source and destination locations are set
     if (destination != null && sourceLocation != null) {
+      // Fetch polyline and show loader
       getPolyline(
-          sourceLatitude: sourceLocation!.latitude,
-          sourceLongitude: sourceLocation!.longitude,
-          destinationLatitude: destination!.latitude,
-          destinationLongitude: destination!.longitude);
+        sourceLatitude: sourceLocation!.latitude,
+        sourceLongitude: sourceLocation!.longitude,
+        destinationLatitude: destination!.latitude,
+        destinationLongitude: destination!.longitude,
+      );
+
       ShowToastDialog.showLoader("Please wait".tr);
+
+      // Fetch distance and duration data
       mapModel.value =
           await Constant.getDurationDistance(sourceLocation!, destination!);
-      bookingModel.value.dropLocationAddress =
-          mapModel.value!.destinationAddresses!.first;
-      bookingModel.value.pickUpLocationAddress =
-          mapModel.value!.originAddresses!.first;
-      bookingModel.value = BookingModel.fromJson(bookingModel.value.toJson());
 
-      ShowToastDialog.closeLoader();
-      log("Data : ${mapModel.value!.toJson()}");
-      if (mapModel.value == null) {
+      if (mapModel.value != null) {
+        // Update booking model with addresses
+        bookingModel.value.dropLocationAddress =
+            mapModel.value!.destinationAddresses!.first;
+        bookingModel.value.pickUpLocationAddress =
+            mapModel.value!.originAddresses!.first;
+        bookingModel.value = BookingModel.fromJson(bookingModel.value.toJson());
+
+        ShowToastDialog.closeLoader();
+        log("Data : ${mapModel.value!.toJson()}");
+
+        // Update popup index if necessary
+        if (popupIndex.value == 0) popupIndex.value = 1;
+
+        setBookingData(false);
+      } else {
+        ShowToastDialog.closeLoader();
         popupIndex.value = 0;
         ShowToastDialog.showToast(
-            "Something went wrong!,Please select location again");
-      } else {
-        if (popupIndex.value == 0) popupIndex.value = 1;
-        setBookingData(false);
+            "Something went wrong!, Please select location again");
       }
     } else {
+      // Handle cases when source or destination is null
       if (destination != null) {
+        // Add drop marker
         addMarker(
-            latitude: destination!.latitude,
-            longitude: destination!.longitude,
-            id: "drop",
-            descriptor: dropIcon!,
-            rotation: 0.0);
+          latitude: destination!.latitude,
+          longitude: destination!.longitude,
+          id: "drop",
+          descriptor: dropIcon!,
+          rotation: 0.0,
+        );
         updateCameraLocation(destination!, destination!, mapController);
       } else {
-        MarkerId markerId = const MarkerId("drop");
-        if (markers.containsKey(markerId)) {
-          markers.removeWhere((key, value) => key == markerId);
-          updateCameraLocation(
-              LatLng(currentLocationPosition!.latitude,
-                  currentLocationPosition!.longitude),
-              LatLng(currentLocationPosition!.latitude,
-                  currentLocationPosition!.longitude),
-              mapController);
-        }
-        log("==> ${markers.containsKey(markerId)}");
+        removeMarker("drop");
       }
+
       if (sourceLocation != null) {
+        // Add pickup marker
         addMarker(
-            latitude: sourceLocation!.latitude,
-            longitude: sourceLocation!.longitude,
-            id: "pickUp",
-            descriptor: pickUpIcon!,
-            rotation: 0.0);
+          latitude: sourceLocation!.latitude,
+          longitude: sourceLocation!.longitude,
+          id: "pickUp",
+          descriptor: pickUpIcon!,
+          rotation: 0.0,
+        );
         updateCameraLocation(sourceLocation!, sourceLocation!, mapController);
       } else {
-        MarkerId markerId = const MarkerId("pickUp");
-        if (markers.containsKey(markerId)) {
-          markers.removeWhere((key, value) => key == markerId);
-          updateCameraLocation(
-              LatLng(currentLocationPosition!.latitude,
-                  currentLocationPosition!.longitude),
-              LatLng(currentLocationPosition!.latitude,
-                  currentLocationPosition!.longitude),
-              mapController);
-        }
-        log("==> ${markers.containsKey(markerId)}");
+        removeMarker("pickUp");
       }
+    }
+  }
+
+// Helper method to remove markers
+  void removeMarker(String id) {
+    MarkerId markerId = MarkerId(id);
+    if (markers.containsKey(markerId)) {
+      markers.removeWhere((key, value) => key == markerId);
+      updateCameraLocation(
+        LatLng(currentLocationPosition!.latitude,
+            currentLocationPosition!.longitude),
+        LatLng(currentLocationPosition!.latitude,
+            currentLocationPosition!.longitude),
+        mapController,
+      );
     }
   }
 
@@ -260,15 +279,17 @@ class SelectLocationController extends GetxController {
           origin: PointLatLng(sourceLatitude, sourceLongitude),
           destination: PointLatLng(destinationLatitude, destinationLongitude),
           mode: TravelMode.driving,
-          // wayPoints: [PolylineWayPoint(location: "Sabo, Yaba Lagos Nigeria")],
+          wayPoints: [PolylineWayPoint(location: "Sabo, Yaba Lagos Nigeria")],
         ),
       );
-      // PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      //   Constant.mapAPIKey,
-      //   PointLatLng(sourceLatitude, sourceLongitude),
-      //   PointLatLng(destinationLatitude, destinationLongitude),
-      //   travelMode: TravelMode.driving,
-      // );
+      /*  PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
+          googleApiKey: Constant.mapAPIKey,
+          request: PolylineRequest(
+              origin: PointLatLng(sourceLatitude, sourceLongitude), destination: PointLatLng(destinationLatitude, destinationLongitude), mode: TravelMode.driving)
+          // PointLatLng(sourceLatitude, sourceLongitude),
+          // request:  PointLatLng(destinationLatitude, destinationLongitude),
+          // travelMode: TravelMode.driving,
+          );*/
       if (result.points.isNotEmpty) {
         for (var point in result.points) {
           polylineCoordinates.add(LatLng(point.latitude, point.longitude));

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -24,45 +26,59 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'user_database.db');
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _onCreate,
-    );
+    return await openDatabase(path,
+        version: 1, onCreate: _onCreate, onUpgrade: _onUpgrade);
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < newVersion) {
+      await db.execute('ALTER TABLE users ADD COLUMN status TEXT');
+      await db.execute('ALTER TABLE users ADD COLUMN role TEXT');
+      await db.execute('ALTER TABLE users ADD COLUMN suspend TEXT');
+      await db.execute('ALTER TABLE users ADD COLUMN languages TEXT');
+      await db.execute('ALTER TABLE users ADD COLUMN verified TEXT');
+    }
   }
 
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
-      CREATE TABLE users(
-        id TEXT PRIMARY KEY,
-        fullName TEXT,
-        slug TEXT,
-        email TEXT,
-        loginType TEXT,
-        profilePic TEXT,
-        dateOfBirth TEXT,
-        fcmToken TEXT,
-        countryCode TEXT,
-        phoneNumber TEXT,
-        walletAmount TEXT,
-        totalEarning TEXT,
-        gender TEXT,
-        referralCode TEXT,
-        isActive INTEGER,
-        createdAt INTEGER
-      )
-    ''');
+    CREATE TABLE users (
+      id TEXT PRIMARY KEY,
+      fullName TEXT,
+      slug TEXT,
+      email TEXT,
+      loginType TEXT,
+      profilePic TEXT,
+      fcmToken TEXT,
+      countryCode TEXT,
+      phoneNumber TEXT,
+      walletAmount TEXT,
+      totalEarning TEXT,
+      createdAt INTEGER, 
+      gender TEXT,
+      dateOfBirth TEXT,
+      isActive INTEGER,
+      referralCode TEXT,
+      status TEXT,            
+      role TEXT,
+      suspend TEXT,
+      languages TEXT,
+      verified TEXT
+    )
+  ''');
   }
 
   // Insert user into the database
+  // Insert user into the database
   Future<int> insertUser(UserModel user) async {
     final db = await database;
-    return await db.insert(
+    final result = await db.insert(
       'users',
       user.toJson(),
-      conflictAlgorithm:
-          ConflictAlgorithm.replace, // Replace if the same ID exists
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    log('_____________________User inserted with ID: ${user.id}, token: ${user.fcmToken}');
+    return result;
   }
 
   // Retrieve user by ID
@@ -127,5 +143,12 @@ class DatabaseHelper {
     return List.generate(maps.length, (i) {
       return UserModel.fromJson(maps[i]);
     });
+  }
+
+// clear user
+  Future<void> cleanUserTable() async {
+    final db = await database;
+
+    await db.delete("users");
   }
 }

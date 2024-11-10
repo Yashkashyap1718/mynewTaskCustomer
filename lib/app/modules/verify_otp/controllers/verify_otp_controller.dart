@@ -6,6 +6,7 @@ import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/signup/views/signup_view.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
+import 'package:customer/utils/database_helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -134,14 +135,16 @@ class VerifyOtpController extends GetxController {
         final String roleType = data['type'];
         final String firstDigit = id.substring(0, 1);
         final int firstDigitAsInt = int.parse(firstDigit, radix: 16);
-        UserModel userModel = UserModel(fcmToken: token);
+        UserModel userModel = UserModel();
+        userModel.fcmToken = token;
 
-        log(payload.toString());
-        log('----------------user-token-------${userModel.fcmToken}');
+        await DatabaseHelper().insertUser(userModel);
+        log('*****************User inserted with token: ${userModel.fcmToken}');
 
-        Get.off(SignupView(userToken: token), arguments: {
-          "userModel": userModel,
+        await fetchUserProfile(token, context).then((value) {
+          Get.off(SignupView(userToken: token));
         });
+
         ShowToastDialog.closeLoader();
 
         // Show success message with Animated SnackBar
@@ -152,7 +155,7 @@ class VerifyOtpController extends GetxController {
           mobileSnackBarPosition: MobileSnackBarPosition.top,
         ).show(context);
         // Store token or other relevant data in provider or local storage
-        // prrovider.setAccessToken(token);
+        // provider.setAccessToken(token);
 
         // Navigate to HomeScreen or the relevant page
         // Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
@@ -169,6 +172,74 @@ class VerifyOtpController extends GetxController {
     }
   }
 
+  Future<void> fetchUserProfile(token, context) async {
+    const String baseUrl = "http://172.93.54.177:3002/users/profile/preview";
+
+    try {
+      final response = await http.get(
+        Uri.parse(baseUrl),
+        headers: {
+          'token': token,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+        if (responseData['status'] == true) {
+          final data = responseData['data'];
+          // await DatabaseHelper().cleanUserTable();
+
+          // Handle null values safely using the null-aware operator or providing default values.
+          UserModel userModel = UserModel(
+            id: data['_id'] ?? '', // Default to an empty string if null
+            fullName: data['name'] ?? '', // Default to an empty string if null
+            countryCode: data['country_code'] ??
+                '', // Default to an empty string if null
+            phoneNumber:
+                data['phone'] ?? '', // Default to an empty string if null
+            referralCode: data['referral_code'] ??
+                '', // Default to an empty string if null
+            verified: data['verified']?.toString() ??
+                'false', // Convert to string and default to 'false' if null
+            role: data['role'] ?? '', // Default to an empty string if null
+            // Uncomment the languages field if required and handle its nullability
+            // languages: (data['languages'] as List<dynamic>?)?.join(', ') ?? '',
+            profilePic:
+                data['profile'] ?? '', // Default to an empty string if null
+            status: data['status'] ?? '', // Default to an empty string if null
+            suspend: data['suspend'] ?? false, // Default to false if null
+            gender: data['gender'] ?? '', // Default to an empty string if null
+          );
+
+          // Insert or update the user in the local database
+          await DatabaseHelper().insertUser(userModel);
+          print("************User profile successfully saved.");
+
+          AnimatedSnackBar.material(
+            'User profile successfully saved.',
+            type: AnimatedSnackBarType.success,
+            duration: const Duration(seconds: 5),
+            mobileSnackBarPosition: MobileSnackBarPosition.top,
+          ).show(context);
+        } else {
+          print("***********Failed to fetch profile: ${responseData['msg']}");
+        }
+      } else {
+        print("********Failed to fetch profile: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching profile: $e");
+
+      AnimatedSnackBar.material(
+        e.toString(),
+        type: AnimatedSnackBarType.error, // Changed to error
+        duration: const Duration(seconds: 5),
+        mobileSnackBarPosition: MobileSnackBarPosition.top,
+      ).show(context);
+    }
+  }
+
   Future<void> verifyOtpWithFirebase(BuildContext context) async {
     try {
       ShowToastDialog.showLoader("Verifying OTP...");
@@ -177,7 +248,6 @@ class VerifyOtpController extends GetxController {
         verificationId: verificationId.value,
         smsCode: otpCode.value,
       );
-
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
 

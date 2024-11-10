@@ -18,6 +18,11 @@ class UserModel {
 
   bool? isActive;
   Timestamp? createdAt;
+  String? status;
+  String? role;
+  String? verified;
+  String? suspend;
+  List<String>? languages;
 
   UserModel(
       {this.fullName,
@@ -34,18 +39,24 @@ class UserModel {
       this.phoneNumber,
       this.walletAmount,
       this.totalEarning,
-      this.createdAt});
+      this.createdAt,
+      this.status,
+      this.role,
+      this.suspend,
+      this.languages,
+      this.verified,
+      this.gender});
 
   @override
   String toString() {
-    return 'UserModel{fullName: $fullName,slug: $slug, id: $id, email: $email, loginType: $loginType, profilePic: $profilePic, dateOfBirth: $dateOfBirth, fcmToken: $fcmToken, countryCode: $countryCode, phoneNumber: $phoneNumber, walletAmount: $walletAmount,totalEarning: $totalEarning, gender: $gender, isActive: $isActive, referralCode: $referralCode , createdAt: $createdAt}';
+    return 'UserModel{fullName: $fullName,slug: $slug, id: $id, email: $email, loginType: $loginType, profilePic: $profilePic, dateOfBirth: $dateOfBirth, fcmToken: $fcmToken, countryCode: $countryCode, phoneNumber: $phoneNumber, walletAmount: $walletAmount,totalEarning: $totalEarning, gender: $gender, isActive: $isActive, referralCode: $referralCode , createdAt: $createdAt, status: $status, role:$role, verified: $verified, suspend: $suspend, language: $languages }';
   }
 
   UserModel.fromJson(Map<String, dynamic> json) {
     fullName = json['fullName'] ?? "";
     slug = json['slug'];
-    id = json['id'];
-    email = json['email'];
+    id = json['id'] ?? 0;
+    email = json['email'] ?? "example@gmail.com";
     loginType = json['loginType'];
     profilePic = json['profilePic'];
     fcmToken = json['fcmToken'];
@@ -58,6 +69,11 @@ class UserModel {
     dateOfBirth = json['dateOfBirth'] ?? '';
     isActive = json['isActive'];
     referralCode = json['referralCode'] ?? "";
+    status = json['status'] ?? "";
+    role = json['role'] ?? "";
+    suspend = json['suspend'] ?? "";
+    languages = List<String>.from(json['languages'] ?? []);
+    verified = json['verified'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
@@ -78,6 +94,11 @@ class UserModel {
     data['dateOfBirth'] = dateOfBirth;
     data['isActive'] = isActive;
     data['referralCode'] = referralCode;
+    data['status'] = status;
+    data['role'] = role;
+    data['suspend'] = suspend;
+    data['languages'] = languages;
+    data['verified'] = verified;
     return data;
   }
 }

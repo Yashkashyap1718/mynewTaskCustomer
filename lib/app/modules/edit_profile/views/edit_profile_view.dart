@@ -27,26 +27,40 @@ class EditProfileView extends StatefulWidget {
 }
 
 class _EditProfileViewState extends State<EditProfileView> {
-  UserModel user = UserModel();
+  UserModel? user;
+
   DatabaseHelper db = DatabaseHelper();
+
+  TextEditingController? nameController;
+  TextEditingController? emailController;
+  TextEditingController? dobController;
+
   @override
   void initState() {
+    _loadUserData();
     super.initState();
-    getUser();
   }
 
-  Future<void> getUser() async {
-    UserModel? retrievedUser = await db.retrieveUserFromTable();
-    if (retrievedUser != null) {
-      setState(() {
-        user = retrievedUser; // Assign the retrieved user to the local user
-      });
-    }
+  Future<void> _loadUserData() async {
+    UserModel? retrievedUser = await DatabaseHelper().retrieveUserFromTable();
+    setState(() {
+      user = retrievedUser;
+      if (user != null) {
+        nameController =
+            TextEditingController(text: '${user!.fullName?.toUpperCase()}');
+        emailController = TextEditingController(
+            text: user!.email); // Adjust according to your UserModel
+        dobController = TextEditingController(
+            text: user!.dateOfBirth); // Adjust according to your UserModel
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
+
+    print('---------token--------${user!.fcmToken}');
     return GetBuilder(
         init: EditProfileController(),
         builder: (controller) {
@@ -112,7 +126,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       const SizedBox(height: 12),
                       Center(
                         child: Text(
-                          user.fullName.toString().toUpperCase(),
+                          user!.referralCode.toString().toUpperCase(),
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
                             color: themeChange.isDarkTheme()
@@ -144,7 +158,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                         title: "Name".tr,
                         hintText: "Enter Name".tr,
                         prefixIcon: const Icon(Icons.person_outline_rounded),
-                        controller: controller.nameController,
+                        controller: nameController!,
                         validator: (value) => value != null && value.isNotEmpty
                             ? null
                             : 'This field required'.tr,
@@ -310,8 +324,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                             if (controller.formKey.currentState!.validate()) {
                               // controller.saveUserData();
 
-                              // controller.completeSignupProfile(
-                              //     "token", "referralCode");
+                              controller
+                                  .profileUpdation(user!.fcmToken.toString());
                             }
                           },
                           size: const Size(208, 52),
@@ -324,6 +338,15 @@ class _EditProfileViewState extends State<EditProfileView> {
             ),
           );
         });
+  }
+
+  @override
+  void dispose() {
+    // Dispose the controllers when the widget is removed from the widget tree
+    nameController?.dispose();
+    emailController?.dispose();
+    dobController?.dispose();
+    super.dispose();
   }
 
   myProfileView(EditProfileController controller, BuildContext context) {
@@ -440,7 +463,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                             IconButton(
                                 onPressed: () => controller.pickFile(
                                     source: ImageSource.camera,
-                                    token: user.fcmToken.toString()),
+                                    token: user!.fcmToken.toString()),
                                 icon: const Icon(
                                   Icons.camera_alt,
                                   size: 32,
@@ -464,7 +487,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                             IconButton(
                                 onPressed: () => controller.pickFile(
                                     source: ImageSource.gallery,
-                                    token: user.fcmToken.toString()),
+                                    token: user!.fcmToken.toString()),
                                 icon: const Icon(
                                   Icons.photo_library_sharp,
                                   size: 32,

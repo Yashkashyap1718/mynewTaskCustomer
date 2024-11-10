@@ -119,20 +119,22 @@ class EditProfileController extends GetxController {
     }
   }
 
-// complete SignUp Profile
-  Future<void> completeSignupProfile(String token, String referralCode) async {
-    const String url = '$baseURL/users/complete';
+// update user Profile
+  Future<void> updateUserProfile(
+    String token,
+  ) async {
+    const String url = '$baseURL$updatePofileEndpoint';
 
     final Map<String, String> payload = {
       "name": nameController.text,
+      "email": emailController.text,
+      "date_of_birth": emailController.text,
       "gender": selectedGender.value == 1 ? "Male" : "Female",
-      "referral_code": referralCode,
     };
 
     try {
       ShowToastDialog.showLoader("Completing profile...".tr);
-
-      final http.Response response = await http.post(
+      final http.Response response = await http.put(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
@@ -143,10 +145,11 @@ class EditProfileController extends GetxController {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
+
+        log('-----update--user-----$data');
         // Handle the successful response as needed
         ShowToastDialog.closeLoader();
-        Get.back(
-            result: true); // Optionally navigate back or show a success message
+        Get.back(result: true);
         ScaffoldMessenger.of(Get.context!).showSnackBar(
           const SnackBar(content: Text('Profile completed successfully!')),
         );
@@ -164,6 +167,7 @@ class EditProfileController extends GetxController {
   }
 
   // Upload Profile
+// Upload Profile function
   Future<void> uploadProfile(String token) async {
     const String url = '$baseURL/users/profile/upload';
 
@@ -176,28 +180,35 @@ class EditProfileController extends GetxController {
     try {
       ShowToastDialog.showLoader("Uploading profile...".tr);
 
-      // Create a multipart request
-      var request = http.MultipartRequest('PUT', Uri.parse(url));
+      // Read the image file as bytes
+      File imageFile = File(profileImage.value);
+      List<int> imageBytes = await imageFile.readAsBytes();
 
-      // Add headers to the request
-      request.headers.addAll({
-        'Content-Type': 'multipart/form-data',
-        'token': token,
-      });
+      // Convert the image to a base64 string
+      String base64Image = base64Encode(imageBytes);
 
-      // Attach the image file to the request
-      request.files.add(await http.MultipartFile.fromPath(
-        'profile', // The name of the field in your backend for the image
-        profileImage.value,
-      ));
+      // Create the request body
+      Map<String, dynamic> body = {
+        "profile": base64Image,
+      };
 
-      // Send the request
-      final http.StreamedResponse response = await request.send();
+      // Send the POST request
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'token': token,
+        },
+        body: jsonEncode(body),
+      );
+
+      // Log the response status
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
 
       // Process the response
       if (response.statusCode == 200) {
-        final responseBody = await response.stream.bytesToString();
-        final Map<String, dynamic> data = jsonDecode(responseBody);
+        final Map<String, dynamic> data = jsonDecode(response.body);
 
         if (data['status']) {
           ShowToastDialog.closeLoader();
@@ -208,14 +219,16 @@ class EditProfileController extends GetxController {
           throw Exception(data['msg']);
         }
       } else {
-        throw Exception('Failed to upload profile');
+        throw Exception(
+            'Failed to upload profile. Status code: ${response.statusCode}');
       }
     } catch (e) {
       ShowToastDialog.closeLoader();
       debugPrint('Error uploading profile: $e');
       ScaffoldMessenger.of(Get.context!).showSnackBar(
-        const SnackBar(
-            content: Text('Error occurred while uploading profile.')),
+        SnackBar(
+          content: Text('Error occurred while uploading profile: $e'),
+        ),
       );
     }
   }
@@ -232,8 +245,8 @@ class EditProfileController extends GetxController {
     try {
       ShowToastDialog.showLoader("Update profile...".tr);
 
-      final http.Response response = await http.post(
-        Uri.parse(baseURL + updatePofileEndpoint),
+      final http.Response response = await http.put(
+        Uri.parse(baseURL + updloadProfileImageEndpoint),
         headers: {
           'Content-Type': 'application/json',
           'token': token,
@@ -256,6 +269,7 @@ class EditProfileController extends GetxController {
 
         DatabaseHelper().insertUser(userModel);
 
+        log('------profileUpdation------$data');
         // You can proceed with further operations like saving the user model or updating UI
         print('User data loaded successfully');
         ShowToastDialog.closeLoader();

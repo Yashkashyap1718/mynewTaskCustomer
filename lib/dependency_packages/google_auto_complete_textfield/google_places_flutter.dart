@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import 'package:customer/dependency_packages/google_auto_complete_textfield/model/place_details.dart';
 import 'package:customer/dependency_packages/google_auto_complete_textfield/model/prediction.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'DioErrorHandler.dart';
@@ -28,7 +28,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   final FocusNode? focusNode;
 
   const GooglePlaceAutoCompleteTextField(
-      {super.key, required this.textEditingController,
+      {super.key,
+      required this.textEditingController,
       required this.googleAPIKey,
       this.debounceTime = 600,
       this.inputDecoration = const InputDecoration(),
@@ -48,10 +49,12 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.containerVerticalPadding});
 
   @override
-  _GooglePlaceAutoCompleteTextFieldState createState() => _GooglePlaceAutoCompleteTextFieldState();
+  _GooglePlaceAutoCompleteTextFieldState createState() =>
+      _GooglePlaceAutoCompleteTextFieldState();
 }
 
-class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoCompleteTextField> {
+class _GooglePlaceAutoCompleteTextFieldState
+    extends State<GooglePlaceAutoCompleteTextField> {
   final subject = PublishSubject<String>();
   OverlayEntry? _overlayEntry;
   List<Prediction> alPredictions = [];
@@ -70,9 +73,15 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
     return CompositedTransformTarget(
       link: _layerLink,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: widget.containerHorizontalPadding ?? 0, vertical: widget.containerVerticalPadding ?? 0),
+        padding: EdgeInsets.symmetric(
+            horizontal: widget.containerHorizontalPadding ?? 0,
+            vertical: widget.containerVerticalPadding ?? 0),
         alignment: Alignment.centerLeft,
-        decoration: widget.boxDecoration ?? BoxDecoration(shape: BoxShape.rectangle, border: Border.all(color: Colors.grey, width: 0.6), borderRadius: const BorderRadius.all(Radius.circular(10))),
+        decoration: widget.boxDecoration ??
+            BoxDecoration(
+                shape: BoxShape.rectangle,
+                border: Border.all(color: Colors.grey, width: 0.6),
+                borderRadius: const BorderRadius.all(Radius.circular(10))),
         child: Row(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -123,7 +132,8 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
   }
 
   getLocation(String text) async {
-    String url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
+    String url =
+        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
 
     if (widget.countries != null) {
       // in
@@ -153,7 +163,8 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
         throw response.data;
       }
 
-      PlacesAutocompleteResponse subscriptionResponse = PlacesAutocompleteResponse.fromJson(response.data);
+      PlacesAutocompleteResponse subscriptionResponse =
+          PlacesAutocompleteResponse.fromJson(response.data);
 
       if (text.isEmpty) {
         alPredictions.clear();
@@ -163,7 +174,8 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
 
       isSearched = false;
       alPredictions.clear();
-      if (subscriptionResponse.predictions!.isNotEmpty && (widget.textEditingController.text.toString().trim()).isNotEmpty) {
+      if (subscriptionResponse.predictions!.isNotEmpty &&
+          (widget.textEditingController.text.toString().trim()).isNotEmpty) {
         alPredictions.addAll(subscriptionResponse.predictions!);
       }
 
@@ -180,7 +192,10 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
   void initState() {
     super.initState();
     _dio = Dio();
-    subject.stream.distinct().debounceTime(Duration(milliseconds: widget.debounceTime)).listen(textChanged);
+    subject.stream
+        .distinct()
+        .debounceTime(Duration(milliseconds: widget.debounceTime))
+        .listen(textChanged);
   }
 
   textChanged(String text) async {
@@ -206,7 +221,8 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     itemCount: alPredictions.length,
-                    separatorBuilder: (context, pos) => widget.seperatedBuilder ?? const SizedBox(),
+                    separatorBuilder: (context, pos) =>
+                        widget.seperatedBuilder ?? const SizedBox(),
                     itemBuilder: (BuildContext context, int index) {
                       return InkWell(
                         onTap: () {
@@ -220,7 +236,12 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
                             removeOverlay();
                           }
                         },
-                        child: widget.itemBuilder != null ? widget.itemBuilder!(context, index, alPredictions[index]) : Container(padding: const EdgeInsets.all(10), child: Text(alPredictions[index].description!)),
+                        child: widget.itemBuilder != null
+                            ? widget.itemBuilder!(
+                                context, index, alPredictions[index])
+                            : Container(
+                                padding: const EdgeInsets.all(10),
+                                child: Text(alPredictions[index].description!)),
                       );
                     },
                   )),
@@ -235,12 +256,13 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
     _overlayEntry = _createOverlayEntry();
     Overlay.of(context).insert(_overlayEntry!);
     _overlayEntry!.markNeedsBuild();
-    }
+  }
 
   Future<Response?> getPlaceDetailsFromPlaceId(Prediction prediction) async {
     //String key = GlobalConfiguration().getString('google_maps_key');
 
-    var url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
+    var url =
+        "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
     Response response = await Dio().get(
       url,
     );
@@ -249,8 +271,13 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
 
     prediction.lat = placeDetails.result!.geometry!.location!.lat.toString();
     prediction.lng = placeDetails.result!.geometry!.location!.lng.toString();
+    if (widget.getPlaceDetailWithLatLng != null) {
+      widget.getPlaceDetailWithLatLng!(prediction);
+    } else {
+      // Optionally handle this case (e.g., show a message or log the error)
+      print("getPlaceDetailWithLatLng is null.");
+    }
 
-    widget.getPlaceDetailWithLatLng!(prediction);
     return null;
   }
 
@@ -272,7 +299,8 @@ class _GooglePlaceAutoCompleteTextFieldState extends State<GooglePlaceAutoComple
 }
 
 PlacesAutocompleteResponse parseResponse(Map responseBody) {
-  return PlacesAutocompleteResponse.fromJson(responseBody as Map<String, dynamic>);
+  return PlacesAutocompleteResponse.fromJson(
+      responseBody as Map<String, dynamic>);
 }
 
 PlaceDetails parsePlaceDetailMap(Map responseBody) {
@@ -280,6 +308,8 @@ PlaceDetails parsePlaceDetailMap(Map responseBody) {
 }
 
 typedef ItemClick = void Function(Prediction postalCodeResponse);
-typedef GetPlaceDetailsWithLatLng = void Function(Prediction postalCodeResponse);
+typedef GetPlaceDetailsWithLatLng = void Function(
+    Prediction postalCodeResponse);
 
-typedef ListItemBuilder = Widget Function(BuildContext context, int index, Prediction prediction);
+typedef ListItemBuilder = Widget Function(
+    BuildContext context, int index, Prediction prediction);

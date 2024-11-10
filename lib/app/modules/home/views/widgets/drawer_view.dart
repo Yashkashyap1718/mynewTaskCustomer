@@ -6,12 +6,10 @@ import 'dart:io';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/edit_profile/views/edit_profile_view.dart';
 import 'package:customer/app/modules/home/controllers/home_controller.dart';
-import 'package:customer/app/modules/login/views/login_view.dart';
 import 'package:customer/constant_widgets/custom_dialog_box.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
 import 'package:customer/utils/database_helper.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -35,16 +33,19 @@ class _DrawerViewState extends State<DrawerView> {
   DatabaseHelper db = DatabaseHelper();
   @override
   void initState() {
-    super.initState();
     getUser();
+    super.initState();
   }
 
-  Future<void> getUser() async {
-    UserModel? retrievedUser = await db.retrieveUserFromTable();
-    if (retrievedUser != null) {
+  getUser() async {
+    final userFromDb = await db.retrieveUserFromTable();
+    if (userFromDb != null) {
       setState(() {
-        user = retrievedUser; // Assign the retrieved user to the local user
+        user = userFromDb;
       });
+      log("------------------userName--token-------------${user.fcmToken}");
+    } else {
+      log('No user found in the database');
     }
   }
 
@@ -55,7 +56,6 @@ class _DrawerViewState extends State<DrawerView> {
     return GetBuilder(
         init: HomeController(),
         builder: (controller) {
-          log("------------------userName---------------${user.fullName}");
           return Drawer(
             child: Stack(
               children: [
@@ -123,7 +123,7 @@ class _DrawerViewState extends State<DrawerView> {
                                         ),
                                       ),
                                       Text(
-                                        controller.phoneNumber.value,
+                                        user.email.toString(),
                                         style: GoogleFonts.inter(
                                           color: themeChange.isDarkTheme()
                                               ? AppThemData.white
@@ -443,11 +443,12 @@ class _DrawerViewState extends State<DrawerView> {
                               positiveString: "Log out".tr,
                               negativeString: "Cancel".tr,
                               positiveClick: () async {
-                                await controller.logOutUser(context, '');
-                                await FirebaseAuth.instance.signOut();
+                                await controller.logOutUser(
+                                    context, user.fcmToken.toString());
+
+                                // await FirebaseAuth.instance.signOut();
 
                                 Navigator.pop(context);
-                                Get.offAll(const LoginView());
                               },
                               negativeClick: () {
                                 Navigator.pop(context);

@@ -13,6 +13,7 @@ import 'package:customer/utils/notification_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../constant/api_constant.dart';
 import '../../home/controllers/home_controller.dart';
@@ -30,6 +31,7 @@ class SignupController extends GetxController {
   RxInt selectedGender = 1.obs;
   RxString loginType = "".obs;
 
+  DatabaseHelper db = DatabaseHelper();
   @override
   void onInit() {
     getArgument();
@@ -41,6 +43,7 @@ class SignupController extends GetxController {
   void onClose() {}
   Rx<UserModel> userModel = UserModel().obs;
   final HomeController userController = Get.put(HomeController());
+
   creatCompleteAccorunt(String gender, String token) async {
     final Map<String, String> payload = {
       "name": nameController.text,
@@ -58,16 +61,21 @@ class SignupController extends GetxController {
       log('***************${response.body}');
 
       final Map<String, dynamic> data = jsonDecode(response.body);
+      // await db.cleanUserTable();
 
       if (data['status'] == true && data['data'] != null) {
-        UserModel userModel = UserModel();
+        // UserModel userModel = UserModel();
+        //
+        // userModel.id = data['data']['_id'];
+        // userModel.fullName = data['data']['name'];
+        // userModel.gender = data['data']['gender'];
+        // userModel.referralCode = data['data']['referral_code'];
 
-        userModel.id = data['data']['_id'];
-        userModel.fullName = data['data']['name'];
-        userModel.gender = data['data']['gender'];
-        userModel.referralCode = data['data']['referral_code'];
-        DatabaseHelper().insertUser(userModel);
-        Get.offAll(() => const HomeView());
+        // await db.insertUser(userModel);
+
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setBool('isLoggedIn', true);
+        Get.offAll(() => HomeView(token: token));
         // You can proceed with further operations like saving the user model or updating UI
         print('User data loaded successfully');
       } else {

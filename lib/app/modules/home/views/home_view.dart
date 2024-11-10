@@ -1,7 +1,9 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:convert';
 import 'dart:developer';
 
+import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/app/modules/home/views/widgets/drawer_view.dart';
@@ -26,12 +28,108 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+import '../../../../utils/database_helper.dart';
+import '../../../models/user_model.dart';
 import '../controllers/home_controller.dart';
 
-class HomeView extends StatelessWidget {
-  const HomeView({super.key});
+class HomeView extends StatefulWidget {
+  final String? token;
+  const HomeView({super.key, this.token});
+
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
+  UserModel userData = UserModel();
+  DatabaseHelper db = DatabaseHelper();
+
+  @override
+  void initState() {
+    getUser();
+    fetchUserProfile(widget.token);
+    super.initState();
+  }
+
+  Future<void> getUser() async {
+    UserModel? retrievedUser = await db.retrieveUserFromTable();
+    if (retrievedUser != null) {
+      setState(() {
+        userData = retrievedUser; // Assign the retrieved user to the local user
+      });
+    }
+  }
+
+  Future<void> fetchUserProfile(token) async {
+    const String baseUrl = "http://172.93.54.177:3002/users/profile/preview";
+
+    try {
+      final response = await http.get(
+        Uri.parse(baseUrl),
+        headers: {
+          'token': token,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
+
+        if (responseData['status'] == true) {
+          final data = responseData['data'];
+          await DatabaseHelper().cleanUserTable();
+
+          // Handle null values safely using the null-aware operator or providing default values.
+          UserModel userModel = UserModel(
+            id: data['_id'] ?? '', // Default to an empty string if null
+            fullName: data['name'] ?? '', // Default to an empty string if null
+            countryCode: data['country_code'] ??
+                '', // Default to an empty string if null
+            phoneNumber:
+                data['phone'] ?? '', // Default to an empty string if null
+            referralCode: data['referral_code'] ??
+                '', // Default to an empty string if null
+            verified: data['verified']?.toString() ??
+                'false', // Convert to string and default to 'false' if null
+            role: data['role'] ?? '', // Default to an empty string if null
+            // Uncomment the languages field if required and handle its nullability
+            // languages: (data['languages'] as List<dynamic>?)?.join(', ') ?? '',
+            profilePic:
+                data['profile'] ?? '', // Default to an empty string if null
+            status: data['status'] ?? '', // Default to an empty string if null
+            suspend: data['suspend'] ?? false, // Default to false if null
+            gender: data['gender'] ?? '', // Default to an empty string if null
+          );
+
+          // Insert or update the user in the local database
+          await DatabaseHelper().insertUser(userModel);
+          print("************User profile successfully saved.");
+
+          AnimatedSnackBar.material(
+            'User profile successfully saved.',
+            type: AnimatedSnackBarType.success,
+            duration: const Duration(seconds: 5),
+            mobileSnackBarPosition: MobileSnackBarPosition.top,
+          ).show(context);
+        } else {
+          print("***********Failed to fetch profile: ${responseData['msg']}");
+        }
+      } else {
+        print("********Failed to fetch profile: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching profile: $e");
+
+      AnimatedSnackBar.material(
+        e.toString(),
+        type: AnimatedSnackBarType.error, // Changed to error
+        duration: const Duration(seconds: 5),
+        mobileSnackBarPosition: MobileSnackBarPosition.top,
+      ).show(context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -215,8 +313,8 @@ class HomeView extends StatelessWidget {
                                                               .getHomeOngoingBookings(),
                                                           builder: (context,
                                                               snapshot) {
-                                                            log("State : ${snapshot.connectionState}");
-                                                            log("State : ${snapshot.data}");
+                                                            log("---------------State : ${snapshot.connectionState}");
+                                                            log("--------------State : ${snapshot.data}");
                                                             if (snapshot
                                                                     .connectionState ==
                                                                 ConnectionState
@@ -496,7 +594,7 @@ class HomeView extends StatelessWidget {
                                                       //       ),
                                                       //       RoundShapeButton(
                                                       //           size: const Size(140, 34),
-                                                      //           title: "Book Now".tr,
+                                                      //           title: "Book NowGg".tr,
                                                       //           buttonColor: AppThemData.white,
                                                       //           buttonTextColor: AppThemData.black,
                                                       //           onTap: () {}),

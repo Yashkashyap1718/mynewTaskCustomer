@@ -18,6 +18,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 
+import '../../../../constant_widgets/show_toast_dialog.dart';
+import '../../login/views/login_view.dart';
+
 class HomeController extends GetxController {
   final count = 0.obs;
   RxString profilePic =
@@ -30,11 +33,11 @@ class HomeController extends GetxController {
   RxInt curPage = 0.obs;
   RxInt drawerIndex = 0.obs;
   RxBool isLoading = false.obs;
-  var userModel = UserModel().obs;
+  // var userModel = UserModel().obs;
 
   @override
   void onInit() {
-    getUserData();
+    // getUserData();
     updateCurrentLocation();
     super.onInit();
   }
@@ -48,7 +51,7 @@ class HomeController extends GetxController {
   void onClose() {}
   // Method to update the user data
   void updateUser(UserModel user) {
-    userModel.value = user;
+    // userModel.value = user;
   }
 
   getUserData() async {
@@ -164,14 +167,24 @@ class HomeController extends GetxController {
 
   logOutUser(BuildContext context, String token) async {
     try {
+      print('---logOutUser----function call-----');
+
+      ShowToastDialog.showLoader("Please wait".tr);
       final res = await http.post(Uri.parse(baseURL + logOutEndpoint),
           headers: {"Content-Type": "application/json"},
           body: jsonEncode({'token': token}));
 
+      print('---logOutUser----token-----$token');
+
       if (res.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(res.body);
-        final String msg = responseData['msg'];
 
+        print('---logOutUser----response-----$responseData');
+
+        final String msg = responseData['msg'];
+        Get.offAll(const LoginView());
+
+        ShowToastDialog.closeLoader();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(msg),
@@ -179,6 +192,7 @@ class HomeController extends GetxController {
         );
       }
     } catch (e) {
+      print('-----logout-----error---$e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to logout user: $e'),

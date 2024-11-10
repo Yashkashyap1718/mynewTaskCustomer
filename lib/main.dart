@@ -1,7 +1,7 @@
 import 'package:country_code_picker/country_code_picker.dart';
-import 'package:customer/app/modules/splash_screen/views/splash_screen_view.dart';
+import 'package:customer/app/modules/home/views/home_view.dart';
+import 'package:customer/app/modules/login/views/login_view.dart';
 import 'package:customer/firebase_options.dart';
-import 'package:customer/global_setting_controller.dart';
 import 'package:customer/services/localization_service.dart';
 import 'package:customer/theme/styles.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/routes/app_pages.dart';
 
@@ -85,11 +86,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
               builder: EasyLoading.init(),
               initialRoute: AppPages.INITIAL,
               getPages: AppPages.routes,
-              home: GetBuilder<GlobalSettingController>(
-                  init: GlobalSettingController(),
-                  builder: (context) {
-                    return const SplashScreenView();
-                  }));
+              home: AuthCheck());
         },
       ),
     );
@@ -110,4 +107,48 @@ void configLoading() {
     ..maskColor = const Color(0xFFf5f6f6)
     ..userInteractions = true
     ..dismissOnTap = false;
+}
+
+class AuthCheck extends StatefulWidget {
+  const AuthCheck({super.key});
+
+  @override
+  State<AuthCheck> createState() => _AuthCheckState();
+}
+
+class _AuthCheckState extends State<AuthCheck> {
+  bool isLoggedIn = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkPermissionsAndLoginStatus();
+  }
+
+  Future<void> _checkPermissionsAndLoginStatus() async {
+    // First request location permissions
+
+    // Then check if user is logged in
+    await _checkIfLoggedIn();
+  }
+
+  Future<void> _checkIfLoggedIn() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? loginStatus = prefs.getBool('isLoggedIn');
+
+    setState(() {
+      isLoggedIn = loginStatus ?? false;
+    });
+
+    if (isLoggedIn) {
+      Get.off(() => const HomeView());
+    } else {
+      Get.off(() => const LoginView());
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return isLoggedIn ? const HomeView() : const LoginView();
+  }
 }

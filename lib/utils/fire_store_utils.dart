@@ -419,8 +419,11 @@ class FireStoreUtils {
         BookingModel bookingModel = BookingModel.fromJson(data);
         bookingsList.add(bookingModel);
       }
-      // final closetsDateTimeToNow = bookingsList.reduce(
-      //         (a, b) => (a.bookingTime!).toDate().difference(DateTime.now()).abs() < (b.bookingTime!).toDate().difference(DateTime.now()).abs() ? a : b);
+      final closetsDateTimeToNow = bookingsList.reduce((a, b) =>
+          (a.bookingTime!).toDate().difference(DateTime.now()).abs() <
+                  (b.bookingTime!).toDate().difference(DateTime.now()).abs()
+              ? a
+              : b);
 
       getHomeOngoingBookingController!.sink.add(bookingsList);
     });
@@ -544,7 +547,7 @@ class FireStoreUtils {
           BookingStatus.bookingCancelled,
           BookingStatus.bookingRejected
         ])
-        // .where('bookingStatus', isEqualTo: BookingStatus.bookingCancelled)
+        .where('bookingStatus', isEqualTo: BookingStatus.bookingCancelled)
         .orderBy("createAt", descending: true)
         .get()
         .then((value) {
