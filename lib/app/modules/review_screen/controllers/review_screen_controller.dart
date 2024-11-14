@@ -30,19 +30,22 @@ class ReviewScreenController extends GetxController {
       bookingModel = argumentData['bookingModel'];
     }
     log("----->1");
-    await FireStoreUtils.getDriverUserProfile(bookingModel.value.driverId.toString()).then((value) {
+    await FireStoreUtils.getDriverUserProfile(
+            bookingModel.value.driverId.toString())
+        .then((value) {
       if (value != null) {
         log("----->2");
         driverModel.value = value;
       }
     });
-    await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid()).then((value) {
+    await FireStoreUtils.getUserProfile().then((value) {
       if (value != null) {
         log("----->3");
         userModel.value = value;
       }
     });
-    await FireStoreUtils.getReview(bookingModel.value.id.toString()).then((value) {
+    await FireStoreUtils.getReview(bookingModel.value.id.toString())
+        .then((value) {
       if (value != null) {
         log("----->4");
         reviewModel.value = value;

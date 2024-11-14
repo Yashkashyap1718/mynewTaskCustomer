@@ -17,6 +17,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../constant_widgets/show_toast_dialog.dart';
 import '../../login/views/login_view.dart';
@@ -57,8 +58,7 @@ class HomeController extends GetxController {
   getUserData() async {
     isLoading.value = true;
 
-    UserModel? userModel =
-        await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid());
+    UserModel? userModel = await FireStoreUtils.getUserProfile();
     await checkActiveStatus();
     if (userModel != null) {
       profilePic.value = (userModel.profilePic ?? "").isNotEmpty
@@ -78,8 +78,7 @@ class HomeController extends GetxController {
   }
 
   checkActiveStatus() async {
-    UserModel? userModel =
-        await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid());
+    UserModel? userModel = await FireStoreUtils.getUserProfile();
     if (userModel!.isActive == false) {
       Get.defaultDialog(
           titlePadding: const EdgeInsets.only(top: 16),
@@ -182,6 +181,8 @@ class HomeController extends GetxController {
         print('---logOutUser----response-----$responseData');
 
         final String msg = responseData['msg'];
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', false);
         Get.offAll(const LoginView());
 
         ShowToastDialog.closeLoader();

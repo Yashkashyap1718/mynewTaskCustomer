@@ -1,5 +1,4 @@
 import 'package:customer/app/modules/home/views/widgets/category_view.dart';
-import 'package:customer/app/modules/payment_method/views/payment_method_view.dart';
 import 'package:customer/app/modules/select_location/controllers/select_location_controller.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
@@ -7,7 +6,6 @@ import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -139,139 +137,140 @@ class SelectVehicleTypeBottomSheet extends StatelessWidget {
                             horizontal: 16, vertical: 8),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Total'.tr,
-                                        style: GoogleFonts.inter(
-                                          color: themeChange.isDarkTheme()
-                                              ? AppThemData.grey25
-                                              : AppThemData.grey950,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        Constant.amountToShow(
-                                            amount:
-                                                Constant.calculateFinalAmount(
-                                                        controller
-                                                            .bookingModel.value)
-                                                    .toString()),
-                                        style: GoogleFonts.inter(
-                                          color: themeChange.isDarkTheme()
-                                              ? AppThemData.grey25
-                                              : AppThemData.grey950,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      Get.to(PaymentMethodView(
-                                        index: controller
-                                            .selectVehicleTypeIndex.value,
-                                      ));
-                                    },
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          width: 32,
-                                          height: 32,
-                                          padding: const EdgeInsets.all(5),
-                                          decoration: ShapeDecoration(
-                                            color: themeChange.isDarkTheme()
-                                                ? AppThemData.grey900
-                                                : AppThemData.grey50,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(100),
-                                            ),
-                                          ),
-                                          child: (controller.selectedPaymentMethod.value ==
-                                                  Constant
-                                                      .paymentModel!.cash!.name)
-                                              ? SvgPicture.asset(
-                                                  "assets/icon/ic_cash.svg")
-                                              : (controller.selectedPaymentMethod.value ==
-                                                      Constant.paymentModel!
-                                                          .wallet!.name)
-                                                  ? SvgPicture.asset(
-                                                      "assets/icon/ic_wallet.svg")
-                                                  : (controller.selectedPaymentMethod.value ==
-                                                          Constant.paymentModel!
-                                                              .paypal!.name)
-                                                      ? Image.asset("assets/images/ig_paypal.png",
-                                                          height: 24, width: 24)
-                                                      : (controller.selectedPaymentMethod.value ==
-                                                              Constant
-                                                                  .paymentModel!
-                                                                  .strip!
-                                                                  .name)
-                                                          ? Image.asset(
-                                                              "assets/images/ig_stripe.png",
-                                                              height: 24,
-                                                              width: 24)
-                                                          : (controller.selectedPaymentMethod.value ==
-                                                                  Constant.paymentModel!.razorpay!.name)
-                                                              ? Image.asset("assets/images/ig_razorpay.png", height: 24, width: 24)
-                                                              : (controller.selectedPaymentMethod.value == Constant.paymentModel!.payStack!.name)
-                                                                  ? Image.asset("assets/images/ig_paystack.png", height: 24, width: 24)
-                                                                  : (controller.selectedPaymentMethod.value == Constant.paymentModel!.mercadoPago!.name)
-                                                                      ? Image.asset("assets/images/ig_marcadopago.png", height: 24, width: 24)
-                                                                      : (controller.selectedPaymentMethod.value == Constant.paymentModel!.payFast!.name)
-                                                                          ? Image.asset("assets/images/ig_payfast.png", height: 24, width: 24)
-                                                                          : (controller.selectedPaymentMethod.value == Constant.paymentModel!.flutterWave!.name)
-                                                                              ? Image.asset("assets/images/ig_flutterwave.png", height: 24, width: 24)
-                                                                              : const SizedBox(height: 24, width: 24),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        SizedBox(
-                                          width: 80,
-                                          child: Text(
-                                            controller
-                                                .selectedPaymentMethod.value
-                                                .toString(),
-                                            overflow: TextOverflow.ellipsis,
-                                            style: GoogleFonts.inter(
-                                              color: themeChange.isDarkTheme()
-                                                  ? AppThemData.grey25
-                                                  : AppThemData.grey950,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(width: 2),
-                                        const Icon(
-                                            Icons.keyboard_arrow_right_rounded)
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            // here show the total price and payment option
+                            // Expanded(
+                            //   child: Column(
+                            //     mainAxisSize: MainAxisSize.min,
+                            //     mainAxisAlignment: MainAxisAlignment.start,
+                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                            //     children: [
+                            //       Row(
+                            //         mainAxisSize: MainAxisSize.min,
+                            //         mainAxisAlignment: MainAxisAlignment.start,
+                            //         crossAxisAlignment:
+                            //             CrossAxisAlignment.center,
+                            //         children: [
+                            //           Text(
+                            //             'Total'.tr,
+                            //             style: GoogleFonts.inter(
+                            //               color: themeChange.isDarkTheme()
+                            //                   ? AppThemData.grey25
+                            //                   : AppThemData.grey950,
+                            //               fontSize: 14,
+                            //               fontWeight: FontWeight.w400,
+                            //             ),
+                            //           ),
+                            //           const SizedBox(width: 8),
+                            //           Text(
+                            //             Constant.amountToShow(
+                            //                 amount:
+                            //                     Constant.calculateFinalAmount(
+                            //                             controller
+                            //                                 .bookingModel.value)
+                            //                         .toString()),
+                            //             style: GoogleFonts.inter(
+                            //               color: themeChange.isDarkTheme()
+                            //                   ? AppThemData.grey25
+                            //                   : AppThemData.grey950,
+                            //               fontSize: 18,
+                            //               fontWeight: FontWeight.w700,
+                            //             ),
+                            //           ),
+                            //         ],
+                            //       ),
+                            //       InkWell(
+                            //         onTap: () {
+                            //           Get.to(PaymentMethodView(
+                            //             index: controller
+                            //                 .selectVehicleTypeIndex.value,
+                            //           ));
+                            //         },
+                            //         child: Row(
+                            //           mainAxisSize: MainAxisSize.min,
+                            //           mainAxisAlignment:
+                            //               MainAxisAlignment.start,
+                            //           crossAxisAlignment:
+                            //               CrossAxisAlignment.center,
+                            //           children: [
+                            //             Container(
+                            //               width: 32,
+                            //               height: 32,
+                            //               padding: const EdgeInsets.all(5),
+                            //               decoration: ShapeDecoration(
+                            //                 color: themeChange.isDarkTheme()
+                            //                     ? AppThemData.grey900
+                            //                     : AppThemData.grey50,
+                            //                 shape: RoundedRectangleBorder(
+                            //                   borderRadius:
+                            //                       BorderRadius.circular(100),
+                            //                 ),
+                            //               ),
+                            //               child: (controller.selectedPaymentMethod.value ==
+                            //                       Constant
+                            //                           .paymentModel!.cash!.name)
+                            //                   ? SvgPicture.asset(
+                            //                       "assets/icon/ic_cash.svg")
+                            //                   : (controller.selectedPaymentMethod.value ==
+                            //                           Constant.paymentModel!
+                            //                               .wallet!.name)
+                            //                       ? SvgPicture.asset(
+                            //                           "assets/icon/ic_wallet.svg")
+                            //                       : (controller.selectedPaymentMethod.value ==
+                            //                               Constant.paymentModel!
+                            //                                   .paypal!.name)
+                            //                           ? Image.asset("assets/images/ig_paypal.png",
+                            //                               height: 24, width: 24)
+                            //                           : (controller.selectedPaymentMethod.value ==
+                            //                                   Constant
+                            //                                       .paymentModel!
+                            //                                       .strip!
+                            //                                       .name)
+                            //                               ? Image.asset(
+                            //                                   "assets/images/ig_stripe.png",
+                            //                                   height: 24,
+                            //                                   width: 24)
+                            //                               : (controller.selectedPaymentMethod.value ==
+                            //                                       Constant.paymentModel!.razorpay!.name)
+                            //                                   ? Image.asset("assets/images/ig_razorpay.png", height: 24, width: 24)
+                            //                                   : (controller.selectedPaymentMethod.value == Constant.paymentModel!.payStack!.name)
+                            //                                       ? Image.asset("assets/images/ig_paystack.png", height: 24, width: 24)
+                            //                                       : (controller.selectedPaymentMethod.value == Constant.paymentModel!.mercadoPago!.name)
+                            //                                           ? Image.asset("assets/images/ig_marcadopago.png", height: 24, width: 24)
+                            //                                           : (controller.selectedPaymentMethod.value == Constant.paymentModel!.payFast!.name)
+                            //                                               ? Image.asset("assets/images/ig_payfast.png", height: 24, width: 24)
+                            //                                               : (controller.selectedPaymentMethod.value == Constant.paymentModel!.flutterWave!.name)
+                            //                                                   ? Image.asset("assets/images/ig_flutterwave.png", height: 24, width: 24)
+                            //                                                   : const SizedBox(height: 24, width: 24),
+                            //             ),
+                            //             const SizedBox(width: 8),
+                            //             SizedBox(
+                            //               width: 80,
+                            //               child: Text(
+                            //                 controller
+                            //                     .selectedPaymentMethod.value
+                            //                     .toString(),
+                            //                 overflow: TextOverflow.ellipsis,
+                            //                 style: GoogleFonts.inter(
+                            //                   color: themeChange.isDarkTheme()
+                            //                       ? AppThemData.grey25
+                            //                       : AppThemData.grey950,
+                            //                   fontSize: 16,
+                            //                   fontWeight: FontWeight.w400,
+                            //                 ),
+                            //               ),
+                            //             ),
+                            //             const SizedBox(width: 2),
+                            //             const Icon(
+                            //                 Icons.keyboard_arrow_right_rounded)
+                            //           ],
+                            //         ),
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
                             const SizedBox(width: 3),
                             RoundShapeButton(
                                 size: const Size(151, 45),

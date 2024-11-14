@@ -40,17 +40,18 @@ class GlobalSettingController extends GetxController {
             symbolAtRight: false);
       }
     });
-    await FireStoreUtils().getSettings();
-    await FireStoreUtils().getPayment();
+
+    // await FireStoreUtils().getSettings();
+    // await FireStoreUtils().getPayment();
     AppThemData.primary400 = HexColor.fromHex(Constant.appColor.toString());
   }
 
   getVehicleTypeList() async {
-    await FireStoreUtils.getVehicleType().then((value) {
-      if (value != null) {
-        Constant.vehicleTypeList = value;
-      }
-    });
+    // await FireStoreUtils.getVehicleType().then((value) {
+    //   if (value != null) {
+    //     Constant.vehicleTypeList = value;
+    //   }
+    // });
   }
 
   NotificationService notificationService = NotificationService();
@@ -60,12 +61,11 @@ class GlobalSettingController extends GetxController {
       String token = await NotificationService.getToken();
       log(":::::::TOKEN:::::: $token");
       if (FirebaseAuth.instance.currentUser != null) {
-        await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid())
-            .then((value) {
+        await FireStoreUtils.getUserProfile().then((value) {
           if (value != null) {
             UserModel userModel = value;
             userModel.fcmToken = token;
-            FireStoreUtils.updateUser(userModel);
+            // FireStoreUtils.updateUser(userModel);
           }
         });
       }

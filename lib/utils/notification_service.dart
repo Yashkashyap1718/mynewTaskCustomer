@@ -62,9 +62,11 @@ class NotificationService {
         log(message.notification.toString());
         if (message.data['type'] == "chat") {
           await FireStoreUtils.getUserProfile(
-                  message.data['senderId'] == FireStoreUtils.getCurrentUid()
-                      ? message.data['receiverId']
-                      : message.data['senderId'])
+                  // message.data['senderId'] == 1,
+                  //     ? message.data['receiverId']
+                  //     : message.data['senderId']
+
+                  )
               .then((value) {
             // UserModel userModel = value!;
             // Get.to(const ChatScreen(), arguments: {"receiverModel": userModel});

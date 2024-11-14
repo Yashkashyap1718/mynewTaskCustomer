@@ -7,10 +7,12 @@ import 'package:customer/app/modules/signup/views/signup_view.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/utils/database_helper.dart';
+import 'package:customer/utils/preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VerifyOtpController extends GetxController {
   TextEditingController otpConytroller = TextEditingController();
@@ -140,10 +142,16 @@ class VerifyOtpController extends GetxController {
 
         await DatabaseHelper().insertUser(userModel);
         log('*****************User inserted with token: ${userModel.fcmToken}');
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString("token", token);
+
+        await Preferences().saveIsUserLoggedIn();
 
         await fetchUserProfile(token, context).then((value) {
           Get.off(SignupView(userToken: token));
         });
+        // SharedPreferences prefs = await SharedPreferences.getInstance();
+        // await prefs.setBool('isLoggedIn', true);
 
         ShowToastDialog.closeLoader();
 

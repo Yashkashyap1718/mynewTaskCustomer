@@ -93,8 +93,7 @@ class MyWalletController extends GetxController {
   }
 
   getProfileData() async {
-    await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid())
-        .then((value) {
+    await FireStoreUtils.getUserProfile().then((value) {
       if (value != null) {
         userModel.value = value;
       }

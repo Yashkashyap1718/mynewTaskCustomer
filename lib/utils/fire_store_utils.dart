@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customer/app/models/banner_model.dart';
 import 'package:customer/app/models/booking_model.dart';
@@ -25,6 +26,8 @@ import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:customer/constant/api_constant.dart';
 
 class FireStoreUtils {
   static FirebaseFirestore fireStore = FirebaseFirestore.instance;
@@ -35,8 +38,11 @@ class FireStoreUtils {
 
   static Future<bool> isLogin() async {
     bool isLogin = false;
-    if (FirebaseAuth.instance.currentUser != null) {
-      isLogin = await userExistOrNot(FirebaseAuth.instance.currentUser!.uid);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("token");
+
+    if (token != null && token.isNotEmpty) {
+      isLogin = true;
     } else {
       isLogin = false;
     }
@@ -46,9 +52,9 @@ class FireStoreUtils {
   static Future<bool> userExistOrNot(String uid) async {
     bool isExist = false;
 
-    await fireStore.collection(CollectionName.users).doc(uid).get().then(
+    await getUserProfile().then(
       (value) {
-        if (value.exists) {
+        if (value!.id == null) {
           isExist = true;
         } else {
           isExist = false;
@@ -76,45 +82,95 @@ class FireStoreUtils {
     return isUpdate;
   }
 
-  static Future<UserModel?> getUserProfile(String uuid) async {
-    UserModel? userModel;
-    await fireStore
-        .collection(CollectionName.users)
-        .doc(uuid)
-        .get()
-        .then((value) {
-      if (value.exists) {
-        userModel = UserModel.fromJson(value.data()!);
+  static Future<UserModel?> getUserProfile() async {
+    try {
+      UserModel? userModel;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("token");
+      // HTTP GET request
+      final response = await http.get(
+        Uri.parse(baseURL + getUserPofileEndpoint),
+        headers: {
+          'token': token.toString(),
+        },
+      );
+
+      // Check if the response status is OK
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        // Check if the response status is true
+        if (jsonResponse['status'] == true) {
+          userModel = UserModel.fromJson(jsonResponse['data']);
+        } else {
+          log("Failed to fetch user profile: ${jsonResponse['msg']}");
+        }
+      } else {
+        log("Error: ${response.statusCode} - ${response.reasonPhrase}");
       }
-    }).catchError((error) {
-      log("Failed to update user: $error");
-      userModel = null;
-    });
-    return userModel;
+    } catch (error) {
+      log("Failed to fetch user profile: $error");
+    }
+    return null;
+
+    // return userModel;
   }
 
-  static Future<bool?> deleteUser() async {
-    bool? isDelete;
-    try {
-      await fireStore
-          .collection(CollectionName.users)
-          .doc(FireStoreUtils.getCurrentUid())
-          .delete();
+  // static Future<bool?> deleteUser() async {
+  //   bool? isDelete;
+  //   try {
+  //     await fireStore
+  //         .collection(CollectionName.users)
+  //         .doc(FireStoreUtils.getCurrentUid())
+  //         .delete();
 
-      // delete user  from firebase auth
-      await FirebaseAuth.instance.currentUser!.delete().then((value) {
-        isDelete = true;
-      });
+  //     // delete user  from firebase auth
+  //     await FirebaseAuth.instance.currentUser!.delete().then((value) {
+  //       isDelete = true;
+  //     });
+  //   } catch (e, s) {
+  //     log('FireStoreUtils.firebaseCreateNewUser $e $s');
+  //     return false;
+  //   }
+  //   return isDelete;
+  // }
+
+  static Future<bool?> deleteUser(String userId, String token) async {
+    bool? isDelete = false;
+    final String url = "$baseURL/$userId";
+
+    try {
+      // HTTP DELETE request
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: {
+          'token': token,
+        },
+      );
+
+      // Check if the response status is OK
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        // Check if the deletion was successful
+        if (jsonResponse['status'] == true) {
+          isDelete = true;
+        } else {
+          log("Failed to delete user: ${jsonResponse['msg']}");
+        }
+      } else {
+        log("Error: ${response.statusCode} - ${response.reasonPhrase}");
+      }
     } catch (e, s) {
-      log('FireStoreUtils.firebaseCreateNewUser $e $s');
-      return false;
+      log('Failed to delete user: $e $s');
     }
+
     return isDelete;
   }
 
   static Future<bool?> updateUserWallet({required String amount}) async {
     bool isAdded = false;
-    await getUserProfile(FireStoreUtils.getCurrentUid()).then((value) async {
+    await getUserProfile().then((value) async {
       if (value != null) {
         UserModel userModel = value;
         userModel.walletAmount =

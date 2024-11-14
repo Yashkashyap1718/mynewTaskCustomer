@@ -15,6 +15,7 @@ import 'package:customer/app/models/payment_method_model.dart';
 import 'package:customer/app/models/tax_model.dart';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/models/vehicle_type_model.dart';
+import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/extension/string_extensions.dart';
 import 'package:customer/theme/app_them_data.dart';
@@ -28,6 +29,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 
@@ -84,6 +86,31 @@ class Constant {
   static const _chars =
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789';
   static final math.Random _rnd = math.Random();
+
+  getDriverData() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("token");
+      final response = await http.get(
+        Uri.parse(baseURL + driverListEndpoint),
+        headers: {
+          "Content-Type": "application/json",
+          "token": token.toString(),
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        if (responseData["status"] == true) {
+          final List<dynamic> data = responseData["data"];
+          vehicleTypeList!.addAll(
+              data.map((json) => VehicleTypeModel.fromJson(json)).toList());
+        }
+      }
+    } catch (e) {
+      log("Error fetching driver data: $e");
+    }
+  }
 
   static String getRandomString(int length) {
     String randomString = String.fromCharCodes(Iterable.generate(

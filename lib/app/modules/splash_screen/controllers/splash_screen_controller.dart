@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_overrides
 
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:get/get.dart';
 import 'package:customer/app/modules/home/views/home_view.dart';
@@ -32,16 +33,18 @@ class SplashScreenController extends GetxController {
       Get.offAll(const IntroScreenView());
     } else {
       bool isLogin = await FireStoreUtils.isLogin();
+      log('-logugu--$isLogin' '');
       if (isLogin == true) {
-        bool permissionGiven = await Constant.isPermissionApplied();
-        if (permissionGiven) {
-          Get.offAll(const HomeView());
-        } else {
-          Get.offAll(const PermissionView());
-        }
+        // bool permissionGiven = await Constant.isPermissionApplied();
+        // log('---permission---$permissionGiven');
+        // if (permissionGiven) {
+        Get.offAll(const HomeView());
       } else {
-        Get.offAll(const LoginView());
+        Get.offAll(const PermissionView());
       }
+      // } else {
+      Get.offAll(const LoginView());
+      // }
     }
   }
 }

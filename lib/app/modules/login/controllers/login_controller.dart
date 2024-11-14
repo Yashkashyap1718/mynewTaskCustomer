@@ -220,8 +220,7 @@ class LoginController extends GetxController {
           FireStoreUtils.userExistOrNot(value.user!.uid).then((userExit) async {
             ShowToastDialog.closeLoader();
             if (userExit == true) {
-              UserModel? userModel =
-                  await FireStoreUtils.getUserProfile(value.user!.uid);
+              UserModel? userModel = await FireStoreUtils.getUserProfile();
               if (userModel != null) {
                 if (userModel.isActive == true) {
                   Get.offAll(const HomeView());
@@ -269,8 +268,7 @@ class LoginController extends GetxController {
             ShowToastDialog.closeLoader();
 
             if (userExit == true) {
-              UserModel? userModel =
-                  await FireStoreUtils.getUserProfile(value.user!.uid);
+              UserModel? userModel = await FireStoreUtils.getUserProfile();
               if (userModel != null) {
                 if (userModel.isActive == true) {
                   Get.offAll(const HomeView());

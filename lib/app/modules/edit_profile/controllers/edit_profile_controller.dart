@@ -54,8 +54,7 @@ class EditProfileController extends GetxController {
   }
 
   getUserData() async {
-    UserModel? userModel =
-        await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid());
+    UserModel? userModel = await FireStoreUtils.getUserProfile();
     if (userModel != null) {
       profileImage.value = (userModel.profilePic ?? "").isNotEmpty
           ? userModel.profilePic ??
@@ -71,8 +70,7 @@ class EditProfileController extends GetxController {
   }
 
   saveUserData() async {
-    UserModel? userModel =
-        await FireStoreUtils.getUserProfile(FireStoreUtils.getCurrentUid());
+    UserModel? userModel = await FireStoreUtils.getUserProfile();
     userModel!.gender = selectedGender.value == 1 ? "Male" : "Female";
     userModel.fullName = nameController.text;
     userModel.slug = nameController.text.toSlug(delimiter: "-");

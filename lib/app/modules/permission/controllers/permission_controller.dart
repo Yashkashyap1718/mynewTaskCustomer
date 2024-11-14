@@ -28,7 +28,7 @@ class PermissionController extends GetxController {
     PermissionStatus permissionStatus = await location.hasPermission();
     if (permissionStatus == PermissionStatus.granted) {
       if (Platform.isAndroid) {
-        location.enableBackgroundMode(enable: true).then((value) {
+        location.isBackgroundModeEnabled().then((value) {
           if (value) {
             Get.to(const HomeView());
           } else {

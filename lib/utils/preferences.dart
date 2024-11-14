@@ -5,6 +5,10 @@ class Preferences {
   static const themKey = "themKey";
   static const isFinishOnBoardingKey = "isFinishOnBoardingKey";
 
+  saveIsUserLoggedIn() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool("isLoggedIn", true);
+  }
 
   static Future<bool> getBoolean(String key) async {
     SharedPreferences pref = await SharedPreferences.getInstance();

@@ -10,6 +10,7 @@ import 'package:customer/app/models/positions.dart';
 import 'package:customer/app/models/tax_model.dart';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/models/vehicle_type_model.dart';
+import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/booking_status.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
@@ -24,8 +25,11 @@ import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:geolocator/geolocator.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SelectLocationController extends GetxController {
   FocusNode pickUpFocusNode = FocusNode();
@@ -68,7 +72,9 @@ class SelectLocationController extends GetxController {
 
   @override
   void onInit() {
+    log('-----mapModel---$mapModel');
     getData();
+    Constant().getDriverData();
     super.onInit();
   }
 
@@ -82,6 +88,50 @@ class SelectLocationController extends GetxController {
     });
   }
 
+  static Future<bool> updateCurrentLocation({
+    required double latitude,
+    required double longitude,
+  }) async {
+    final String url = baseURL + currentLocationEndpoint;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("token");
+    // Request body
+    final Map<String, dynamic> body = {
+      "latitude": latitude.toString(),
+      "longitude": longitude.toString(),
+      "fcmToken": "$token",
+    };
+
+    try {
+      // HTTP PUT request
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {
+          'token': token.toString(),
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+
+      // Check if the response status is OK
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse['status'] == true) {
+          log("Location updated successfully: ${jsonResponse['msg']}");
+          return true;
+        } else {
+          log("Failed to update location: ${jsonResponse['msg']}");
+        }
+      } else {
+        log("Error: ${response.statusCode} - ${response.reasonPhrase}");
+      }
+    } catch (error, stackTrace) {
+      log('Failed to update current location: $error $stackTrace');
+    }
+    return false;
+  }
+
   getData() async {
     currentLocationPosition = await Utils.getCurrentLocation();
     Constant.country = (await placemarkFromCoordinates(
@@ -92,7 +142,11 @@ class SelectLocationController extends GetxController {
     getTax();
     sourceLocation = LatLng(
         currentLocationPosition!.latitude, currentLocationPosition!.longitude);
+    await updateCurrentLocation(
+        latitude: sourceLocation!.latitude,
+        longitude: sourceLocation!.longitude);
     await addMarkerSetup();
+
     if (destination != null && sourceLocation != null) {
       getPolyline(
           sourceLatitude: sourceLocation!.latitude,
@@ -200,7 +254,7 @@ class SelectLocationController extends GetxController {
         bookingModel.value = BookingModel.fromJson(bookingModel.value.toJson());
 
         ShowToastDialog.closeLoader();
-        log("Data : ${mapModel.value!.toJson()}");
+        log("--mapModel--Data : ${mapModel.value!.toJson()}");
 
         // Update popup index if necessary
         if (popupIndex.value == 0) popupIndex.value = 1;
