@@ -17,23 +17,25 @@ class VehicleTypeModel {
     required this.persons,
   });
 
-  factory VehicleTypeModel.fromRawJson(String str) => VehicleTypeModel.fromJson(json.decode(str));
+  factory VehicleTypeModel.fromRawJson(String str) =>
+      VehicleTypeModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory VehicleTypeModel.fromJson(Map<String, dynamic> json) => VehicleTypeModel(
-        id: json["id"],
+  factory VehicleTypeModel.fromJson(Map<String, dynamic> json) =>
+      VehicleTypeModel(
+        id: json["id"] ?? '',
         image: json["image"],
-        isActive: json["isActive"],
-        title: json["title"],
+        isActive: json["isActive"] ?? true,
+        title: json["name"],
         charges: json["charges"] == null
             ? Charges(
-                fareMinimumChargesWithinKm: "0",
-                farMinimumCharges: "0",
+                fareMinimumChargesWithinKm: json["duration_in_minutes"].toString(),
+                farMinimumCharges: json["calculate_fare"].toString(),
                 farePerKm: "0",
               )
             : Charges.fromJson(json["charges"]),
-        persons: json["persons"],
+        persons: json["person"].toString(),
       );
 
   Map<String, dynamic> toJson() => {

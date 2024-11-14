@@ -38,7 +38,7 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
-    // getUserData();
+    getUserData();
     updateCurrentLocation();
     super.onInit();
   }

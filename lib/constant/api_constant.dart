@@ -8,4 +8,5 @@ const String getUserPofileEndpoint = "/users/profile/preview"; //GET
 const String updatePofileEndpoint = "/users/profile/update"; //PUT
 const String updloadProfileImageEndpoint = "/users/profile/upload"; //PUT
 const String currentLocationEndpoint = "/users/current_location"; //PUT
-const String driverListEndpoint = "/admin/driver/list"; //GET
+const String driverListEndpoint = "/driver/driver/list"; //GET
+const String userRideRequest = "/users/ride/request"; //GET

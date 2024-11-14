@@ -454,35 +454,40 @@ class SelectLocationController extends GetxController {
   }
 
   String amountShow(VehicleTypeModel vehicleType, MapModel value) {
-    if (Constant.distanceType == "Km") {
-      var distance =
-          (value.rows!.first.elements!.first.distance!.value!.toInt() / 1000);
-      if (distance >
-          double.parse(vehicleType.charges.fareMinimumChargesWithinKm)) {
-        return Constant.amountCalculate(
-                vehicleType.charges.farePerKm.toString(), distance.toString())
-            .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
+    try {
+      if (Constant.distanceType == "Km") {
+        var distance =
+            (value.rows!.first.elements!.first.distance!.value!.toInt() / 1000);
+        if (distance >
+            double.parse(vehicleType.charges.fareMinimumChargesWithinKm)) {
+          return Constant.amountCalculate(
+                  vehicleType.charges.farePerKm.toString(), distance.toString())
+              .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
+        } else {
+          return Constant.amountCalculate(
+                  vehicleType.charges.farMinimumCharges.toString(),
+                  distance.toString())
+              .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
+        }
       } else {
-        return Constant.amountCalculate(
-                vehicleType.charges.farMinimumCharges.toString(),
-                distance.toString())
-            .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
+        var distance =
+            (value.rows!.first.elements!.first.distance!.value!.toInt() /
+                1609.34);
+        if (distance >
+            double.parse(vehicleType.charges.fareMinimumChargesWithinKm)) {
+          return Constant.amountCalculate(
+                  vehicleType.charges.farePerKm.toString(), distance.toString())
+              .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
+        } else {
+          return Constant.amountCalculate(
+                  vehicleType.charges.farMinimumCharges.toString(),
+                  distance.toString())
+              .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
+        }
       }
-    } else {
-      var distance =
-          (value.rows!.first.elements!.first.distance!.value!.toInt() /
-              1609.34);
-      if (distance >
-          double.parse(vehicleType.charges.fareMinimumChargesWithinKm)) {
-        return Constant.amountCalculate(
-                vehicleType.charges.farePerKm.toString(), distance.toString())
-            .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
-      } else {
-        return Constant.amountCalculate(
-                vehicleType.charges.farMinimumCharges.toString(),
-                distance.toString())
-            .toStringAsFixed(Constant.currencyModel!.decimalDigits!);
-      }
+    } catch (r) {
+      print("------ amout show $r");
+      return "100";
     }
   }
 

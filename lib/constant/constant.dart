@@ -59,7 +59,7 @@ class Constant {
   static String minimumAmountToDeposit = "0.0";
   static String minimumAmountToWithdrawal = "0.0";
   static String? referralAmount = "0.0";
-  static List<VehicleTypeModel>? vehicleTypeList;
+  static List<VehicleTypeModel>? vehicleTypeList=List.from([]);
 
   // static LocationLatLng? currentLocation = LocationLatLng(latitude: 23.0225, longitude: 72.5714);
   static List<TaxModel>? taxList;
@@ -91,8 +91,22 @@ class Constant {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("token");
-      final response = await http.get(
-        Uri.parse(baseURL + driverListEndpoint),
+      final Map<String, Object> payload = {
+        "pickup_location": {
+          "type": "Point",
+          "coordinates": [28.6280, 77.3649]
+        },
+        "pickup_address": "Noida Sector 62, UP",
+        "dropoff_location": {
+          "type": "Point",
+          "coordinates": [28.6190, 77.0311]
+        },
+        "dropoff_address": "Dwarka More Delhi"
+      };
+
+      final response = await http.post(
+        Uri.parse(baseURL + userRideRequest),
+        body: jsonEncode(payload),
         headers: {
           "Content-Type": "application/json",
           "token": token.toString(),

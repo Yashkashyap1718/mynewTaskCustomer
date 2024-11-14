@@ -47,14 +47,20 @@ class SignupController extends GetxController {
   creatCompleteAccorunt(String gender, String token) async {
     final Map<String, String> payload = {
       "name": nameController.text,
-      "gender": gender,
+      "gender": "Male",
       "referral_code": referralController.text,
     };
     try {
       ShowToastDialog.showLoader("Please wait".tr);
-      final http.Response response = await http.post(
+      // final http.Response response = await http.post(
+      //   Uri.parse(baseURL + complpeteSignUpEndpoint),
+      //   headers: {'Content-Type': 'application/json', 'token': token},
+      //   body: jsonEncode(payload),
+      // );
+  
+      final response = await http.post(
         Uri.parse(baseURL + complpeteSignUpEndpoint),
-        headers: {'Content-Type': 'application/json', 'token': token},
+        headers: {"Content-Type": "application/json", "token": token},
         body: jsonEncode(payload),
       );
 

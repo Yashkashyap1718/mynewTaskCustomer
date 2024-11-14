@@ -87,16 +87,28 @@ class CategoryView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    Text(
-                      '${'We will arrived in '.tr}${controller.mapModel.value!.rows!.first.elements!.first.duration!.text ?? ''}',
-                      style: GoogleFonts.inter(
-                        color: themeChange.isDarkTheme()
-                            ? AppThemData.grey25
-                            : AppThemData.grey950,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
+                    // Obx(() {
+                    //   if (controller.mapModel.value == null ||
+                    //       controller.mapModel.value!.rows == null ||
+                    //       controller.mapModel.value!.rows!.isEmpty) {
+                    //     return Text('No data available');
+                    //   }
+                    //   final rows = controller.mapModel.value!.rows;
+                    //   if (rows!.first?.elements == null ||
+                    //       rows!.first!.elements!.isEmpty) {
+                    //     return Text('No data available');
+                    //   }
+                    //   return Text(
+                    //     '${'We will arrived in '.tr}${rows.first.elements!.first.duration!.text ?? ''}',
+                    //     style: GoogleFonts.inter(
+                    //       color: themeChange.isDarkTheme()
+                    //           ? AppThemData.grey25
+                    //           : AppThemData.grey950,
+                    //       fontSize: 14,
+                    //       fontWeight: FontWeight.w400,
+                    //     ),
+                    //   );
+                    // }),
                   ],
                 ),
               ),
@@ -107,9 +119,8 @@ class CategoryView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    Constant.amountToShow(
-                        amount: controller.amountShow(
-                            vehicleType, controller.mapModel.value!)),
+                    controller.amountShow(
+                        vehicleType, controller.mapModel.value!),
                     textAlign: TextAlign.right,
                     style: GoogleFonts.inter(
                       color: themeChange.isDarkTheme()
