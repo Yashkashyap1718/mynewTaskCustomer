@@ -369,76 +369,114 @@ class FireStoreUtils {
 
   static Future<bool?> setBooking(BookingModel bookingModel) async {
     bool isAdded = false;
-    await fireStore
-        .collection(CollectionName.bookings)
-        .doc(bookingModel.id)
-        .set(bookingModel.toJson())
-        .then((value) {
+
+    final response = await http.post(
+      Uri.parse(baseURL + userRideSubmit),
+      body: jsonEncode({
+        "pickup_location": {
+          "type": "Point",
+          "coordinates": [28.6280, 77.3649]
+        },
+        "pickup_address": "Noida Sector 62, UP",
+        "dropoff_location": {
+          "type": "Point",
+          "coordinates": [28.6190, 77.0311]
+        },
+        "dropoff_address": "Dwarka More Delhi",
+        "distance": 32.63,
+        "vehicle_type": "suv",
+        "fare_amount": "748.79",
+        "duration_in_minutes": "48.95"
+      }),
+      headers: {"Content-Type": "application/json", "token": token},
+    );
+
+    if (response.statusCode == 200) {
       isAdded = true;
-    }).catchError((error) {
-      log("Failed to add ride: $error");
+      // return jsonDecode(response.body);
+    } else {
+      log("Failed to add ride:");
       isAdded = false;
-    });
+    }
+
+    // await fireStore
+    //     .collection(CollectionName.bookings)
+    //     .doc(bookingModel.id)
+    //     .set(bookingModel.toJson())
+    //     .then((value) {
+    //   isAdded = true;
+    // }).catchError((error) {
+    //   log("Failed to add ride: $error");
+    //   isAdded = false;
+    // });
     return isAdded;
+  }
+
+  static Future<RideRequest?> checkforRealTimebooking(
+      BookingModel bookingModel) async {
+    RideRequest? data;
+    final response = await http.get(
+      Uri.parse(baseURL + realtimeRequest),
+      headers: {"Content-Type": "application/json", "token": token},
+    );
+
+    if (response.statusCode == 200) {
+      data = RideRequest.fromJson(jsonDecode(response.body));
+
+      // return jsonDecode(response.body);
+    } else {
+      log("Failed to add ride:");
+    }
+
+    return data;
+
+    // await fireStore
+    //     .collection(CollectionName.bookings)
+    //     .doc(bookingModel.id)
+    //     .set(bookingModel.toJson())
+    //     .then((value) {
+    //   isAdded = true;
+    // }).catchError((error) {
+    //   log("Failed to add ride: $error");
+    //   isAdded = false;
+    // });
   }
 
   StreamController<List<DriverUserModel>>? getNearestDriverController;
 
-  Future<List<DriverUserModel>> sendOrderData(BookingModel bookingModel) async {
+  Future<RideRequest> sendOrderData(RideRequest bookingModel) async {
     getNearestDriverController =
         StreamController<List<DriverUserModel>>.broadcast();
 
     List<DriverUserModel> ordersList = [];
     List<String> driverIdList = [];
-    Query query = fireStore
-        .collection(CollectionName.driverUsers)
-        .where('driverVehicleDetails.vehicleTypeId',
-            isEqualTo: bookingModel.vehicleType!.id)
-        .where('isOnline', isEqualTo: true);
-    GeoFirePoint center = GeoFlutterFire().point(
-        latitude: bookingModel.pickUpLocation!.latitude ?? 0.0,
-        longitude: bookingModel.pickUpLocation!.longitude ?? 0.0);
-    Stream<List<DocumentSnapshot>> stream = GeoFlutterFire()
-        .collection(collectionRef: query)
-        .within(
-            center: center,
-            radius: double.parse(Constant.radius),
-            field: 'position',
-            strictMode: true);
 
-    stream.listen((List<DocumentSnapshot> documentList) async {
-      ordersList.clear();
-      if (getNearestDriverController != null) {
-        for (var document in documentList) {
-          final data = document.data() as Map<String, dynamic>;
-          DriverUserModel driverUserModel = DriverUserModel.fromJson(data);
-          ordersList.add(driverUserModel);
-          if (driverUserModel.fcmToken != null &&
-              !driverIdList.contains(driverUserModel.id)) {
-            driverIdList.add(driverUserModel.id ?? '');
-            Map<String, dynamic> playLoad = <String, dynamic>{
-              "bookingId": bookingModel.id
-            };
-            await SendNotification.sendOneNotification(
-                type: "order",
-                token: driverUserModel.fcmToken.toString(),
-                title: 'New Ride Available'.tr,
-                body: 'A customer has placed an ride near your location.'.tr,
-                bookingId: bookingModel.id,
-                senderId: FireStoreUtils.getCurrentUid(),
-                payload: playLoad);
-          }
+    // DriverUserModel driverUserModel = DriverUserModel.fromJson(data);
+    // ordersList.add(driverUserModel);
+    // if (driverUserModel.fcmToken != null &&
+    //     !driverIdList.contains(driverUserModel.id)) {
+    //   driverIdList.add(driverUserModel.id ?? '');
+    //   Map<String, dynamic> playLoad = <String, dynamic>{
+    //     "bookingId": bookingModel.data.id
+    //   };
+    //   await SendNotification.sendOneNotification(
+    //       type: "order",
+    //       token: driverUserModel.fcmToken.toString(),
+    //       title: 'New Ride Available'.tr,
+    //       body: 'A customer has placed an ride near your location.'.tr,
+    //       bookingId: bookingModel.data.id,
+    //       senderId: FireStoreUtils.getCurrentUid(),
+    //       payload: playLoad);
+    // }
 
-          if (!getNearestDriverController!.isClosed) {
-            getNearestDriverController!.sink.add(ordersList);
-          }
-        }
-      }
-    });
+    if (!getNearestDriverController!.isClosed) {
+      getNearestDriverController!.sink.add(ordersList);
+    }
+
     log("------>$getNearestDriverController");
     getNearestDriverController!.close();
     log("------>${getNearestDriverController!.isClosed}");
-    return ordersList;
+    return bookingModel;
   }
 
   closeStream() {
@@ -496,31 +534,35 @@ class FireStoreUtils {
   StreamController<BookingModel>? getBookingStatusController;
 
   Stream<BookingModel> getBookingStatusData(String bookingId) async* {
-    getBookingStatusController ??= StreamController<BookingModel>.broadcast();
+    RideRequest? data;
+    // final response = await http.get(
+    //   Uri.parse(baseURL + realtimeRequest),
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "token":
+    //         token
+    //   },
+    // );
 
-    Stream<QuerySnapshot> stream = fireStore
-        .collection(CollectionName.bookings)
-        .where('id', isEqualTo: bookingId)
-        .snapshots();
-    stream.listen((QuerySnapshot querySnapshot) {
-      log("Length= : ${querySnapshot.docs.length}");
-      for (var document in querySnapshot.docs) {
-        if (getBookingStatusController != null) {
-          final data = document.data() as Map<String, dynamic>;
-          BookingModel bookingModel = BookingModel.fromJson(data);
-          if ((bookingModel.bookingStatus ?? '') ==
-              BookingStatus.bookingOngoing) {
-            ShowToastDialog.showToast("Your ride started...");
-            // Get.offAll(const HomeView());
-            Get.back();
-            // Get.to(const HomeView());
-          } else {}
-          if (!getBookingStatusController!.isClosed) {
-            getBookingStatusController!.sink.add(bookingModel);
-          }
-        }
-      }
-    });
+    // if (response.statusCode == 200) {
+    //   data = RideRequest.fromJson(jsonDecode(response.body));
+
+    //   // return jsonDecode(response.body);
+    // } else {
+    //   log("Failed to add ride:");
+    // }
+
+    // BookingModel bookingModel = BookingModel.fromJson(data);
+    //       if ((data!.status ?? '') ==
+    //           BookingStatus.bookingOngoing) {
+    //         ShowToastDialog.showToast("Your ride started...");
+    //         // Get.offAll(const HomeView());
+    //         Get.back();
+    //         // Get.to(const HomeView());
+    //       } else {}
+    //       if (!getBookingStatusController!.isClosed) {
+    //         getBookingStatusController!.sink.add(bookingModel);
+    //       }
     yield* getBookingStatusController!.stream;
   }
 
@@ -836,5 +878,195 @@ class FireStoreUtils {
       log(error.toString());
     });
     return supportTicketList;
+  }
+}
+
+// Main model class
+class RideRequest {
+  bool status;
+  String msg;
+  RideData data;
+
+  RideRequest({
+    required this.status,
+    required this.msg,
+    required this.data,
+  });
+
+  // Factory method to create an instance from JSON
+  factory RideRequest.fromJson(Map<String, dynamic> json) {
+    return RideRequest(
+      status: json['status'],
+      msg: json['msg'],
+      data: RideData.fromJson(json['data']),
+    );
+  }
+
+  // Convert the object to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status,
+      'msg': msg,
+      'data': data.toJson(),
+    };
+  }
+}
+
+// Data class that represents the details of the ride request
+class RideData {
+  Locationn pickupLocation;
+  Locationn dropoffLocation;
+  String id;
+  String passengerId;
+  String? driverId;
+  String? vehicleId;
+  String? vehicleTypeId;
+  String pickupAddress;
+  String dropoffAddress;
+  String distance;
+  FareAmount fareAmount;
+  double durationInMinutes;
+  String status;
+  String? couponId;
+  String? otp;
+  String paymentStatus;
+  String paymentMode;
+  int? startTime;
+  int? endTime;
+  int? remainingTime;
+  int createdAt;
+  int updatedAt;
+  int v;
+
+  RideData({
+    required this.pickupLocation,
+    required this.dropoffLocation,
+    required this.id,
+    required this.passengerId,
+    this.driverId,
+    this.vehicleId,
+    this.vehicleTypeId,
+    required this.pickupAddress,
+    required this.dropoffAddress,
+    required this.distance,
+    required this.fareAmount,
+    required this.durationInMinutes,
+    required this.status,
+    this.couponId,
+    this.otp,
+    required this.paymentStatus,
+    required this.paymentMode,
+    this.startTime,
+    this.endTime,
+    this.remainingTime,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.v,
+  });
+
+  // Factory method to create an instance from JSON
+  factory RideData.fromJson(Map<String, dynamic> json) {
+    return RideData(
+      pickupLocation: Locationn.fromJson(json['pickup_location']),
+      dropoffLocation: Locationn.fromJson(json['dropoff_location']),
+      id: json['_id'],
+      passengerId: json['passenger_id'],
+      driverId: json['driver_id'],
+      vehicleId: json['vehicle_id'],
+      vehicleTypeId: json['vehicle_type_id'],
+      pickupAddress: json['pickup_address'],
+      dropoffAddress: json['dropoff_address'],
+      distance: json['distance'],
+      fareAmount: FareAmount.fromJson(json['fare_amount']),
+      durationInMinutes: json['duration_in_minutes'].toDouble(),
+      status: json['status'],
+      couponId: json['coupon_id'],
+      otp: json['otp'],
+      paymentStatus: json['payment_status'],
+      paymentMode: json['payment_mode'],
+      startTime: json['start_time'],
+      endTime: json['end_time'],
+      remainingTime: json['remaining_time'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
+      v: json['__v'],
+    );
+  }
+
+  // Convert the object to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'pickup_location': pickupLocation.toJson(),
+      'dropoff_location': dropoffLocation.toJson(),
+      '_id': id,
+      'passenger_id': passengerId,
+      'driver_id': driverId,
+      'vehicle_id': vehicleId,
+      'vehicle_type_id': vehicleTypeId,
+      'pickup_address': pickupAddress,
+      'dropoff_address': dropoffAddress,
+      'distance': distance,
+      'fare_amount': fareAmount.toJson(),
+      'duration_in_minutes': durationInMinutes,
+      'status': status,
+      'coupon_id': couponId,
+      'otp': otp,
+      'payment_status': paymentStatus,
+      'payment_mode': paymentMode,
+      'start_time': startTime,
+      'end_time': endTime,
+      'remaining_time': remainingTime,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
+      '__v': v,
+    };
+  }
+}
+
+// Model class for a location (Point)
+class Locationn {
+  String type;
+  List<double> coordinates;
+
+  Locationn({
+    required this.type,
+    required this.coordinates,
+  });
+
+  // Factory method to create an instance from JSON
+  factory Locationn.fromJson(Map<String, dynamic> json) {
+    return Locationn(
+      type: json['type'],
+      coordinates: List<double>.from(json['coordinates']),
+    );
+  }
+
+  // Convert the object to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type,
+      'coordinates': coordinates,
+    };
+  }
+}
+
+// Model class for fare amount
+class FareAmount {
+  String numberDecimal;
+
+  FareAmount({required this.numberDecimal});
+
+  // Factory method to create an instance from JSON
+  factory FareAmount.fromJson(Map<String, dynamic> json) {
+    return FareAmount(
+      numberDecimal: json['\$numberDecimal'],
+    );
+  }
+
+  // Convert the object to JSON
+  Map<String, dynamic> toJson() {
+    return {
+      '\$numberDecimal': numberDecimal,
+    };
   }
 }

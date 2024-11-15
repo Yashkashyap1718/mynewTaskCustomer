@@ -25,7 +25,6 @@ class SelectLocationView extends StatelessWidget {
             backgroundColor: themeChange.isDarkTheme()
                 ? AppThemData.black
                 : AppThemData.white,
-            // appBar: AppBarWithBorder(title: "Select Location", bgColor: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white),
             body: controller.isLoading.value
                 ? const Center(
                     child: CircularProgressIndicator(),

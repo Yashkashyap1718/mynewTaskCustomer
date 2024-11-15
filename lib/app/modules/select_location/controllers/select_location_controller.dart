@@ -94,7 +94,8 @@ class SelectLocationController extends GetxController {
   }) async {
     final String url = baseURL + currentLocationEndpoint;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString("token");
+    token = prefs.getString("token") ?? "";
+
     // Request body
     final Map<String, dynamic> body = {
       "latitude": latitude.toString(),

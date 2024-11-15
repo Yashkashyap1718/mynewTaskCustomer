@@ -10,3 +10,8 @@ const String updloadProfileImageEndpoint = "/users/profile/upload"; //PUT
 const String currentLocationEndpoint = "/users/current_location"; //PUT
 const String driverListEndpoint = "/driver/driver/list"; //GET
 const String userRideRequest = "/users/ride/request"; //GET
+
+const String userRideSubmit = "/users/ride/submit_ride"; //GET
+const String realtimeRequest = "/users/ride/request/realtime";
+
+String token = "";

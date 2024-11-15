@@ -41,7 +41,8 @@ class SplashScreenController extends GetxController {
         Get.offAll(const HomeView());
         return;
       } else {
-        Get.offAll(const PermissionView());
+        // Get.offAll(const PermissionView());
+         Get.offAll(const LoginView());
         return;
       }
       // } else {
