@@ -370,30 +370,41 @@ class FireStoreUtils {
   static Future<bool?> setBooking(BookingModel bookingModel) async {
     bool isAdded = false;
 
+    Map<String, Object> map = {
+      "pickup_location": {
+        "type": "Point",
+        "coordinates": [
+          bookingModel.pickUpLocation!.latitude,
+          bookingModel.pickUpLocation!.longitude
+        ]
+      },
+      "pickup_address": bookingModel.pickUpLocationAddress ?? '',
+      "dropoff_location": {
+        "type": "Point",
+        "coordinates": [
+          bookingModel.dropLocation!.latitude,
+          bookingModel.dropLocation!.longitude
+        ]
+      },
+      "dropoff_address": bookingModel.dropLocationAddress ?? '',
+      "distance": bookingModel.distance!.distance ?? 0.0,
+      "vehicle_type": bookingModel.vehicleType!.title ?? '',
+      "fare_amount": bookingModel.subTotal ?? '',
+      "duration_in_minutes": '48.95'
+    };
+
     final response = await http.post(
       Uri.parse(baseURL + userRideSubmit),
-      body: jsonEncode({
-        "pickup_location": {
-          "type": "Point",
-          "coordinates": [28.6280, 77.3649]
-        },
-        "pickup_address": "Noida Sector 62, UP",
-        "dropoff_location": {
-          "type": "Point",
-          "coordinates": [28.6190, 77.0311]
-        },
-        "dropoff_address": "Dwarka More Delhi",
-        "distance": 32.63,
-        "vehicle_type": "suv",
-        "fare_amount": "748.79",
-        "duration_in_minutes": "48.95"
-      }),
+      body: jsonEncode(map),
       headers: {"Content-Type": "application/json", "token": token},
     );
 
     if (response.statusCode == 200) {
       isAdded = true;
       // return jsonDecode(response.body);
+    } else if (response.statusCode == 404) {
+      log("Driver not found");
+      isAdded = false;
     } else {
       log("Failed to add ride:");
       isAdded = false;
@@ -663,20 +674,26 @@ class FireStoreUtils {
 
   static Future<DriverUserModel?> getDriverUserProfile(String uuid) async {
     DriverUserModel? userModel;
-    await fireStore
-        .collection(CollectionName.driverUsers)
-        .doc(uuid)
-        .get()
-        .then((value) {
-      if (value.exists) {
-        userModel = DriverUserModel.fromJson(value.data()!);
-      }
-    }).catchError((error) {
-      log("Failed to get user: $error");
-      userModel = null;
-    });
+    userModel = await getOnlineUserModel(uuid);
     return userModel;
   }
+
+  static Future<DriverUserModel> getOnlineUserModel(String uuid) async {
+  final response = await http.post(
+    Uri.parse(baseURL + getDriverDetails),
+    body: jsonEncode({'driver_id':uuid}),
+    headers: {"Content-Type": "application/json", "token": token},
+  );
+
+  if (response.statusCode == 200) {
+    if (jsonDecode(response.body)["status"]) {
+      return DriverUserModel.fromJson(jsonDecode(response.body)['data']);
+    }
+    return DriverUserModel();
+  } else {
+    return DriverUserModel();
+  }
+}
 
   static Future<bool?> setWalletTransaction(
       WalletTransactionModel walletTransactionModel) async {

@@ -28,6 +28,7 @@ class DriverUserModel {
   dynamic rotation;
   String? reviewsCount;
   String? reviewsSum;
+  List<DocsModel>? driverdDocs = [];
 
   DriverUserModel({
     this.fullName,
@@ -53,70 +54,75 @@ class DriverUserModel {
     this.gender,
     this.reviewsCount,
     this.reviewsSum,
+    this.driverdDocs,
   });
 
-  @override
-  String toString() {
-    return 'DriverUserModel{fullName: $fullName, slug: $slug, id: $id, email: $email, loginType: $loginType, profilePic: $profilePic, dateOfBirth: $dateOfBirth, fcmToken: $fcmToken, countryCode: $countryCode, phoneNumber: $phoneNumber, walletAmount: $walletAmount,  totalEarning: $totalEarning,  gender: $gender, isActive: $isActive, isVerified: $isVerified, isOnline: $isOnline, createdAt: $createdAt, driverVehicleDetails: $driverVehicleDetails, location: $location, position: $position, rotation: $rotation, reviewsCount: $reviewsCount, reviewsSum: $reviewsSum}';
-  }
+  factory DriverUserModel.fromJson(Map<String, dynamic> json) =>
+      DriverUserModel(
+        fullName: json['fullName'],
+        slug: json['slug'],
+        id: json['id'],
+        email: json['email'],
+        loginType: json['loginType'],
+        profilePic: json['profilePic'],
+        fcmToken: json['fcmToken'],
+        countryCode: json['countryCode'],
+        phoneNumber: json['phoneNumber'],
+        walletAmount: json['walletAmount'] ?? "0",
+        totalEarning: json['totalEarning'] ?? "0",
+        createdAt: json['createdAt'] != null ? null : null,
+        gender: json['gender'],
+        dateOfBirth: json['dateOfBirth'] ?? '',
+        isActive: json['isActive'] ?? false,
+        isOnline: json['isOnline'] ?? true,
+        driverVehicleDetails: json['driverVehicleDetails'] != null
+            ? DriverVehicleDetails.fromJson(json["driverVehicleDetails"])
+            : null,
+        isVerified: json['isVerified'] ?? false,
+        location: json['location'] != null
+            ? LocationLatLng.fromJson(json['location'])
+            : LocationLatLng(),
+        position: json['position'] != null
+            ? Positions.fromJson(json['position'])
+            : Positions(),
+        rotation: json['rotation'],
+        reviewsCount: json['reviewsCount'],
+        reviewsSum: json['reviewsSum'],
+        driverdDocs: json['driverdDocs'] != null
+            ? (json['driverdDocs'] as List<dynamic>).map(((e) {
+                DocsModel model = DocsModel.fromJson(e);
 
-  DriverUserModel.fromJson(Map<String, dynamic> json) {
-    fullName = json['fullName'];
-    slug = json['slug'];
-    id = json['id'];
-    email = json['email'];
-    loginType = json['loginType'];
-    profilePic = json['profilePic'];
-    fcmToken = json['fcmToken'];
-    countryCode = json['countryCode'];
-    phoneNumber = json['phoneNumber'];
-    walletAmount = json['walletAmount'] ?? "0";
-    totalEarning = json['totalEarning'] ?? "0";
-    createdAt = json['createdAt'];
-    gender = json['gender'];
-    dateOfBirth = json['dateOfBirth'] ?? '';
-    isActive = json['isActive'];
-    isOnline = json['isOnline'];
-    driverVehicleDetails = json['driverVehicleDetails'] != null ? DriverVehicleDetails.fromJson(json["driverVehicleDetails"]) : null;
-    isVerified = json['isVerified'];
-    location = json['location'] != null ? LocationLatLng.fromJson(json['location']) : LocationLatLng();
-    position = json['position'] != null ? Positions.fromJson(json['position']) : Positions();
-    rotation = double.parse((json['rotation']??0).toString());
-    reviewsCount = json['reviewsCount'];
-    reviewsSum = json['reviewsSum'];
-  }
+                return model;
+              })).toList()
+            : [],
+      );
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['fullName'] = fullName;
-    data['slug'] = slug;
-    data['id'] = id;
-    data['email'] = email;
-    data['loginType'] = loginType;
-    data['profilePic'] = profilePic;
-    data['fcmToken'] = fcmToken;
-    data['countryCode'] = countryCode;
-    data['phoneNumber'] = phoneNumber;
-    data['walletAmount'] = walletAmount;
-    data['totalEarning'] = totalEarning;
-    data['createdAt'] = createdAt;
-    data['gender'] = gender;
-    data['dateOfBirth'] = dateOfBirth;
-    data['isActive'] = isActive;
-    data['isOnline'] = isOnline;
-    data['isVerified'] = isVerified;
-    data["driverVehicleDetails"] = driverVehicleDetails == null ? DriverVehicleDetails().toJson() : driverVehicleDetails!.toJson();
-    if (location != null) {
-      data['location'] = location!.toJson();
-    }
-    if (position != null) {
-      data['position'] = position!.toJson();
-    }
-    data['rotation'] = rotation;
-    data['reviewsCount'] = reviewsCount;
-    data['reviewsSum'] = reviewsSum;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+        'fullName': fullName,
+        'slug': slug,
+        'id': id,
+        'email': email,
+        'loginType': loginType,
+        'profilePic': profilePic,
+        'fcmToken': fcmToken,
+        'countryCode': countryCode,
+        'phoneNumber': phoneNumber,
+        'walletAmount': walletAmount ?? '0.0',
+        'totalEarning': totalEarning ?? '0.0',
+        'createdAt': createdAt?.toDate().toString(),
+        'gender': gender,
+        'dateOfBirth': dateOfBirth,
+        'isActive': isActive ?? false,
+        'isOnline': isOnline ?? false,
+        'isVerified': isVerified ?? false,
+        'driverVehicleDetails': driverVehicleDetails?.toJson(),
+        'location': location?.toJson(),
+        'position': position?.toJson(),
+        'rotation': rotation,
+        'reviewsCount': reviewsCount ?? '0',
+        'reviewsSum': reviewsSum ?? "0.0",
+        'driverdDocs': driverdDocs?.map((e) => e.toJson()).toList(),
+      };
 }
 
 class DriverVehicleDetails {
@@ -128,23 +134,26 @@ class DriverVehicleDetails {
   String? modelId;
   String? vehicleNumber;
   bool? isVerified;
+  String? status;
 
-  DriverVehicleDetails({
-    this.vehicleTypeName,
-    this.vehicleTypeId,
-    this.brandName,
-    this.brandId,
-    this.modelName,
-    this.modelId,
-    this.vehicleNumber,
-    this.isVerified,
-  });
+  DriverVehicleDetails(
+      {this.vehicleTypeName,
+      this.vehicleTypeId,
+      this.brandName,
+      this.brandId,
+      this.modelName,
+      this.modelId,
+      this.vehicleNumber,
+      this.isVerified,
+      this.status});
 
-  factory DriverVehicleDetails.fromRawJson(String str) => DriverVehicleDetails.fromJson(json.decode(str));
+  factory DriverVehicleDetails.fromRawJson(String str) =>
+      DriverVehicleDetails.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory DriverVehicleDetails.fromJson(Map<String, dynamic> json) => DriverVehicleDetails(
+  factory DriverVehicleDetails.fromJson(Map<String, dynamic> json) =>
+      DriverVehicleDetails(
         vehicleTypeName: json["vehicleTypeName"],
         vehicleTypeId: json["vehicleTypeId"],
         brandName: json["brandName"],
@@ -152,7 +161,10 @@ class DriverVehicleDetails {
         modelName: json["modelName"],
         modelId: json["modelId"],
         vehicleNumber: json["vehicleNumber"],
-        isVerified: json["isVerified"],
+        // UNCOMMENT THIS CURRENTLY ITS STATIC
+        // isVerified: json["isVerified"] ?? json["status"]=="approved"?true:false??false,
+        isVerified: true,
+        status: json["status"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -164,5 +176,51 @@ class DriverVehicleDetails {
         "modelId": modelId ?? '',
         "vehicleNumber": vehicleNumber ?? '',
         "isVerified": isVerified ?? false,
+        "status": status ?? '',
+      };
+}
+
+class DocsModel {
+  String id;
+  String type;
+  String name;
+  String document_number;
+  String date_of_birth;
+  List<String> image;
+  bool isVerify;
+
+  DocsModel({
+    required this.type,
+    required this.document_number,
+    required this.name,
+    required this.date_of_birth,
+    required this.id,
+    required this.image,
+    this.isVerify = true,
+  });
+
+  factory DocsModel.fromRawJson(String str) =>
+      DocsModel.fromJson(json.decode(str));
+
+  String toRawJson() => json.encode(toJson());
+
+  factory DocsModel.fromJson(Map<String, dynamic> json) => DocsModel(
+        id: json["id"],
+        type: json["type"],
+        document_number: json["document_number"],
+        name: json["name"],
+        date_of_birth: json["date_of_birth"],
+        isVerify: json["isVerify"] ?? true,
+        image: List<String>.from(json["image"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "type": type,
+        "document_number": document_number,
+        "name": name,
+        "date_of_birth": date_of_birth,
+        "isVerify": isVerify,
+        "image": image,
       };
 }

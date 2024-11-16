@@ -41,7 +41,7 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
   // Function to fetch real-time ride request data and poll until 'assigned' status
   Future<void> _fetchRideRequest() async {
     // Polling API every 2 seconds until rideData['status'] is 'assigned'
-    while (rideData['status'] != 'assigned') {
+    while (rideData['status'] != 'accepted') {
       try {
         final response = await http.get(
           Uri.parse(baseURL + realtimeRequest),
@@ -58,10 +58,10 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
             // If the driver is accepted or ongoing, fetch driver details
             if (rideData['driver_id'] != null &&
                 rideData['driver_id'].isNotEmpty) {
-              // FireStoreUtils.getDriverUserProfile(rideData['driver_id'])
-              //     .then((driverProfile) {
-              //   userModel.value = driverProfile ?? DriverUserModel();
-              // });
+              FireStoreUtils.getDriverUserProfile(rideData['driver_id'])
+                  .then((driverProfile) {
+                userModel.value = driverProfile ?? DriverUserModel();
+              });
             }
 
             setState(() {
@@ -82,7 +82,7 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
       await Future.delayed(
           const Duration(seconds: 8)); // Wait 2 seconds before the next request
     }
-     // Set loading to false once status is 'assigned'
+    // Set loading to false once status is 'assigned'
   }
 
   @override
@@ -133,9 +133,53 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
                           children: [
                             // Check booking status and handle UI
                             if (rideData['status'] == "requested")
-                              const Center(child: Text('Your ride started...')),
-                              
-                            if (rideData['status'] == 'assigned') ...[
+                              const Center(
+                                  child: Text('Searching for driver...')),
+
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Confirming your trip'.tr,
+                                  style: GoogleFonts.inter(
+                                    color: themeChange.isDarkTheme()
+                                        ? AppThemData.white
+                                        : AppThemData.grey950,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const LinearProgressIndicator(),
+                                const SizedBox(height: 20),
+                              ],
+                            ),
+
+                            // Pick Drop Address View
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                              child: PickDropPointView(
+                                pickUpAddress: rideData['pickup_address'] ?? '',
+                                dropAddress: rideData['dropoff_address'] ?? '',
+                              ),
+                            ),
+                            // Cancel Button
+                            RoundShapeButton(
+                              size: Size(Responsive.width(100, context), 45),
+                              title: "Cancel",
+                              buttonColor: AppThemData.danger500,
+                              buttonTextColor: AppThemData.white,
+                              onTap: () {
+                                Get.back();
+                                // Get.to(const ReasonForCancelView(),
+                                //     arguments: {
+                                //       "bookingModel": rideData,
+                                //     });
+                              },
+                            ),
+
+                            if (rideData['status'] == 'accepted') ...[
                               Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Text(
@@ -166,51 +210,7 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
                               // Driver Info Section
                               if (userModel.value.fullName != null)
                                 _buildDriverInfo(themeChange),
-                              // Pick Drop Address View
-                              Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                                child: PickDropPointView(
-                                  pickUpAddress:
-                                      rideData['pickup_address'] ?? '',
-                                  dropAddress:
-                                      rideData['dropoff_address'] ?? '',
-                                ),
-                              ),
-                              // Cancel Button
-                              RoundShapeButton(
-                                size: Size(Responsive.width(100, context), 45),
-                                title: "Cancel",
-                                buttonColor: AppThemData.danger500,
-                                buttonTextColor: AppThemData.white,
-                                onTap: () {
-                                  Get.back();
-                                  // Get.to(const ReasonForCancelView(),
-                                  //     arguments: {
-                                  //       "bookingModel": rideData,
-                                  //     });
-                                },
-                              ),
-                            ] else
-                              Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Confirming your trip'.tr,
-                                    style: GoogleFonts.inter(
-                                      color: themeChange.isDarkTheme()
-                                          ? AppThemData.white
-                                          : AppThemData.grey950,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  const LinearProgressIndicator(),
-                                ],
-                              ),
+                            ]
                           ],
                         ),
             ),

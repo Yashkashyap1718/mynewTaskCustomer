@@ -14,4 +14,6 @@ const String userRideRequest = "/users/ride/request"; //GET
 const String userRideSubmit = "/users/ride/submit_ride"; //GET
 const String realtimeRequest = "/users/ride/request/realtime";
 
+const String getDriverDetails = "/users/get_driver_detail";
+
 String token = "";

@@ -119,8 +119,7 @@ class CategoryView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    controller.amountShow(
-                        vehicleType, controller.mapModel.value!),
+                    vehicleType.charges.farMinimumCharges,
                     textAlign: TextAlign.right,
                     style: GoogleFonts.inter(
                       color: themeChange.isDarkTheme()
