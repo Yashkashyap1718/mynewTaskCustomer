@@ -192,10 +192,15 @@ class ConfirmPickupBottomSheet extends StatelessWidget {
                           await FireStoreUtils.setBooking(
                                   controller.bookingModel.value)
                               .then((value) {
-                            ShowToastDialog.showToast(
-                                "Ride Placed successfully".tr);
-                            ShowToastDialog.closeLoader();
-                            controller.popupIndex.value = 3;
+                            if (value! == true) {
+                              ShowToastDialog.showToast(
+                                  "Ride Placed successfully".tr);
+                              ShowToastDialog.closeLoader();
+                              controller.popupIndex.value = 3;
+                            } else {
+                              ShowToastDialog.showToast("Request failed".tr);
+                              ShowToastDialog.closeLoader();
+                            }
                           });
 
                           // bool isRideConfirm = false;
