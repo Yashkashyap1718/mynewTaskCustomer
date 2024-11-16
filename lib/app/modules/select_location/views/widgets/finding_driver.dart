@@ -38,42 +38,50 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
   var rideData = <String, dynamic>{}.obs;
   var userModel = DriverUserModel().obs;
 
-  // Function to fetch real-time ride request data
+  // Function to fetch real-time ride request data and poll until 'assigned' status
   Future<void> _fetchRideRequest() async {
-    try {
-      final response = await http.get(
-        Uri.parse(baseURL + realtimeRequest),
-        headers: {"Content-Type": "application/json", "token": token},
-      );
+    // Polling API every 2 seconds until rideData['status'] is 'assigned'
+    while (rideData['status'] != 'assigned') {
+      try {
+        final response = await http.get(
+          Uri.parse(baseURL + realtimeRequest),
+          headers: {"Content-Type": "application/json", "token": token},
+        );
 
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
+        if (response.statusCode == 200) {
+          final responseData = json.decode(response.body);
 
-        // Updating reactive state with the fetched data
-        if (responseData['status'] == true) {
-          rideData.value = responseData['data']; // Store the ride data
+          // Updating reactive state with the fetched data
+          if (responseData['status'] == true) {
+            rideData.value = responseData['data']; // Store the ride data
 
-          // If the driver is accepted or ongoing, fetch driver details
-          if (rideData['driver_id'] != null &&
-              rideData['driver_id'].isNotEmpty) {
-            FireStoreUtils.getDriverUserProfile(rideData['driver_id'])
-                .then((driverProfile) {
-              userModel.value = driverProfile ?? DriverUserModel();
+            // If the driver is accepted or ongoing, fetch driver details
+            if (rideData['driver_id'] != null &&
+                rideData['driver_id'].isNotEmpty) {
+              FireStoreUtils.getDriverUserProfile(rideData['driver_id'])
+                  .then((driverProfile) {
+                userModel.value = driverProfile ?? DriverUserModel();
+              });
+            }
+
+            setState(() {
+              rideData.value = responseData['data'];
             });
+          } else {
+            rideData.value = {}; // Show empty if no valid data
           }
         } else {
-          rideData.value = {}; // Show empty if no valid data
+          print('Failed to load ride request data');
+          rideData.value = {}; // Show empty if request fails
         }
-      } else {
-        print('Failed to load ride request data');
-        rideData.value = {}; // Show empty if request fails
+      } catch (error) {
+        print('Error: $error');
+        rideData.value = {}; // Show empty if an error occurs
       }
-    } catch (error) {
-      print('Error: $error');
-      rideData.value = {}; // Show empty if an error occurs
-    } finally {
-      isLoading.value = false; // Set loading to false after fetching data
+      await Future.delayed(
+          const Duration(seconds: 8)); // Wait 2 seconds before the next request
     }
+    isLoading.value = false; // Set loading to false once status is 'assigned'
   }
 
   @override
@@ -125,7 +133,7 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
                             // Check booking status and handle UI
                             if (rideData['status'] == "requested")
                               const Center(child: Text('Your ride started...')),
-                            if (rideData['status'] == 'requested') ...[
+                            if (rideData['status'] == 'assigned') ...[
                               Padding(
                                 padding: const EdgeInsets.all(16),
                                 child: Text(
