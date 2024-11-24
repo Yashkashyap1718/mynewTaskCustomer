@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customer/app/models/banner_model.dart';
@@ -29,6 +30,8 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:customer/constant/api_constant.dart';
 
+import '../app/api_models/ride_history_data.dart';
+
 class FireStoreUtils {
   static FirebaseFirestore fireStore = FirebaseFirestore.instance;
 
@@ -39,9 +42,8 @@ class FireStoreUtils {
   static Future<bool> isLogin() async {
     bool isLogin = false;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString("token");
-
-    if (token != null && token.isNotEmpty) {
+    bool? isLoggedIn = prefs.getBool('isLoggedIn')??false;
+    if (isLoggedIn) {
       isLogin = true;
     } else {
       isLogin = false;
@@ -49,45 +51,51 @@ class FireStoreUtils {
     return isLogin;
   }
 
-  static Future<bool> userExistOrNot(String uid) async {
-    bool isExist = false;
 
-    await getUserProfile().then(
-      (value) {
-        if (value!.id == null) {
-          isExist = true;
-        } else {
-          isExist = false;
-        }
-      },
-    ).catchError((error) {
-      log("Failed to check user exist: $error");
-      isExist = false;
-    });
-    return isExist;
-  }
 
-  static Future<bool> updateUser(UserModel userModel) async {
-    bool isUpdate = false;
-    await fireStore
-        .collection(CollectionName.users)
-        .doc(userModel.id)
-        .set(userModel.toJson())
-        .whenComplete(() {
-      isUpdate = true;
-    }).catchError((error) {
-      log("Failed to update user: $error");
-      isUpdate = false;
-    });
-    return isUpdate;
-  }
 
-  static Future<UserModel?> getUserProfile() async {
+  // static Future<UserData?> getUserProfile() async {
+  //   UserData? userModel;
+  //   try {
+  //     ShowToastDialog.showLoader("Please wait".tr);
+  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     String? token = prefs.getString("token");
+  //     final response = await http.get(
+  //       Uri.parse(baseURL + getUserPofileEndpoint),
+  //       headers: {
+  //         'token': token.toString(),
+  //       },
+  //     );
+  //     // Check if the response status is OK
+  //     if (response.statusCode == 200) {
+  //       ShowToastDialog.closeLoader();
+  //       final jsonResponse = jsonDecode(response.body);
+  //       // Check if the response status is true
+  //       if (jsonResponse['status'] == true) {
+  //         userModel = UserData.fromJson(jsonResponse['data']);
+  //         return userModel;
+  //       } else {
+  //         ShowToastDialog.closeLoader();
+  //         log("Failed to fetch user profile: ${jsonResponse['msg']}");
+  //       }
+  //     } else {
+  //       ShowToastDialog.closeLoader();
+  //       log("Error: ${response.statusCode} - ${response.reasonPhrase}");
+  //     }
+  //   } catch (error) {
+  //     ShowToastDialog.closeLoader();
+  //   }
+  //   return null;
+  //   // return userModel;
+  // }
+
+
+  static Future<UserData?> getUserProfileAPI() async {
+    UserData? userModel;
     try {
-      UserModel? userModel;
+      ShowToastDialog.showLoader("Please wait".tr);
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("token");
-      // HTTP GET request
       final response = await http.get(
         Uri.parse(baseURL + getUserPofileEndpoint),
         headers: {
@@ -95,26 +103,32 @@ class FireStoreUtils {
         },
       );
 
+      print("USERDATAAPI  ${response.body}");
+
       // Check if the response status is OK
       if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-
-        // Check if the response status is true
+        ShowToastDialog.closeLoader();
+        Map<String,dynamic> jsonResponse = jsonDecode(response.body);
         if (jsonResponse['status'] == true) {
-          userModel = UserModel.fromJson(jsonResponse['data']);
+          userModel = UserData.fromJson(jsonResponse['data']);
+          print("USERDATAAPI  ${jsonEncode(userModel)}");
+          userDataModel = userModel;
+          return userModel;
         } else {
+          ShowToastDialog.closeLoader();
           log("Failed to fetch user profile: ${jsonResponse['msg']}");
         }
       } else {
+        ShowToastDialog.closeLoader();
         log("Error: ${response.statusCode} - ${response.reasonPhrase}");
       }
     } catch (error) {
-      log("Failed to fetch user profile: $error");
+      ShowToastDialog.closeLoader();
     }
     return null;
-
     // return userModel;
   }
+
 
   // static Future<bool?> deleteUser() async {
   //   bool? isDelete;
@@ -170,18 +184,18 @@ class FireStoreUtils {
 
   static Future<bool?> updateUserWallet({required String amount}) async {
     bool isAdded = false;
-    await getUserProfile().then((value) async {
-      if (value != null) {
-        UserModel userModel = value;
-        userModel.walletAmount =
-            (double.parse(userModel.walletAmount.toString()) +
-                    double.parse(amount))
-                .toString();
-        await FireStoreUtils.updateUser(userModel).then((value) {
-          isAdded = value;
-        });
-      }
-    });
+    // await getUserProfile().then((value) async {
+    //   if (value != null) {
+    //     UserData userModel = value;
+    //     userModel.walletAmount =
+    //         (double.parse(userModel.walletAmount.toString()) +
+    //                 double.parse(amount))
+    //             .toString();
+    //     await FireStoreUtils.updateUser(userModel).then((value) {
+    //       isAdded = value;
+    //     });
+    //   }
+    // });
     return isAdded;
   }
 
@@ -369,7 +383,7 @@ class FireStoreUtils {
 
   static Future<bool?> setBooking(BookingModel bookingModel) async {
     bool isAdded = false;
-
+    print("BookingModelJSONN :: ${jsonEncode(bookingModel.pickUpLocation)}");
     Map<String, Object> map = {
       "pickup_location": {
         "type": "Point",
@@ -390,7 +404,7 @@ class FireStoreUtils {
       "distance": bookingModel.distance!.distance ?? 0.0,
       "vehicle_type": bookingModel.vehicleType!.title ?? '',
       "fare_amount": bookingModel.subTotal ?? '',
-      "duration_in_minutes": '48.95'
+      "duration_in_minutes": '50'
     };
 
     final response = await http.post(
@@ -399,6 +413,8 @@ class FireStoreUtils {
       headers: {"Content-Type": "application/json", "token": token},
     );
 
+
+    print("RIDEBOOKING REQUST ${response.body}");
     if (response.statusCode == 200) {
       isAdded = true;
       // return jsonDecode(response.body);
@@ -421,6 +437,31 @@ class FireStoreUtils {
     //   isAdded = false;
     // });
     return isAdded;
+  }
+  static Future<bool?> setBookingCancel(BookingModel bookingModel) async {
+    ShowToastDialog.showLoader("Please wait".tr);
+    bool canceled = false;
+    Map<String, Object> map = {};
+    final response = await http.put(
+      Uri.parse(baseURL + userRideCanceled),
+      body: jsonEncode(map),
+      headers: {"Content-Type": "application/json", "token": token},
+    );
+    if (response.statusCode == 200) {
+      canceled = true;
+      ShowToastDialog.closeLoader();
+      // return jsonDecode(response.body);
+    } else if (response.statusCode == 404) {
+      log("Driver not found");
+      canceled = false;
+      ShowToastDialog.closeLoader();
+    } else {
+      log("Failed to add ride:");
+      canceled = false;
+      ShowToastDialog.closeLoader();
+    }
+
+    return canceled;
   }
 
   static Future<RideRequest?> checkforRealTimebooking(
@@ -569,7 +610,7 @@ class FireStoreUtils {
     //         ShowToastDialog.showToast("Your ride started...");
     //         // Get.offAll(const HomeView());
     //         Get.back();
-    //         // Get.to(const HomeView());
+    //         // Get.toNamed(Routes.HOME);
     //       } else {}
     //       if (!getBookingStatusController!.isClosed) {
     //         getBookingStatusController!.sink.add(bookingModel);
@@ -600,75 +641,113 @@ class FireStoreUtils {
     return bookingModel;
   }
 
-  static Future<List<BookingModel>?> getOngoingRides() async {
-    String customerId = getCurrentUid();
+  static Future<List<BookingModel>> getOngoingRides() async {
     List<BookingModel> bookingList = [];
-    await fireStore
-        .collection(CollectionName.bookings)
-        .where("customerId", isEqualTo: customerId)
-        .where('bookingStatus', whereIn: [
-          BookingStatus.bookingPlaced,
-          BookingStatus.bookingAccepted,
-          BookingStatus.bookingOngoing
-        ])
-        .orderBy("createAt", descending: true)
-        .get()
-        .then((value) {
-          for (var element in value.docs) {
-            BookingModel vehicleTypeModel =
-                BookingModel.fromJson(element.data());
-            bookingList.add(vehicleTypeModel);
-          }
-        })
-        .catchError((error) {
-          log(error.toString());
-        });
+
+    try {
+      ShowToastDialog.showLoader("Please wait".tr);
+
+      final response = await http.post(
+        Uri.parse(baseURL + acceptedRide),
+        headers: {"Content-Type": "application/json", "token": token},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        if (responseData['status'] == true) {
+          // Map the raw data to BookingModel objects
+          bookingList = (responseData['data'] as List)
+              .map((item) => BookingModel.fromJson(item))
+              .toList();
+        } else {
+          ShowToastDialog.closeLoader();
+        }
+      } else {
+        ShowToastDialog.closeLoader();
+      }
+    } catch (error) {
+      ShowToastDialog.closeLoader();
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        const SnackBar(
+          content: Text("Something went wrong"),
+        ),
+      );
+    }
     return bookingList;
   }
 
-  static Future<List<BookingModel>?> getCompletedRides() async {
-    String customerId = getCurrentUid();
+
+
+  static Future<List<BookingModel>> getCompletedRides() async {
     List<BookingModel> bookingList = [];
-    await fireStore
-        .collection(CollectionName.bookings)
-        .where("customerId", isEqualTo: customerId)
-        .where('bookingStatus', isEqualTo: BookingStatus.bookingCompleted)
-        .orderBy("createAt", descending: true)
-        .get()
-        .then((value) {
-      for (var element in value.docs) {
-        BookingModel vehicleTypeModel = BookingModel.fromJson(element.data());
-        bookingList.add(vehicleTypeModel);
+
+    try {
+      ShowToastDialog.showLoader("Please wait".tr);
+
+      final response = await http.post(
+        Uri.parse(baseURL + completedRide),
+        headers: {"Content-Type": "application/json", "token": token},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        if (responseData['status'] == true) {
+          // Map the raw data to BookingModel objects
+          bookingList = (responseData['data'] as List)
+              .map((item) => BookingModel.fromJson(item))
+              .toList();
+        } else {
+          ShowToastDialog.closeLoader();
+        }
+      } else {
+        ShowToastDialog.closeLoader();
       }
-    }).catchError((error) {
-      log(error.toString());
-    });
+    } catch (error) {
+      ShowToastDialog.closeLoader();
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        const SnackBar(
+          content: Text("Something went wrong"),
+        ),
+      );
+    }
     return bookingList;
   }
 
   static Future<List<BookingModel>?> getRejectedRides() async {
-    String customerId = getCurrentUid();
     List<BookingModel> bookingList = [];
-    await fireStore
-        .collection(CollectionName.bookings)
-        .where("customerId", isEqualTo: customerId)
-        .where('bookingStatus', whereIn: [
-          BookingStatus.bookingCancelled,
-          BookingStatus.bookingRejected
-        ])
-        .where('bookingStatus', isEqualTo: BookingStatus.bookingCancelled)
-        .orderBy("createAt", descending: true)
-        .get()
-        .then((value) {
-          for (var element in value.docs) {
-            BookingModel vehicleTypeModel =
-                BookingModel.fromJson(element.data());
-            bookingList.add(vehicleTypeModel);
-          }
-        })
-        .catchError((error) {
-          log(error.toString());
-        });
+
+    try {
+      ShowToastDialog.showLoader("Please wait".tr);
+
+      final response = await http.post(
+        Uri.parse(baseURL + canceledRide),
+        headers: {"Content-Type": "application/json", "token": token},
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+
+        if (responseData['status'] == true) {
+          // Map the raw data to BookingModel objects
+          bookingList = (responseData['data'] as List)
+              .map((item) => BookingModel.fromJson(item))
+              .toList();
+        } else {
+          ShowToastDialog.closeLoader();
+        }
+      } else {
+        ShowToastDialog.closeLoader();
+      }
+    } catch (error) {
+      ShowToastDialog.closeLoader();
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        const SnackBar(
+          content: Text("Something went wrong"),
+        ),
+      );
+    }
     return bookingList;
   }
 
@@ -685,8 +764,11 @@ class FireStoreUtils {
     headers: {"Content-Type": "application/json", "token": token},
   );
 
+  print("response.body:::::  ${response.body}");
   if (response.statusCode == 200) {
     if (jsonDecode(response.body)["status"]) {
+      print("response.body:::::  ${jsonDecode(response.body)["status"]}");
+
       return DriverUserModel.fromJson(jsonDecode(response.body)['data']);
     }
     return DriverUserModel();

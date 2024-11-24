@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAbexQUEM9fs8MVaWkSMP-n3eSxdTvBcuQ',
-    appId: '1:316861812533:android:a42ac99bca2cbfcbdf067c',
-    messagingSenderId: '316861812533',
-    projectId: 'mytaxicustomer-ab2bd',
-    storageBucket: 'mytaxicustomer-ab2bd.appspot.com',
+    apiKey: 'AIzaSyCMRryPgY1DJOc7a7sp81Y88oBhmXkDLR8',
+    appId: '1:633383824112:android:b43f65007d20135f147035',
+    messagingSenderId: '633383824112',
+    projectId: 'my-taxi-customer-c4c9b',
+    storageBucket: 'my-taxi-customer-c4c9b.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA7r-FKm0qr81RGsV-bdxpTpHzGHIYfG4U',
-    appId: '1:316861812533:ios:118d32b8a7d4ca2ddf067c',
-    messagingSenderId: '316861812533',
-    projectId: 'mytaxicustomer-ab2bd',
-    storageBucket: 'mytaxicustomer-ab2bd.appspot.com',
+    apiKey: 'AIzaSyBHpPrzARoTNKPI_0t09FE8tfEHoshER94',
+    appId: '1:633383824112:ios:ef784e20d9163605147035',
+    messagingSenderId: '633383824112',
+    projectId: 'my-taxi-customer-c4c9b',
+    storageBucket: 'my-taxi-customer-c4c9b.firebasestorage.app',
     iosBundleId: 'com.ideativemind.customers',
   );
+
 }

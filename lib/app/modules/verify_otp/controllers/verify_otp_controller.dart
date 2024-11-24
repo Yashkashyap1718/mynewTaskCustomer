@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/signup/views/signup_view.dart';
+import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/utils/database_helper.dart';
@@ -12,10 +13,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:otp_text_field/otp_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class VerifyOtpController extends GetxController {
-  TextEditingController otpConytroller = TextEditingController();
+  OtpFieldController otpController = OtpFieldController();
+
   RxString otpCode = "".obs;
   RxString countryCode = "".obs;
   RxString phoneNumber = "".obs;
@@ -23,7 +26,6 @@ class VerifyOtpController extends GetxController {
   RxInt resendToken = 0.obs;
   RxBool isLoading = true.obs;
 
-  String otp = '';
 
   @override
   void onInit() {
@@ -50,9 +52,10 @@ class VerifyOtpController extends GetxController {
       "country_code": "91",
       "mobile_number": phoneNumbe
     };
-
     try {
       // log(payload.toString());
+      ShowToastDialog.showLoader("Please wait".tr);
+
       final http.Response response = await http.post(
         Uri.parse(baseURL + sendOtpEndpoint),
         headers: <String, String>{
@@ -63,26 +66,35 @@ class VerifyOtpController extends GetxController {
 
       // log(response.body);
       if (response.statusCode == 200) {
+        ShowToastDialog.closeLoader();
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        final String msg = responseData['msg'];
-        final List<String> parts = msg.split(',');
-        otp = parts.first.trim();
+        if(responseData["status"]==true){
+          final String msg = responseData['msg'];
+          final List<String> parts = msg.split(',');
+          verificationId.value = parts.first.trim();
+          ScaffoldMessenger.of(context).showSnackBar(
+             SnackBar(
+              content: Text(responseData["msg"].toString()),
+            ),
+          );
+        }else{
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Something went wrong please try again later'),
+            ),
+          );
+        }
 
-        print(otp);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(otp)),
-        );
-        // Get.to(
-        //   VerifyOtpView(
-        //     phoneNumder: phoneNumberController.text,
-        //     oTP: otp,
-        //   ),
-        // );
       } else {
-        throw Exception('Failed to send request');
+        ShowToastDialog.closeLoader();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Something went wrong please try again later'),
+          ),
+        );
       }
     } catch (e) {
-      // log('Error: $e');
+      ShowToastDialog.closeLoader();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Error occurred while sending request.'),
@@ -117,9 +129,9 @@ class VerifyOtpController extends GetxController {
       "otp": otp,
       "mobile_number": phoneNumber,
     };
-
-    log('---paylod---$otp---$phoneNumber');
     try {
+      ShowToastDialog.showLoader("verify_OTP".tr);
+
       final http.Response response = await http.post(
         Uri.parse(baseURL + veriftOtpEndpoint),
         headers: {
@@ -128,50 +140,40 @@ class VerifyOtpController extends GetxController {
         body: jsonEncode(payload),
       );
 
-      final Map<String, dynamic> data = jsonDecode(response.body);
-
-      if (data['status'] == true) {
-        final String token = data['token'];
-        final String msg = data['msg'];
-        final String id = data['id'];
-        final String roleType = data['type'];
-        final String firstDigit = id.substring(0, 1);
-        final int firstDigitAsInt = int.parse(firstDigit, radix: 16);
-        UserModel userModel = UserModel();
-        userModel.fcmToken = token;
-
-        await DatabaseHelper().insertUser(userModel);
-        log('*****************User inserted with token: ${userModel.fcmToken}');
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString("token", token);
-
-        await Preferences().saveIsUserLoggedIn();
-
-        await fetchUserProfile(token, context).then((value) {
-          Get.off(SignupView(userToken: token));
-        });
-        // SharedPreferences prefs = await SharedPreferences.getInstance();
-        // await prefs.setBool('isLoggedIn', true);
-
+      if(response.statusCode==200){
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        print("VERIFIYOTP:: ${data}");
         ShowToastDialog.closeLoader();
+        if (data['status'] == true) {
+          final String token = data['token'];
+          final String msg = data['msg'];
+          final String id = data['id'];
+          final String roleType = data['type'];
+          final String firstDigit = id.substring(0, 1);
+          final int firstDigitAsInt = int.parse(firstDigit, radix: 16);
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString("token", token);
+           await prefs.setString("id", id);
+          ShowToastDialog.closeLoader();
 
-        // Show success message with Animated SnackBar
-        AnimatedSnackBar.material(
-          'Welcome! User $phoneNumber',
-          type: AnimatedSnackBarType.success,
-          duration: const Duration(seconds: 5),
-          mobileSnackBarPosition: MobileSnackBarPosition.top,
-        ).show(context);
-        // Store token or other relevant data in provider or local storage
-        // provider.setAccessToken(token);
-
-        // Navigate to HomeScreen or the relevant page
-        // Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen()));
-      } else {
-        throw Exception('Failed to confirm OTP');
+          await fetchUserProfile(token, context);
+        } else {
+          ShowToastDialog.closeLoader();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Something went wrong'),
+            ),
+          );        }
+      }else{
+        ShowToastDialog.closeLoader();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Something went wrong'),
+          ),
+        );
       }
     } catch (e) {
-      debugPrint('Error: during OTP confirmation----------- $e');
+      ShowToastDialog.closeLoader();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Error occurred while confirming OTP.'),
@@ -182,62 +184,72 @@ class VerifyOtpController extends GetxController {
 
   Future<void> fetchUserProfile(token, context) async {
     const String baseUrl = "http://172.93.54.177:3002/users/profile/preview";
-
     try {
+      ShowToastDialog.showLoader("Please wait".tr);
+
       final response = await http.get(
         Uri.parse(baseUrl),
         headers: {
           'token': token,
         },
       );
-
       if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
 
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
         if (responseData['status'] == true) {
           final data = responseData['data'];
-          // await DatabaseHelper().cleanUserTable();
-
-          // Handle null values safely using the null-aware operator or providing default values.
-          UserModel userModel = UserModel(
+          UserData userModel = UserData(
             id: data['_id'] ?? '', // Default to an empty string if null
-            fullName: data['name'] ?? '', // Default to an empty string if null
-            countryCode: data['country_code'] ??
-                '', // Default to an empty string if null
-            phoneNumber:
-                data['phone'] ?? '', // Default to an empty string if null
-            referralCode: data['referral_code'] ??
-                '', // Default to an empty string if null
-            verified: data['verified']?.toString() ??
-                'false', // Convert to string and default to 'false' if null
+            name: data['name'] ?? '', // Default to an empty string if null
+            countryCode: data['country_code'] ?? '', // Default to an empty string if null
+            phone: data['phone'] ?? '', // Default to an empty string if null
+            referralCode: data['referral_code'] ?? '', // Default to an empty string if null
+            verified: data['verified'] ?? false, // Convert to string and default to 'false' if null
             role: data['role'] ?? '', // Default to an empty string if null
-            // Uncomment the languages field if required and handle its nullability
-            // languages: (data['languages'] as List<dynamic>?)?.join(', ') ?? '',
-            profilePic:
-                data['profile'] ?? '', // Default to an empty string if null
             status: data['status'] ?? '', // Default to an empty string if null
             suspend: data['suspend'] ?? false, // Default to false if null
-            gender: data['gender'] ?? '', // Default to an empty string if null
           );
-
-          // Insert or update the user in the local database
-          await DatabaseHelper().insertUser(userModel);
-          print("************User profile successfully saved.");
-
+          ShowToastDialog.closeLoader();
+          userDataModel = userModel;
+         // await Preferences().saveIsUserLoggedIn();
+          SharedPreferences preferences = await SharedPreferences.getInstance();
+          String email = preferences.getString("email")??"";
+          if(userDataModel.verified==false || userModel.gender==null || userModel.status!="Active"|| email.isEmpty){
+            Get.toNamed(Routes.EMAIL_OTP);
+          }else{
+            await Preferences().saveIsUserLoggedIn();
+            Get.toNamed(Routes.HOME);
+          }
           AnimatedSnackBar.material(
-            'User profile successfully saved.',
+            'Welcome! User $phoneNumber',
             type: AnimatedSnackBarType.success,
             duration: const Duration(seconds: 5),
             mobileSnackBarPosition: MobileSnackBarPosition.top,
           ).show(context);
+         // Get.toNamed(Routes.SIGNUP,arguments: {'userToken': token});
+
         } else {
-          print("***********Failed to fetch profile: ${responseData['msg']}");
+          ShowToastDialog.closeLoader();
+
+          AnimatedSnackBar.material(
+            "Something went wrong",
+            type: AnimatedSnackBarType.error, // Changed to error
+            duration: const Duration(seconds: 5),
+            mobileSnackBarPosition: MobileSnackBarPosition.top,
+          ).show(context);
         }
       } else {
-        print("********Failed to fetch profile: ${response.statusCode}");
+        ShowToastDialog.closeLoader();
+
+        AnimatedSnackBar.material(
+         "Something went wrong",
+          type: AnimatedSnackBarType.error, // Changed to error
+          duration: const Duration(seconds: 5),
+          mobileSnackBarPosition: MobileSnackBarPosition.top,
+        ).show(context);
       }
     } catch (e) {
-      print("Error fetching profile: $e");
+      ShowToastDialog.closeLoader();
 
       AnimatedSnackBar.material(
         e.toString(),

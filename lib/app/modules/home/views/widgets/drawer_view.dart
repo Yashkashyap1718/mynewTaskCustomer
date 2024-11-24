@@ -6,6 +6,8 @@ import 'dart:io';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/edit_profile/views/edit_profile_view.dart';
 import 'package:customer/app/modules/home/controllers/home_controller.dart';
+import 'package:customer/app/routes/app_pages.dart';
+import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/custom_dialog_box.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
@@ -21,33 +23,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../../constant/constant.dart';
 import '../../../html_view_screen/views/html_view_screen_view.dart';
 
-class DrawerView extends StatefulWidget {
-  const DrawerView({super.key});
+class DrawerView extends StatelessWidget {
+  UserData user;
 
-  @override
-  State<DrawerView> createState() => _DrawerViewState();
-}
+  DrawerView({super.key,required this.user});
 
-class _DrawerViewState extends State<DrawerView> {
-  UserModel user = UserModel();
-  DatabaseHelper db = DatabaseHelper();
-  @override
-  void initState() {
-    getUser();
-    super.initState();
-  }
-
-  getUser() async {
-    final userFromDb = await db.retrieveUserFromTable();
-    if (userFromDb != null) {
-      setState(() {
-        user = userFromDb;
-      });
-      log("------------------userName--token-------------${user.fcmToken}");
-    } else {
-      log('No user found in the database');
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,14 +51,8 @@ class _DrawerViewState extends State<DrawerView> {
                             top: 50, bottom: 30, left: 16, right: 24),
                         child: InkWell(
                           onTap: () async {
-                            Get.back();
-                            bool? isSave =
-                                await Get.to(const EditProfileView());
-                            if ((isSave ?? false)) {
-                              log("===> ");
-                              controller.getUserData();
-                              log("=====> ");
-                            }
+
+                            Get.toNamed(Routes.EDIT_PROFILE);
                           },
                           child: Obx(
                             () => Row(
@@ -113,7 +87,7 @@ class _DrawerViewState extends State<DrawerView> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        user.fullName.toString().toUpperCase(),
+                                        user.name??"Customer",
                                         style: GoogleFonts.inter(
                                           color: themeChange.isDarkTheme()
                                               ? AppThemData.white
@@ -123,7 +97,7 @@ class _DrawerViewState extends State<DrawerView> {
                                         ),
                                       ),
                                       Text(
-                                        user.email.toString(),
+                                        "${user.countryCode.toString()+user.phone.toString()}",
                                         style: GoogleFonts.inter(
                                           color: themeChange.isDarkTheme()
                                               ? AppThemData.white
@@ -444,7 +418,7 @@ class _DrawerViewState extends State<DrawerView> {
                               negativeString: "Cancel".tr,
                               positiveClick: () async {
                                 await controller.logOutUser(
-                                    context, user.fcmToken.toString());
+                                    context, token);
 
                                 // await FirebaseAuth.instance.signOut();
 

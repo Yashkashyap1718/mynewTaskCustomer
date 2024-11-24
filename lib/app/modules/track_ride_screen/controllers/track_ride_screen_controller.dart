@@ -20,6 +20,7 @@ class TrackRideScreenController extends GetxController {
     // TODO: implement onInit
     addMarkerSetup();
     getArgument();
+
     // playSound();
     super.onInit();
   }
@@ -53,16 +54,16 @@ class TrackRideScreenController extends GetxController {
               if (bookingModel.value.bookingStatus ==
                   BookingStatus.bookingOngoing) {
                 getPolyline(
-                    sourceLatitude: driverUserModel.value.location!.latitude,
-                    sourceLongitude: driverUserModel.value.location!.longitude,
+                    sourceLatitude: driverUserModel.value.location!.coordinates![0],
+                    sourceLongitude: driverUserModel.value.location!.coordinates![0],
                     destinationLatitude:
                         bookingModel.value.dropLocation!.latitude,
                     destinationLongitude:
                         bookingModel.value.dropLocation!.longitude);
               } else {
                 getPolyline(
-                    sourceLatitude: driverUserModel.value.location!.latitude,
-                    sourceLongitude: driverUserModel.value.location!.longitude,
+                    sourceLatitude: driverUserModel.value.location!.coordinates![0],
+                    sourceLongitude: driverUserModel.value.location!.coordinates![1],
                     destinationLatitude:
                         bookingModel.value.pickUpLocation!.latitude,
                     destinationLongitude:
@@ -133,8 +134,8 @@ class TrackRideScreenController extends GetxController {
           descriptor: destinationIcon!,
           rotation: 0.0);
       addMarker(
-          latitude: driverUserModel.value.location!.latitude,
-          longitude: driverUserModel.value.location!.longitude,
+          latitude: driverUserModel.value.location!.coordinates![0],
+          longitude: driverUserModel.value.location!.coordinates![1],
           id: "Driver",
           descriptor: driverIcon!,
           rotation: driverUserModel.value.rotation);
@@ -171,10 +172,8 @@ class TrackRideScreenController extends GetxController {
     destinationIcon = BitmapDescriptor.fromBytes(destination);
     driverIcon = BitmapDescriptor.fromBytes(driver);
   }
-
   RxMap<PolylineId, Polyline> polyLines = <PolylineId, Polyline>{}.obs;
   PolylinePoints polylinePoints = PolylinePoints();
-
   _addPolyLine(List<LatLng> polylineCoordinates) {
     PolylineId id = const PolylineId("poly");
     Polyline polyline = Polyline(
@@ -185,15 +184,10 @@ class TrackRideScreenController extends GetxController {
         width: 6,
         color: AppThemData.primary400);
     polyLines[id] = polyline;
-    updateCameraLocation(
-        polylineCoordinates.first, polylineCoordinates.last, mapController);
+    updateCameraLocation(polylineCoordinates.first, polylineCoordinates.last, mapController);
   }
 
-  Future<void> updateCameraLocation(
-    LatLng source,
-    LatLng destination,
-    GoogleMapController? mapController,
-  ) async {
+  Future<void> updateCameraLocation(LatLng source, LatLng destination, GoogleMapController? mapController) async {
     if (mapController == null) return;
 
     LatLngBounds bounds;
@@ -212,18 +206,14 @@ class TrackRideScreenController extends GetxController {
     } else {
       bounds = LatLngBounds(southwest: source, northeast: destination);
     }
-
     CameraUpdate cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 10);
-
     return checkCameraLocation(cameraUpdate, mapController);
   }
-
   Future<void> checkCameraLocation(
       CameraUpdate cameraUpdate, GoogleMapController mapController) async {
     mapController.animateCamera(cameraUpdate);
     LatLngBounds l1 = await mapController.getVisibleRegion();
     LatLngBounds l2 = await mapController.getVisibleRegion();
-
     if (l1.southwest.latitude == -90 || l2.southwest.latitude == -90) {
       return checkCameraLocation(cameraUpdate, mapController);
     }

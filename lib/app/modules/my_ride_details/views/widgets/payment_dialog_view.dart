@@ -4,10 +4,12 @@ import 'package:customer/constant/constant.dart';
 import 'package:customer/constant/send_notification.dart';
 import 'package:customer/constant_widgets/custom_dialog_box.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
+import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
 import 'package:customer/utils/fire_store_utils.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -622,9 +624,16 @@ class PaymentDialogView extends StatelessWidget {
                         Map<String, dynamic> playLoad = <String, dynamic>{
                           "bookingId": controller.bookingModel.value.id
                         };
+
+
+                        String   fcmToken = await FirebaseMessaging.instance.getToken()??"";
+                        if(fcmToken==""){
+                          ShowToastDialog.showToast("FCM token null");
+                          return;
+                        }
                         await SendNotification.sendOneNotification(
                             type: "order",
-                            token: receiverUserModel!.fcmToken.toString(),
+                            token:fcmToken.toString(),
                             title: 'Payment Method Changed'.tr,
                             body:
                                 'Customer has opted to pay with ${controller.selectedPaymentMethod.value}',

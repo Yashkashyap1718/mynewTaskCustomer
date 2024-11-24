@@ -1,3 +1,4 @@
+import 'package:customer/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -65,7 +66,7 @@ class NoRidesView extends StatelessWidget {
                 buttonColor: AppThemData.primary300,
                 buttonTextColor: AppThemData.black,
                 onTap: () {
-                  Get.to(const SelectLocationView());
+                  Get.toNamed(Routes.SELECT_LOCATION);
                 }),
           ),
         ],

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +17,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_place_picker_mb/google_maps_place_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ConfirmPickupBottomSheet extends StatelessWidget {
   final ScrollController scrollController;
@@ -177,31 +179,36 @@ class ConfirmPickupBottomSheet extends StatelessWidget {
                         buttonTextColor: AppThemData.black,
                         onTap: () async {
                           ShowToastDialog.showLoader("Please wait...");
-                          controller.bookingModel.value.id = Constant.getUuid();
+                          SharedPreferences prefs = await SharedPreferences.getInstance();
+                          String user_id = await prefs.getString("id")??"";
+                          controller.bookingModel.value.id = user_id;
                           controller.bookingModel.value.createAt =
                               Timestamp.now();
                           controller.bookingModel.value.updateAt =
                               Timestamp.now();
                           controller.bookingModel.value.bookingTime =
                               Timestamp.now();
-                          // controller.bookingModel.value = BookingModel.fromJson(controller.bookingModel.value.toJson());
-                          log(controller.bookingModel.value
-                              .toJson()
-                              .toString());
 
-                          await FireStoreUtils.setBooking(
-                                  controller.bookingModel.value)
-                              .then((value) {
-                            if (value! == true) {
-                              ShowToastDialog.showToast(
-                                  "Ride Placed successfully".tr);
+
+                          // controller.bookingModel.value = BookingModel.fromJson(controller.bookingModel.value.toJson());
+
+                          try{
+                            var result =  await FireStoreUtils.setBooking(controller.bookingModel.value);
+                            if (result! == true) {
+                              ShowToastDialog.showToast("Ride Placed successfully".tr);
                               ShowToastDialog.closeLoader();
                               controller.popupIndex.value = 3;
+                              controller.update();
                             } else {
                               ShowToastDialog.showToast("Request failed".tr);
                               ShowToastDialog.closeLoader();
                             }
-                          });
+                          }catch(e){
+                            ShowToastDialog.showToast(e.toString());
+                            ShowToastDialog.closeLoader();
+                          }
+
+
 
                           // bool isRideConfirm = false;
                           // RideRequest req;

@@ -6,11 +6,13 @@ import 'dart:developer';
 import 'package:customer/app/models/banner_model.dart';
 import 'package:customer/app/models/location_lat_lng.dart';
 import 'package:customer/app/models/user_model.dart';
+import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/utils/fire_store_utils.dart';
 import 'package:customer/utils/notification_service.dart';
 import 'package:customer/utils/utils.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -25,21 +27,21 @@ import '../../login/views/login_view.dart';
 class HomeController extends GetxController {
   final count = 0.obs;
   RxString profilePic =
-      "https://firebasestorage.googleapis.com/v0/b/mytaxi-a8627.appspot.com/o/constant_assets%2F59.png?alt=media&token=a0b1aebd-9c01-45f6-9569-240c4bc08e23"
+      "https://avatar.iran.liara.run/public"
           .obs;
   RxString name = ''.obs;
   RxString phoneNumber = ''.obs;
   RxList<BannerModel> bannerList = <BannerModel>[].obs;
   PageController pageController = PageController();
+  UserData? userData;
   RxInt curPage = 0.obs;
   RxInt drawerIndex = 0.obs;
   RxBool isLoading = false.obs;
-  // var userModel = UserModel().obs;
+  // var userData = userData().obs;
 
   @override
   void onInit() {
     getUserData();
-    updateCurrentLocation();
     super.onInit();
   }
 
@@ -50,57 +52,88 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {}
-  // Method to update the user data
-  void updateUser(UserModel user) {
-    // userModel.value = user;
+
+
+  sendLatLon(String lat, String lon) async {
+    String? fcmToken;
+    try {
+      fcmToken = await FirebaseMessaging.instance.getToken();
+      print("FCMTOKEN:: ${fcmToken}");
+    } catch (e) {
+      print("Error fetching FCM token: $e");
+    }
+    if(fcmToken==null){
+      return;
+    }
+    final Map<String, String> payload = {
+      "latitude": lat,
+      "longitude": lon,
+      "fcmToken": fcmToken
+    };
+    try {
+      final response = await http.put(
+        Uri.parse(baseURL + updatedCurrentLocation),
+        headers: {"Content-Type": "application/json", "token": token},
+        body: jsonEncode(payload),
+      );
+      log('***************${response.body}');
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      // await db.cleanUserTable();
+      if (data['status'] == true && data['data'] != null) {
+
+      } else {
+        print(data['msg']); // Example: "Please sign in to continue."
+      }
+    } catch (e) {
+      log(e.toString());
+      ShowToastDialog.showToast(e.toString());
+    }
   }
 
-  getUserData() async {
+
+
+ void getUserData() async {
     isLoading.value = true;
+    userData =  await FireStoreUtils.getUserProfileAPI();
+    print("USERDATA::: ${userData}");
+    if(userData != null){
+      isLoading.value = false;
+      if(userData!.status!="Active"){
+        Get.defaultDialog(
+            titlePadding: const EdgeInsets.only(top: 16),
+            title: "Account Disabled",
+            middleText:
+            "Your account has been disabled. Please contact the administrator.",
+            titleStyle:
+            GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+            barrierDismissible: false,
+            onWillPop: () async {
+              SystemNavigator.pop();
+              return false;
+            });
+        return;
+      }
+      profilePic.value ="https://avatar.iran.liara.run/public";
+      name.value = userData!.name ?? '';
+      phoneNumber.value = (userData!.countryCode ?? '91') + (userData!.phone ?? '****');
 
-    UserModel? userModel = await FireStoreUtils.getUserProfile();
-    await checkActiveStatus();
-    if (userModel != null) {
-      profilePic.value = (userModel.profilePic ?? "").isNotEmpty
-          ? userModel.profilePic ??
-              "https://firebasestorage.googleapis.com/v0/b/mytaxi-a8627.appspot.com/o/constant_assets%2F59.png?alt=media&token=a0b1aebd-9c01-45f6-9569-240c4bc08e23"
-          : "https://firebasestorage.googleapis.com/v0/b/mytaxi-a8627.appspot.com/o/constant_assets%2F59.png?alt=media&token=a0b1aebd-9c01-45f6-9569-240c4bc08e23";
-      name.value = userModel.fullName ?? '';
-      phoneNumber.value =
-          (userModel.countryCode ?? '') + (userModel.phoneNumber ?? '');
-      userModel.fcmToken = await NotificationService.getToken();
-      await FireStoreUtils.updateUser(userModel);
-      await FireStoreUtils.getBannerList().then((value) {
-        bannerList.value = value ?? [];
-      });
     }
+
+
     await Utils.getCurrentLocation();
+    updateCurrentLocation();
+    update();
   }
 
-  checkActiveStatus() async {
-    UserModel? userModel = await FireStoreUtils.getUserProfile();
-    if (userModel!.isActive == false) {
-      Get.defaultDialog(
-          titlePadding: const EdgeInsets.only(top: 16),
-          title: "Account Disabled",
-          middleText:
-              "Your account has been disabled. Please contact the administrator.",
-          titleStyle:
-              GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
-          barrierDismissible: false,
-          onWillPop: () async {
-            SystemNavigator.pop();
-            return false;
-          });
-    }
-  }
+
+
 
   Location location = Location();
 
   updateCurrentLocation() async {
     PermissionStatus permissionStatus = await location.hasPermission();
     if (permissionStatus == PermissionStatus.granted) {
-      location.enableBackgroundMode(enable: true);
+      //location.enableBackgroundMode(enable: true);
       location.changeSettings(
           accuracy: LocationAccuracy.high,
           distanceFilter:
@@ -111,20 +144,8 @@ class HomeController extends GetxController {
         log(locationData.toString());
         Constant.currentLocation = LocationLatLng(
             latitude: locationData.latitude, longitude: locationData.longitude);
-        // FireStoreUtils
-        //     .getDriverUserProfile(FireStoreUtils.getCurrentUid())
-        //     .then((value) {
-        //   // DriverUserModel driverUserModel = value!;
-        //   // if (driverUserModel.isOnline == true) {
-        //   //   driverUserModel.location = LocationLatLng(latitude: locationData.latitude, longitude: locationData.longitude);
-        //   //   GeoFirePoint position = GeoFlutterFire().point(latitude: locationData.latitude!, longitude: locationData.longitude!);
-        //
-        //   // driverUserModel.position = Positions(geoPoint: position.geoPoint, geohash: position.hash);
-        //   // driverUserModel.rotation = locationData.heading;
-        //   // FireStoreUtils.updateDriverUser(driverUserModel);
-        // // }
-        //     });
-        log("------>1");
+        sendLatLon(locationData.latitude.toString(),locationData.longitude.toString());
+
       });
     } else {
       location.requestPermission().then((permissionStatus) {
@@ -141,17 +162,18 @@ class HomeController extends GetxController {
                 latitude: locationData.latitude,
                 longitude: locationData.longitude);
             log("------>4");
+            sendLatLon(locationData.latitude.toString(),locationData.longitude.toString());
 
             // FireStoreUtils.getDriverUserProfile(FireStoreUtils.getCurrentUid()).then((value) {
-            //   DriverUserModel driverUserModel = value!;
-            //   if (driverUserModel.isOnline == true) {
-            //     driverUserModel.location = LocationLatLng(latitude: locationData.latitude, longitude: locationData.longitude);
-            //     driverUserModel.rotation = locationData.heading;
+            //   DriveruserData driveruserData = value!;
+            //   if (driveruserData.isOnline == true) {
+            //     driveruserData.location = LocationLatLng(latitude: locationData.latitude, longitude: locationData.longitude);
+            //     driveruserData.rotation = locationData.heading;
             //     GeoFirePoint position = GeoFlutterFire().point(latitude: locationData.latitude!, longitude: locationData.longitude!);
             //
-            //     driverUserModel.position = Positions(geoPoint: position.geoPoint, geohash: position.hash);
+            //     driveruserData.position = Positions(geoPoint: position.geoPoint, geohash: position.hash);
             //
-            //     FireStoreUtils.updateDriverUser(driverUserModel);
+            //     FireStoreUtils.updateDriverUser(driveruserData);
             //   }
             // });
           });
@@ -183,8 +205,7 @@ class HomeController extends GetxController {
         final String msg = responseData['msg'];
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isLoggedIn', false);
-        Get.offAll(const LoginView());
-
+        Get.offAllNamed(Routes.SPLASH_SCREEN);
         ShowToastDialog.closeLoader();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

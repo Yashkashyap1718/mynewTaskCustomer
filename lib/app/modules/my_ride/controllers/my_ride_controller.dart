@@ -1,5 +1,6 @@
 // ignore_for_file: unnecessary_overrides
 
+import 'package:customer/app/api_models/ride_history_data.dart';
 import 'package:customer/app/models/booking_model.dart';
 import 'package:get/get.dart';
 
@@ -32,13 +33,16 @@ class MyRideController extends GetxController {
   RxList<BookingModel> completedRides = <BookingModel>[].obs;
   RxList<BookingModel> rejectedRides = <BookingModel>[].obs;
 
-  getData(
-      {required bool isOngoingDataFetch,
-      required bool isCompletedDataFetch,
-      required bool isRejectedDataFetch}) async {
-    if (isOngoingDataFetch) ongoingRides.value = (await FireStoreUtils.getOngoingRides()) ?? [];
-    if (isCompletedDataFetch) completedRides.value = (await FireStoreUtils.getCompletedRides()) ?? [];
-    if (isRejectedDataFetch) rejectedRides.value = (await FireStoreUtils.getRejectedRides()) ?? [];
+  getData({required bool isOngoingDataFetch, required bool isCompletedDataFetch, required bool isRejectedDataFetch}) async {
+   if(isOngoingDataFetch){
+     ongoingRides.value = (await FireStoreUtils.getOngoingRides())??[];
+   }else if(isCompletedDataFetch){
+      completedRides.value = await FireStoreUtils.getCompletedRides()??[];
+   }else if(isRejectedDataFetch){
+   rejectedRides.value = (await FireStoreUtils.getRejectedRides()) ??[];
+   }else{
+
+   }
     isLoading.value = false;
   }
 }

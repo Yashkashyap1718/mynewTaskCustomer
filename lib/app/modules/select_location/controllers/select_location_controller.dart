@@ -36,7 +36,7 @@ class SelectLocationController extends GetxController {
   FocusNode dropFocusNode = FocusNode();
   TextEditingController dropLocationController = TextEditingController();
   TextEditingController pickupLocationController =
-      TextEditingController(text: 'Current Location');
+      TextEditingController();
   LatLng? sourceLocation;
   LatLng? destination;
   Position? currentLocationPosition;
@@ -192,12 +192,13 @@ class SelectLocationController extends GetxController {
   }
 
   setBookingData(bool isClear) async {
-    DatabaseHelper db = DatabaseHelper();
     if (isClear) {
       bookingModel.value = BookingModel();
     } else {
-      UserModel? user = await db.retrieveUserFromTable();
-      bookingModel.value.customerId = user!.id;
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+     String user_id = await prefs.getString("id")??"";
+      bookingModel.value.customerId = user_id;
       bookingModel.value.bookingStatus = BookingStatus.bookingPlaced;
       bookingModel.value.pickUpLocation = LocationLatLng(
           latitude: sourceLocation!.latitude,
@@ -230,6 +231,10 @@ class SelectLocationController extends GetxController {
   }
 
   updateData() async {
+    log("--mapModel--Data : ${mapModel.value!.toJson()}");
+    log("--destination--sourceLocation : ${destination}");
+    log("--sourceLocation--sourceLocation : ${sourceLocation}");
+
     // Check if both source and destination locations are set
     if (destination != null && sourceLocation != null) {
       // Fetch polyline and show loader
@@ -322,21 +327,27 @@ class SelectLocationController extends GetxController {
       required double? sourceLongitude,
       required double? destinationLatitude,
       required double? destinationLongitude}) async {
+
+    print("sourceLatitude:sourceLatitude ${sourceLatitude}  sourceLongitude: ${sourceLongitude}  destinationLatitude ${destinationLatitude}  destinationLongitude ${destinationLongitude}");
     if (sourceLatitude != null &&
         sourceLongitude != null &&
         destinationLatitude != null &&
         destinationLongitude != null) {
       List<LatLng> polylineCoordinates = [];
-
-      PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-        googleApiKey: Constant.mapAPIKey,
-        request: PolylineRequest(
-          origin: PointLatLng(sourceLatitude, sourceLongitude),
-          destination: PointLatLng(destinationLatitude, destinationLongitude),
-          mode: TravelMode.driving,
-          wayPoints: [PolylineWayPoint(location: "Sabo, Yaba Lagos Nigeria")],
-        ),
-      );
+      PolylineResult? result;
+      try {
+         result = await polylinePoints.getRouteBetweenCoordinates(
+          googleApiKey: Constant.mapAPIKey,
+          request: PolylineRequest(
+            origin: PointLatLng(sourceLatitude, sourceLongitude),
+            destination: PointLatLng(destinationLatitude, destinationLongitude),
+            mode: TravelMode.driving,
+          ),
+        );
+        print("HEMANTTTT:: ${result.points}");
+      } catch (e) {
+        log(" HEMANTTTT::HEMANTTTT:: Exception: $e");
+      }
       /*  PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
           googleApiKey: Constant.mapAPIKey,
           request: PolylineRequest(
@@ -345,12 +356,13 @@ class SelectLocationController extends GetxController {
           // request:  PointLatLng(destinationLatitude, destinationLongitude),
           // travelMode: TravelMode.driving,
           );*/
-      if (result.points.isNotEmpty) {
+      if (result != null && result.points.isNotEmpty) {
         for (var point in result.points) {
           polylineCoordinates.add(LatLng(point.latitude, point.longitude));
+          print("ENTRY::::::   ${point.latitude}");
         }
       } else {
-        log(result.errorMessage.toString());
+        ShowToastDialog.showToast("Polly line error");
       }
 
       addMarker(
@@ -405,7 +417,7 @@ class SelectLocationController extends GetxController {
       polylineId: id,
       points: polylineCoordinates,
       consumeTapEvents: true,
-      color: AppThemData.primary400,
+      color: AppThemData.blueLight,
       startCap: Cap.roundCap,
       width: 4,
     );

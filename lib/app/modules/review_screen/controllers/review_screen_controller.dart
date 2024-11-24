@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:customer/constant/api_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:customer/app/models/booking_model.dart';
@@ -15,7 +16,7 @@ class ReviewScreenController extends GetxController {
 
   Rx<ReviewModel> reviewModel = ReviewModel().obs;
   Rx<DriverUserModel> driverModel = DriverUserModel().obs;
-  Rx<UserModel> userModel = UserModel().obs;
+  Rx<UserData> userModel = UserData().obs;
   Rx<BookingModel> bookingModel = BookingModel().obs;
 
   @override
@@ -38,12 +39,8 @@ class ReviewScreenController extends GetxController {
         driverModel.value = value;
       }
     });
-    await FireStoreUtils.getUserProfile().then((value) {
-      if (value != null) {
-        log("----->3");
-        userModel.value = value;
-      }
-    });
+    userModel.value = userDataModel;
+
     await FireStoreUtils.getReview(bookingModel.value.id.toString())
         .then((value) {
       if (value != null) {

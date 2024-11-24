@@ -1,6 +1,6 @@
 // import 'package:country_code_picker/country_code_picker.dart';
 // import 'package:customer/app/modules/home/views/home_view.dart';
-// import 'package:customer/app/modules/login/views/login_view.dart';
+// import 'package:customer/app/modules/login/views/login_email_verification_view.dart';
 // import 'package:customer/firebase_options.dart';
 // import 'package:customer/services/localization_service.dart';
 // import 'package:customer/theme/styles.dart';
@@ -165,43 +165,54 @@ import 'package:customer/firebase_options.dart';
 import 'package:customer/services/localization_service.dart';
 import 'package:customer/theme/styles.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
+import 'package:customer/utils/my_notification_handler.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'app/routes/app_pages.dart';
-
+import 'constant/api_constant.dart';
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  MyNotificationHandler().showNotification(message);
+}
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await MyNotificationHandler().requestNotificationPermissions();
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    MyNotificationHandler().showNotification(message);
+  });
 
   // Location location = Location();
 
   // // Check if permission is granted, request if not
   // PermissionStatus permissionStatus = await location.requestPermission();
 
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  configLoading();
 
   // if (permissionStatus != PermissionStatus.granted) {
   //   // Handle the case where permission is not granted
   //   print('Location permission not granted');
   // } else {
   // Proceed with app startup
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  if(prefs.getString("token") != null){
+    token = prefs.getString("token")!;
+
+    print("TOKEN:: ${token}");
+  }
   runApp(MyApp());
   // }
 }
 
-// Background messaging handler
-@pragma('vm:entry-point')
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-}
+
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});

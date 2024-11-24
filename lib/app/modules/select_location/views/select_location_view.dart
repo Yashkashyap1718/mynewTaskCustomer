@@ -13,8 +13,9 @@ import 'package:provider/provider.dart';
 import '../controllers/select_location_controller.dart';
 
 class SelectLocationView extends StatelessWidget {
-  const SelectLocationView({super.key});
+   SelectLocationView({super.key});
 
+ final controller =  Get.put(SelectLocationController());
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
@@ -123,6 +124,7 @@ class SelectLocationView extends StatelessWidget {
                               ScrollController scrollController) {
                             return FindingDriverBottomSheet(
                               scrollController: scrollController,
+                              bookingModel: controller.bookingModel.value,
                             );
                           },
                         ),

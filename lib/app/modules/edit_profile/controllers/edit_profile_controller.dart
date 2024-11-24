@@ -16,18 +16,15 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../utils/database_helper.dart';
 
 class EditProfileController extends GetxController {
   //TODO: Implement EditProfileController
-
-  RxString profileImage =
-      "https://firebasestorage.googleapis.com/v0/b/mytaxi-a8627.appspot.com/o/constant_assets%2F59.png?alt=media&token=a0b1aebd-9c01-45f6-9569-240c4bc08e23"
-          .obs;
-  TextEditingController countryCodeController =
-      TextEditingController(text: '+91');
-  TextEditingController phoneNumberController = TextEditingController();
+  RxString profileImage = "https://avatar.iran.liara.run/public".obs;
+  TextEditingController countryCodeController = TextEditingController(text: '+91');
+  // TextEditingController datePickerController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController dobController = TextEditingController();
@@ -37,6 +34,7 @@ class EditProfileController extends GetxController {
   RxString phoneNumber = ''.obs;
   final ImagePicker imagePicker = ImagePicker();
   final formKey = GlobalKey<FormState>();
+  UserData? userModel;
   @override
   void onInit() {
     getUserData();
@@ -54,40 +52,20 @@ class EditProfileController extends GetxController {
   }
 
   getUserData() async {
-    UserModel? userModel = await FireStoreUtils.getUserProfile();
+    userModel  = userDataModel;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+ String email =    preferences.getString("email")??"";
     if (userModel != null) {
-      profileImage.value = (userModel.profilePic ?? "").isNotEmpty
-          ? userModel.profilePic ??
-              "https://firebasestorage.googleapis.com/v0/b/mytaxi-a8627.appspot.com/o/constant_assets%2F59.png?alt=media&token=a0b1aebd-9c01-45f6-9569-240c4bc08e23"
-          : "https://firebasestorage.googleapis.com/v0/b/mytaxi-a8627.appspot.com/o/constant_assets%2F59.png?alt=media&token=a0b1aebd-9c01-45f6-9569-240c4bc08e23";
-      name.value = userModel.fullName ?? '';
-      nameController.text = userModel.fullName ?? '';
-      phoneNumber.value =
-          (userModel.countryCode ?? '') + (userModel.phoneNumber ?? '');
-      phoneNumberController.text = (userModel.phoneNumber ?? '');
-      emailController.text = (userModel.email ?? '');
+      name.value = userModel!.name ?? '';
+      nameController.text = userModel!.name ?? '';
+      phoneNumber.value = (userModel!.countryCode ?? '') + (userModel!.phone ?? '');
+      dobController.text = "2000-01-01";
+      emailController.text = email;
+      selectedGender.value = (userModel!.gender??"male")=="male"?1:2;
     }
   }
 
-  saveUserData() async {
-    UserModel? userModel = await FireStoreUtils.getUserProfile();
-    userModel!.gender = selectedGender.value == 1 ? "Male" : "Female";
-    userModel.fullName = nameController.text;
-    userModel.slug = nameController.text.toSlug(delimiter: "-");
-    ShowToastDialog.showLoader("Please wait".tr);
-    if (profileImage.value.isNotEmpty &&
-        Constant().hasValidUrl(profileImage.value) == false) {
-      profileImage.value = await Constant.uploadUserImageToFireStorage(
-        File(profileImage.value),
-        "profileImage/${FireStoreUtils.getCurrentUid()}",
-        File(profileImage.value).path.split('/').last,
-      );
-    }
-    userModel.profilePic = profileImage.value;
-    await FireStoreUtils.updateUser(userModel);
-    ShowToastDialog.closeLoader();
-    Get.back(result: true);
-  }
+
 
   Future<void> pickFile(
       {required ImageSource source, required String token}) async {
@@ -127,7 +105,7 @@ class EditProfileController extends GetxController {
       "name": nameController.text,
       "email": emailController.text,
       "date_of_birth": emailController.text,
-      "gender": selectedGender.value == 1 ? "Male" : "Female",
+      "gender": selectedGender.value == 1 ? "male" : "female",
     };
 
     try {
@@ -152,6 +130,7 @@ class EditProfileController extends GetxController {
           const SnackBar(content: Text('Profile completed successfully!')),
         );
       } else {
+        ShowToastDialog.closeLoader();
         throw Exception('Failed to complete signup profile');
       }
     } catch (e) {
@@ -168,16 +147,13 @@ class EditProfileController extends GetxController {
 // Upload Profile function
   Future<void> uploadProfile(String token) async {
     const String url = '$baseURL/users/profile/upload';
-
     // Check if the profile image path is not empty
     if (profileImage.value.isEmpty) {
       print('No image selected');
       return;
     }
-
     try {
       ShowToastDialog.showLoader("Uploading profile...".tr);
-
       // Read the image file as bytes
       File imageFile = File(profileImage.value);
       List<int> imageBytes = await imageFile.readAsBytes();
@@ -199,26 +175,23 @@ class EditProfileController extends GetxController {
         },
         body: jsonEncode(body),
       );
-
       // Log the response status
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
-
-      // Process the response
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
-
         if (data['status']) {
           ShowToastDialog.closeLoader();
           ScaffoldMessenger.of(Get.context!).showSnackBar(
             SnackBar(content: Text(data['msg'])),
           );
         } else {
+          ShowToastDialog.closeLoader();
           throw Exception(data['msg']);
         }
       } else {
-        throw Exception(
-            'Failed to upload profile. Status code: ${response.statusCode}');
+        ShowToastDialog.closeLoader();
+        throw Exception('Failed to upload profile. Status code: ${response.statusCode}');
       }
     } catch (e) {
       ShowToastDialog.closeLoader();
@@ -234,54 +207,49 @@ class EditProfileController extends GetxController {
   // update Profile
 
   profileUpdation(String token) async {
-    final Map<String, String> payload = {
-      "name": nameController.text,
-      "gender": selectedGender.value == 1 ? "Male" : "Female",
-      "date_of_birth": dobController.text,
-      "email": emailController.text
-    };
-    try {
-      ShowToastDialog.showLoader("Update profile...".tr);
-
-      final http.Response response = await http.put(
-        Uri.parse(baseURL + updloadProfileImageEndpoint),
-        headers: {
-          'Content-Type': 'application/json',
-          'token': token,
-        },
-        body: jsonEncode(payload),
-      );
-
-      final Map<String, dynamic> data = jsonDecode(response.body);
-
-      if (data['status'] == true && data['data'] != null) {
-        UserModel userModel = UserModel();
-
-        userModel.id = data['data']['_id'];
-        userModel.fullName = data['data']['name'];
-        userModel.gender = data['data']['gender'];
-        userModel.referralCode = data['data']['referral_code'];
-        userModel.dateOfBirth = data['data']['date_of_birth'];
-        userModel.email = data['data']['email'];
-        userModel.profilePic = data['data']['profile'];
-
-        DatabaseHelper().insertUser(userModel);
-
-        log('------profileUpdation------$data');
-        // You can proceed with further operations like saving the user model or updating UI
-        print('User data loaded successfully');
-        ShowToastDialog.closeLoader();
-      } else {
-        // Handle the error case
-        print(data['msg']); // Example: "Please sign in to continue."
-      }
-    } catch (e) {
-      ShowToastDialog.closeLoader();
-      debugPrint('Error while update: $e');
-      ScaffoldMessenger.of(Get.context!).showSnackBar(
-        const SnackBar(
-            content: Text('Error occurred while uploading profile.')),
-      );
-    }
+    // final Map<String, String> payload = {
+    //   "name": nameController.text,
+    //   "gender": selectedGender.value == 1 ? "Male" : "Female",
+    //   "date_of_birth": dobController.text,
+    //   "email": emailController.text
+    // };
+    // try {
+    //   ShowToastDialog.showLoader("Update profile...".tr);
+    //
+    //   final http.Response response = await http.put(
+    //     Uri.parse(baseURL + updloadProfileImageEndpoint),
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //       'token': token,
+    //     },
+    //     body: jsonEncode(payload),
+    //   );
+    //
+    //   final Map<String, dynamic> data = jsonDecode(response.body);
+    //
+    //   if (data['status'] == true && data['data'] != null) {
+    //     UserData userModel = UserData();
+    //
+    //     userModel.id = data['data']['_id'];
+    //     userModel.name = data['data']['name'];
+    //     userModel.referralCode = data['data']['referral_code'];
+    //
+    //
+    //     log('------profileUpdation------$data');
+    //     // You can proceed with further operations like saving the user model or updating UI
+    //     print('User data loaded successfully');
+    //     ShowToastDialog.closeLoader();
+    //   } else {
+    //     // Handle the error case
+    //     print(data['msg']); // Example: "Please sign in to continue."
+    //   }
+    // } catch (e) {
+    //   ShowToastDialog.closeLoader();
+    //   debugPrint('Error while update: $e');
+    //   ScaffoldMessenger.of(Get.context!).showSnackBar(
+    //     const SnackBar(
+    //         content: Text('Error occurred while uploading profile.')),
+    //   );
+    // }
   }
 }

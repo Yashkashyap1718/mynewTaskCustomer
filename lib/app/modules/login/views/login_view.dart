@@ -24,9 +24,8 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
-
     final TextEditingController phoneController = TextEditingController();
-
+    Get.put(LoginController());
     return GetBuilder<LoginController>(
         init: LoginController(),
         builder: (controller) {
@@ -131,7 +130,7 @@ class _LoginViewState extends State<LoginView> {
                                     validator: (value) => validateMobile(
                                         value,
                                         controller
-                                            .countryCodeController.value.text),
+                                            .countryCodeController.value.text,"Mobile"),
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,

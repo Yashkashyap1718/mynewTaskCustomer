@@ -39,9 +39,7 @@ class Constant {
   static const String phoneLoginType = "phone";
   static const String googleLoginType = "google";
   static const String appleLoginType = "apple";
-  static const String profileConstant =
-      "https://firebasestorage.googleapis.com/v0/b/gocab-a8627.appspot.com/o/constant_assets%2F59.png?alt=media&token=a0b1aebd-9c01-45f6-9569-240c4bc08e23";
-
+  static const String profileConstant = "https://firebasestorage.googleapis.com/v0/b/gocab-a8627.appspot.com/o/constant_assets%2F59.png?alt=media&token=a0b1aebd-9c01-45f6-9569-240c4bc08e23";
   static UserModel? userModel;
   static String mapAPIKey = "AIzaSyAsVrHxXGITDH-g6ozMNeoEAtiFuhGulwI";
   static String senderId = "";
@@ -51,7 +49,6 @@ class Constant {
   static List<dynamic> cancellationReason = [];
   static String driverLocationUpdate = "10";
   static LocationLatLng? currentLocation;
-
   static String termsAndConditions = "";
   static String privacyPolicy = "";
   static String aboutApp = "";
@@ -60,31 +57,23 @@ class Constant {
   static String minimumAmountToWithdrawal = "0.0";
   static String? referralAmount = "0.0";
   static List<VehicleTypeModel>? vehicleTypeList=List.from([]);
-
   // static LocationLatLng? currentLocation = LocationLatLng(latitude: 23.0225, longitude: 72.5714);
   static List<TaxModel>? taxList;
   static String? country;
   static AdminCommission? adminCommission;
-
   static CurrencyModel? currencyModel;
   static PaymentModel? paymentModel;
-
   static const String placed = "placed";
   static const String onGoing = "onGoing";
   static const String completed = "completed";
   static const String canceled = "canceled";
-
   // static const globalUrl = "https://elaynetech.com";
-
   static String appName = '';
   static String? appColor;
-
   static String paymentCallbackURL = 'https://elaynetech.com/callback';
-
   static const String typeDriver = "driver";
   static const String typeCustomer = "customer";
-  static const _chars =
-      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789';
+  static const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789';
   static final math.Random _rnd = math.Random();
 
   getDriverData() async {

@@ -71,7 +71,7 @@ class MyWalletView extends StatelessWidget {
                               const SizedBox(height: 4),
                               Obx(
                                 () => Text(
-                                  Constant.amountToShow(amount: controller.userModel.value.walletAmount ?? '0.0'),
+                                  Constant.amountToShow(amount:"100"),
                                   style: GoogleFonts.inter(
                                     color: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white,
                                     fontSize: 28,

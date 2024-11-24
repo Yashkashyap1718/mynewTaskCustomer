@@ -217,21 +217,21 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                     Constant.paymentModel!.wallet!.name) {
                                   controller.getProfileData();
 
-                                  if (double.parse(controller
-                                          .userModel.value.walletAmount!) <
-                                      Constant.calculateFinalAmount(
-                                          controller.bookingModel.value)) {
-                                    ShowToastDialog.showToast(
-                                        "Your wallet amount is insufficient to Payment"
-                                            .tr);
-                                  } else {
+                                  // if (double.parse(controller
+                                  //         .userModel.value.walletAmount!) <
+                                  //     Constant.calculateFinalAmount(
+                                  //         controller.bookingModel.value)) {
+                                  //   ShowToastDialog.showToast(
+                                  //       "Your wallet amount is insufficient to Payment"
+                                  //           .tr);
+                                  // } else {
                                     ShowToastDialog.showLoader(
                                         "Please wait".tr);
                                     await controller.walletPaymentMethod();
                                     ShowToastDialog.showToast(
                                         "Payment successful");
                                     ShowToastDialog.closeLoader();
-                                  }
+                                  //}
                                 } else if (controller
                                         .selectedPaymentMethod.value ==
                                     Constant.paymentModel!.paypal!.name) {
@@ -689,11 +689,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                             ),
                                             InkWell(
                                                 onTap: () {
-                                                  Get.to(ChatScreenView(
-                                                    receiverId:
-                                                        driverUserModel.id ??
-                                                            '',
-                                                  ));
+                                                  Get.toNamed(Routes.CHAT_SCREEN,arguments: {"receiverId":driverUserModel.id});
                                                 },
                                                 child: SvgPicture.asset(
                                                     "assets/icon/ic_message.svg")),

@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:customer/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 import 'package:customer/app/modules/home/views/home_view.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
@@ -30,13 +31,13 @@ class PermissionController extends GetxController {
       if (Platform.isAndroid) {
         location.isBackgroundModeEnabled().then((value) {
           if (value) {
-            Get.to(const HomeView());
+            Get.toNamed(Routes.HOME);
           } else {
             ShowToastDialog.showToast("Please enable background mode");
           }
         });
       } else {
-        Get.to(const HomeView());
+        Get.toNamed(Routes.HOME);
       }
     } else {
       location.requestPermission().then((permissionStatus) {
@@ -44,13 +45,13 @@ class PermissionController extends GetxController {
           if (Platform.isAndroid) {
             location.enableBackgroundMode(enable: true).then((value) {
               if (value) {
-                Get.to(const HomeView());
+                Get.toNamed(Routes.HOME);
               } else {
                 ShowToastDialog.showToast("Please enable background mode");
               }
             });
           } else {
-            Get.to(const HomeView());
+            Get.toNamed(Routes.HOME);
           }
         }
       });

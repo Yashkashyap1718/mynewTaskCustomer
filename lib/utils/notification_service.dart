@@ -61,16 +61,7 @@ class NotificationService {
       if (message.notification != null) {
         log(message.notification.toString());
         if (message.data['type'] == "chat") {
-          await FireStoreUtils.getUserProfile(
-                  // message.data['senderId'] == 1,
-                  //     ? message.data['receiverId']
-                  //     : message.data['senderId']
 
-                  )
-              .then((value) {
-            // UserModel userModel = value!;
-            // Get.to(const ChatScreen(), arguments: {"receiverModel": userModel});
-          });
         } else if (message.data['type'] == "order") {
           // OrderModel? orderModel = await FireStoreUtils.getSingleOrder(message.data['orderId']);
           // Get.to(() => const MySummaryScreen(), arguments: {"orderModel": orderModel});

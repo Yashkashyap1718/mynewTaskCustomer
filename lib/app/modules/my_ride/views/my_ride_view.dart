@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:customer/app/api_models/ride_history_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -57,8 +58,13 @@ class MyRideView extends StatelessWidget {
                               : themeChange.isDarkTheme()
                                   ? AppThemData.white
                                   : AppThemData.black,
-                          onTap: () {
+                          onTap: () async{
                             controller.selectedType.value = 0;
+                            await controller.getData(
+                                isOngoingDataFetch: true,
+                                isCompletedDataFetch: false,
+                                isRejectedDataFetch: false);
+
                           },
                           size: Size((Responsive.width(90, context) / 3), 38),
                           textSize: 12,
@@ -75,7 +81,11 @@ class MyRideView extends StatelessWidget {
                               : (themeChange.isDarkTheme()
                                   ? AppThemData.white
                                   : AppThemData.black),
-                          onTap: () {
+                          onTap: () async{
+                            await controller.getData(
+                                isOngoingDataFetch: false,
+                                isCompletedDataFetch: true,
+                                isRejectedDataFetch: false);
                             controller.selectedType.value = 1;
                           },
                           size: Size((Responsive.width(90, context) / 3), 38),
@@ -93,8 +103,12 @@ class MyRideView extends StatelessWidget {
                               : themeChange.isDarkTheme()
                                   ? AppThemData.white
                                   : AppThemData.black,
-                          onTap: () {
+                          onTap: () async{
                             controller.selectedType.value = 2;
+                            await controller.getData(
+                                isOngoingDataFetch: false,
+                                isCompletedDataFetch: false,
+                                isRejectedDataFetch: true);
                           },
                           size: Size((Responsive.width(90, context) / 3), 38),
                           textSize: 12,
@@ -112,6 +126,8 @@ class MyRideView extends StatelessWidget {
                           isCompletedDataFetch: false,
                           isRejectedDataFetch: false);
                     } else if (controller.selectedType.value == 1) {
+
+                      print("controller.selectedType.value: ${controller.selectedType.value}");
                       await controller.getData(
                           isOngoingDataFetch: false,
                           isCompletedDataFetch: true,

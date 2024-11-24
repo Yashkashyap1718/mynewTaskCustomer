@@ -13,6 +13,7 @@ import 'package:customer/app/models/payment_method_model.dart';
 import 'package:customer/app/models/payment_model/stripe_failed_model.dart';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/models/wallet_transaction_model.dart';
+import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant/send_notification.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
@@ -23,6 +24,7 @@ import 'package:customer/payments/pay_stack/pay_stack_url_model.dart';
 import 'package:customer/payments/pay_stack/paystack_url_generator.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/fire_store_utils.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_paypal_native/flutter_paypal_native.dart';
 // import 'package:flutter_paypal_native/models/custom/currency_code.dart';
@@ -43,7 +45,7 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 class MyRideDetailsController extends GetxController {
   RxString bookingId = ''.obs;
   Rx<BookingModel> bookingModel = BookingModel().obs;
-  Rx<UserModel> userModel = UserModel().obs;
+  Rx<UserData> userModel = UserData().obs;
   Rx<PaymentModel> paymentModel = PaymentModel().obs;
   RxString selectedPaymentMethod = "".obs;
   razor_pay_flutter.Razorpay _razorpay = razor_pay_flutter.Razorpay();
@@ -86,11 +88,8 @@ class MyRideDetailsController extends GetxController {
   }
 
   getProfileData() async {
-    await FireStoreUtils.getUserProfile().then((value) {
-      if (value != null) {
-        userModel.value = value;
-      }
-    });
+    userModel.value = userDataModel;
+
   }
 
   completeOrder(String transactionId) async {
@@ -159,9 +158,14 @@ class MyRideDetailsController extends GetxController {
     Map<String, dynamic> playLoad = <String, dynamic>{
       "bookingId": bookingModel.value.id
     };
+    String   fcmToken = await FirebaseMessaging.instance.getToken()??"";
+    if(fcmToken==""){
+      ShowToastDialog.showToast("FCM token null");
+      return;
+    }
     await SendNotification.sendOneNotification(
         type: "order",
-        token: receiverUserModel!.fcmToken.toString(),
+        token: fcmToken.toString(),
         title: 'Payment Received'.tr,
         body:
             'Payment Received for Ride #${bookingModel.value.id.toString().substring(0, 4)}',
@@ -289,7 +293,7 @@ class MyRideDetailsController extends GetxController {
         'currency': "USD",
         'payment_method_types[]': 'card',
         "description": "Strip Payment",
-        "shipping[name]": userModel.value.fullName,
+        "shipping[name]": userModel.value.name,
         "shipping[address][line1]": "510 Townsend St",
         "shipping[address][postal_code]": "98140",
         "shipping[address][city]": "San Francisco",
@@ -385,15 +389,15 @@ class MyRideDetailsController extends GetxController {
         "razorPaySecret": paymentModel.value.razorpay!.razorpayKey,
         'amount': double.parse(amount) * 100,
         "currency": "INR",
-        'name': userModel.value.fullName,
+        'name': userModel.value,
         "isSandBoxEnabled": paymentModel.value.razorpay!.isSandbox,
         'external': {
           'wallets': ['paytm']
         },
         'send_sms_hash': true,
         'prefill': {
-          'contact': userModel.value.phoneNumber,
-          'email': userModel.value.email
+          'contact': userModel.value.phone,
+          'email': userModel.value.name
         },
       };
 

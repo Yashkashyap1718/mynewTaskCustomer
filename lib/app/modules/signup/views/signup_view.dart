@@ -10,15 +10,9 @@ import 'package:provider/provider.dart';
 
 import '../controllers/signup_controller.dart';
 
-class SignupView extends StatefulWidget {
-  final String? userToken;
-  const SignupView({super.key, this.userToken});
-
-  @override
-  State<SignupView> createState() => _SignupViewState();
-}
-
-class _SignupViewState extends State<SignupView> {
+class SignupView extends StatelessWidget {
+   SignupView({super.key});
+  final controller = Get.put(SignupController());
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
@@ -263,9 +257,8 @@ class _SignupViewState extends State<SignupView> {
                                       .validate()) {
                                     // controller.createAccount();
                                     controller.creatCompleteAccorunt(
-                                        controller.selectedGender.value
-                                            .toString(),
-                                        widget.userToken.toString());
+                                        controller.selectedGender.value==1?"Male":"Female",
+                                        controller.userToken.toString());
                                   }
                                 }),
                           ),

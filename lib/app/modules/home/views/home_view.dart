@@ -16,6 +16,7 @@ import 'package:customer/app/modules/my_wallet/views/my_wallet_view.dart';
 import 'package:customer/app/modules/notification/views/notification_view.dart';
 import 'package:customer/app/modules/select_location/views/select_location_view.dart';
 import 'package:customer/app/modules/support_screen/views/support_screen_view.dart';
+import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/booking_status.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/no_rides_view.dart';
@@ -35,119 +36,20 @@ import '../../../../utils/database_helper.dart';
 import '../../../models/user_model.dart';
 import '../controllers/home_controller.dart';
 
-class HomeView extends StatefulWidget {
-  final String? token;
-  const HomeView({super.key, this.token});
-
-  @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  UserModel userData = UserModel();
-  DatabaseHelper db = DatabaseHelper();
-
-  @override
-  void initState() {
-    getUser();
-    fetchUserProfile(widget.token);
-    super.initState();
-  }
-
-  Future<void> getUser() async {
-    UserModel? retrievedUser = await db.retrieveUserFromTable();
-    if (retrievedUser != null) {
-      setState(() {
-        userData = retrievedUser; // Assign the retrieved user to the local user
-      });
-    }
-  }
-
-  Future<void> fetchUserProfile(token) async {
-    const String baseUrl = "http://172.93.54.177:3002/users/profile/preview";
-
-    try {
-      final response = await http.get(
-        Uri.parse(baseUrl),
-        headers: {
-          'token': token,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(response.body);
-
-        if (responseData['status'] == true) {
-          final data = responseData['data'];
-          await DatabaseHelper().cleanUserTable();
-
-          // Handle null values safely using the null-aware operator or providing default values.
-          UserModel userModel = UserModel(
-            id: data['_id'] ?? '', // Default to an empty string if null
-            fullName: data['name'] ?? '', // Default to an empty string if null
-            countryCode: data['country_code'] ??
-                '', // Default to an empty string if null
-            phoneNumber:
-                data['phone'] ?? '', // Default to an empty string if null
-            referralCode: data['referral_code'] ??
-                '', // Default to an empty string if null
-            verified: data['verified']?.toString() ??
-                'false', // Convert to string and default to 'false' if null
-            role: data['role'] ?? '', // Default to an empty string if null
-            // Uncomment the languages field if required and handle its nullability
-            // languages: (data['languages'] as List<dynamic>?)?.join(', ') ?? '',
-            profilePic:
-                data['profile'] ?? '', // Default to an empty string if null
-            status: data['status'] ?? '', // Default to an empty string if null
-            suspend: data['suspend'] ?? false, // Default to false if null
-            gender: data['gender'] ?? '', // Default to an empty string if null
-          );
-
-          // Insert or update the user in the local database
-          await DatabaseHelper().insertUser(userModel);
-          print("************User profile successfully saved.");
-
-          AnimatedSnackBar.material(
-            'User profile successfully saved.',
-            type: AnimatedSnackBarType.success,
-            duration: const Duration(seconds: 5),
-            mobileSnackBarPosition: MobileSnackBarPosition.top,
-          ).show(context);
-        } else {
-          print("***********Failed to fetch profile: ${responseData['msg']}");
-        }
-      } else {
-        print("********Failed to fetch profile: ${response.statusCode}");
-      }
-    } catch (e) {
-      print("Error fetching profile: $e");
-
-      AnimatedSnackBar.material(
-        e.toString(),
-        type: AnimatedSnackBarType.error, // Changed to error
-        duration: const Duration(seconds: 5),
-        mobileSnackBarPosition: MobileSnackBarPosition.top,
-      ).show(context);
-    }
-  }
+class HomeView extends StatelessWidget {
+  const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
+    Get.put(HomeController());
     return GetBuilder<HomeController>(
         init: HomeController(),
         builder: (controller) {
           return Scaffold(
-              backgroundColor: themeChange.isDarkTheme()
-                  ? AppThemData.black
-                  : AppThemData.white,
+              backgroundColor: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white,
               appBar: AppBar(
-                shape: Border(
-                    bottom: BorderSide(
-                        color: themeChange.isDarkTheme()
-                            ? AppThemData.grey800
-                            : AppThemData.grey100,
-                        width: 1)),
+                shape: Border(bottom: BorderSide(color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100, width: 1)),
                 title: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -157,9 +59,7 @@ class _HomeViewState extends State<HomeView> {
                     Text(
                       'MyTaxi'.tr,
                       style: GoogleFonts.inter(
-                        color: themeChange.isDarkTheme()
-                            ? AppThemData.white
-                            : AppThemData.black,
+                        color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                       ),
@@ -175,7 +75,7 @@ class _HomeViewState extends State<HomeView> {
                       icon: const Icon(Icons.notifications_none_rounded))
                 ],
               ),
-              drawer: const DrawerView(),
+              drawer: DrawerView(user: controller.userData ?? UserData()),
               body: Obx(
                 () => controller.drawerIndex.value == 1
                     ? const MyRideView()
@@ -184,103 +84,53 @@ class _HomeViewState extends State<HomeView> {
                         : controller.drawerIndex.value == 3
                             ? const SupportScreenView()
                             : controller.drawerIndex.value == 4
-                                ? HtmlViewScreenView(
-                                    title: "Privacy & Policy".tr,
-                                    htmlData: Constant.privacyPolicy)
+                                ? HtmlViewScreenView(title: "Privacy & Policy".tr, htmlData: Constant.privacyPolicy)
                                 : controller.drawerIndex.value == 5
-                                    ? HtmlViewScreenView(
-                                        title: "Terms & Condition".tr,
-                                        htmlData: Constant.termsAndConditions)
+                                    ? HtmlViewScreenView(title: "Terms & Condition".tr, htmlData: Constant.termsAndConditions)
                                     : controller.drawerIndex.value == 6
                                         ? const LanguageView()
                                         : controller.isLoading.value
                                             ? Constant.loader()
                                             : SingleChildScrollView(
                                                 child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.fromLTRB(
-                                                          16, 12, 16, 12),
+                                                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
                                                   child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.start,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    mainAxisSize: MainAxisSize.max,
                                                     children: [
                                                       InkWell(
                                                         onTap: () {
-                                                          Get.to(
-                                                              const SelectLocationView());
+                                                          Get.toNamed(Routes.SELECT_LOCATION);
                                                         },
                                                         child: Container(
-                                                          width:
-                                                              Responsive.width(
-                                                                  100, context),
+                                                          width: Responsive.width(100, context),
                                                           height: 56,
-                                                          margin:
-                                                              const EdgeInsets
-                                                                  .fromLTRB(
-                                                                  0, 0, 0, 12),
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .all(16),
-                                                          decoration:
-                                                              ShapeDecoration(
-                                                            color: themeChange
-                                                                    .isDarkTheme()
-                                                                ? AppThemData
-                                                                    .grey900
-                                                                : AppThemData
-                                                                    .grey50,
-                                                            shape:
-                                                                RoundedRectangleBorder(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          100),
+                                                          margin: const EdgeInsets.fromLTRB(0, 0, 0, 12),
+                                                          padding: const EdgeInsets.all(16),
+                                                          decoration: ShapeDecoration(
+                                                            color: themeChange.isDarkTheme() ? AppThemData.grey900 : AppThemData.grey50,
+                                                            shape: RoundedRectangleBorder(
+                                                              borderRadius: BorderRadius.circular(100),
                                                             ),
                                                           ),
                                                           child: Row(
-                                                            mainAxisSize:
-                                                                MainAxisSize
-                                                                    .min,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                            crossAxisAlignment: CrossAxisAlignment.center,
                                                             children: [
                                                               Icon(
-                                                                Icons
-                                                                    .search_rounded,
-                                                                color: themeChange.isDarkTheme()
-                                                                    ? AppThemData
-                                                                        .grey400
-                                                                    : AppThemData
-                                                                        .grey500,
+                                                                Icons.search_rounded,
+                                                                color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
                                                               ),
-                                                              const SizedBox(
-                                                                  width: 8),
+                                                              const SizedBox(width: 8),
                                                               Expanded(
                                                                 child: Text(
-                                                                  'Where to?'
-                                                                      .tr,
-                                                                  style:
-                                                                      GoogleFonts
-                                                                          .inter(
-                                                                    color: themeChange.isDarkTheme()
-                                                                        ? AppThemData
-                                                                            .grey400
-                                                                        : AppThemData
-                                                                            .grey500,
-                                                                    fontSize:
-                                                                        16,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400,
+                                                                  'Where to?'.tr,
+                                                                  style: GoogleFonts.inter(
+                                                                    color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
+                                                                    fontSize: 16,
+                                                                    fontWeight: FontWeight.w400,
                                                                   ),
                                                                 ),
                                                               ),
@@ -291,118 +141,58 @@ class _HomeViewState extends State<HomeView> {
                                                       BannerView(),
                                                       Text(
                                                         'Your Rides'.tr,
-                                                        style:
-                                                            GoogleFonts.inter(
-                                                          color: themeChange
-                                                                  .isDarkTheme()
-                                                              ? AppThemData
-                                                                  .grey25
-                                                              : AppThemData
-                                                                  .grey950,
+                                                        style: GoogleFonts.inter(
+                                                          color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
                                                           fontSize: 18,
-                                                          fontWeight:
-                                                              FontWeight.w600,
+                                                          fontWeight: FontWeight.w600,
                                                         ),
                                                       ),
-                                                      const SizedBox(
-                                                          height: 20),
-                                                      StreamBuilder<
-                                                              List<
-                                                                  BookingModel>>(
-                                                          stream: FireStoreUtils()
-                                                              .getHomeOngoingBookings(),
-                                                          builder: (context,
-                                                              snapshot) {
+                                                      const SizedBox(height: 20),
+                                                      StreamBuilder<List<BookingModel>>(
+                                                          stream: FireStoreUtils().getHomeOngoingBookings(),
+                                                          builder: (context, snapshot) {
                                                             log("---------------State : ${snapshot.connectionState}");
                                                             log("--------------State : ${snapshot.data}");
-                                                            if (snapshot
-                                                                    .connectionState ==
-                                                                ConnectionState
-                                                                    .waiting) {
-                                                              return Constant
-                                                                  .loader();
+                                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                                              return Constant.loader();
                                                             }
-                                                            if (!snapshot
-                                                                    .hasData ||
-                                                                (snapshot.data
-                                                                        ?.isEmpty ??
-                                                                    true)) {
+                                                            if (!snapshot.hasData || (snapshot.data?.isEmpty ?? true)) {
                                                               return NoRidesView(
-                                                                themeChange:
-                                                                    themeChange,
-                                                                height: Responsive
-                                                                    .height(40,
-                                                                        context),
+                                                                themeChange: themeChange,
+                                                                height: Responsive.height(40, context),
                                                               );
                                                             } else {
-                                                              List<BookingModel>
-                                                                  bookingModelList =
-                                                                  snapshot
-                                                                      .data!;
-                                                              return ListView
-                                                                  .builder(
-                                                                shrinkWrap:
-                                                                    true,
-                                                                physics:
-                                                                    const NeverScrollableScrollPhysics(),
-                                                                itemCount:
-                                                                    bookingModelList
-                                                                        .length,
-                                                                itemBuilder:
-                                                                    (context,
-                                                                        index) {
+                                                              List<BookingModel> bookingModelList = snapshot.data!;
+                                                              return ListView.builder(
+                                                                shrinkWrap: true,
+                                                                physics: const NeverScrollableScrollPhysics(),
+                                                                itemCount: bookingModelList.length,
+                                                                itemBuilder: (context, index) {
                                                                   return Column(
-                                                                    mainAxisSize:
-                                                                        MainAxisSize
-                                                                            .min,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
+                                                                    mainAxisSize: MainAxisSize.min,
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    mainAxisAlignment: MainAxisAlignment.start,
                                                                     children: [
                                                                       InkWell(
-                                                                        onTap:
-                                                                            () {
-                                                                          MyRideDetailsController
-                                                                              detailsController =
-                                                                              Get.put(MyRideDetailsController());
-                                                                          detailsController
-                                                                              .bookingId
-                                                                              .value = bookingModelList[index]
-                                                                                  .id ??
-                                                                              '';
-                                                                          detailsController
-                                                                              .bookingModel
-                                                                              .value = bookingModelList[index];
-                                                                          Get.to(
-                                                                              const MyRideDetailsView());
+                                                                        onTap: () {
+                                                                          MyRideDetailsController detailsController = Get.put(MyRideDetailsController());
+                                                                          detailsController.bookingId.value = bookingModelList[index].id ?? '';
+                                                                          detailsController.bookingModel.value = bookingModelList[index];
+                                                                          Get.to(const MyRideDetailsView());
                                                                         },
-                                                                        child:
-                                                                            Container(
-                                                                          width: Responsive.width(
-                                                                              100,
-                                                                              context),
-                                                                          padding: const EdgeInsets
-                                                                              .all(
-                                                                              16),
-                                                                          decoration:
-                                                                              ShapeDecoration(
-                                                                            shape:
-                                                                                RoundedRectangleBorder(
+                                                                        child: Container(
+                                                                          width: Responsive.width(100, context),
+                                                                          padding: const EdgeInsets.all(16),
+                                                                          decoration: ShapeDecoration(
+                                                                            shape: RoundedRectangleBorder(
                                                                               side: BorderSide(width: 1, color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100),
                                                                               borderRadius: BorderRadius.circular(12),
                                                                             ),
                                                                           ),
-                                                                          child:
-                                                                              Column(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.min,
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.start,
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.start,
+                                                                          child: Column(
+                                                                            mainAxisSize: MainAxisSize.min,
+                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
                                                                             children: [
                                                                               Row(
                                                                                 mainAxisSize: MainAxisSize.min,
@@ -550,9 +340,7 @@ class _HomeViewState extends State<HomeView> {
                                                                           ),
                                                                         ),
                                                                       ),
-                                                                      const SizedBox(
-                                                                          height:
-                                                                              4),
+                                                                      const SizedBox(height: 4),
                                                                     ],
                                                                   );
                                                                 },
@@ -639,10 +427,7 @@ class BannerView extends StatelessWidget {
                         width: Responsive.width(100, context),
                         margin: const EdgeInsets.only(bottom: 20),
                         decoration: ShapeDecoration(
-                          image: DecorationImage(
-                              image: NetworkImage(
-                                  controller.bannerList[index].image ?? ""),
-                              fit: BoxFit.cover),
+                          image: DecorationImage(image: NetworkImage(controller.bannerList[index].image ?? ""), fit: BoxFit.cover),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
                           ),
@@ -670,12 +455,9 @@ class BannerView extends StatelessWidget {
                               ),
                               Container(
                                 width: Responsive.width(100, context),
-                                margin:
-                                    const EdgeInsets.only(top: 6, bottom: 6),
+                                margin: const EdgeInsets.only(top: 6, bottom: 6),
                                 child: Text(
-                                  controller.bannerList[index]
-                                          .bannerDescription ??
-                                      '',
+                                  controller.bannerList[index].bannerDescription ?? '',
                                   maxLines: 3,
                                   overflow: TextOverflow.ellipsis,
                                   style: GoogleFonts.inter(
@@ -686,9 +468,7 @@ class BannerView extends StatelessWidget {
                                 ),
                               ),
                               Visibility(
-                                visible: controller
-                                        .bannerList[index].isOfferBanner ??
-                                    false,
+                                visible: controller.bannerList[index].isOfferBanner ?? false,
                                 child: Text(
                                   controller.bannerList[index].offerText ?? '',
                                   style: GoogleFonts.inter(
@@ -721,9 +501,7 @@ class BannerView extends StatelessWidget {
                       width: 8,
                       height: 8,
                       decoration: BoxDecoration(
-                        color: index == controller.curPage.value
-                            ? AppThemData.primary400
-                            : AppThemData.grey200,
+                        color: index == controller.curPage.value ? AppThemData.primary400 : AppThemData.grey200,
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),

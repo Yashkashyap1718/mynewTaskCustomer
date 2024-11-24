@@ -1,7 +1,7 @@
 bool isNumeric(String s) => s.isNotEmpty && double.tryParse(s) != null;
 
-String? validateMobile(String? value, String? countryCode) {
-  if (value == null || value.isEmpty) {
+String? validateMobile(String? value, String? countryCode,String? type) {
+   if(value == null || value.isEmpty){
     return 'Please enter mobile number';
   }
 

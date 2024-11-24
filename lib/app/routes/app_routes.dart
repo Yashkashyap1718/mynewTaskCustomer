@@ -10,7 +10,9 @@ abstract class Routes {
   static const SPLASH_SCREEN = _Paths.SPLASH_SCREEN;
   static const INTRO_SCREEN = _Paths.INTRO_SCREEN;
   static const LOGIN = _Paths.LOGIN;
+  static const EMAIL_OTP = _Paths.EMAIL_OTP;
   static const VERIFY_OTP = _Paths.VERIFY_OTP;
+  static const VERIFY_EMAIL_OTP = _Paths.VERIFY_EMAIL_OTP;
   static const SIGNUP = _Paths.SIGNUP;
   static const CATEGORIES = _Paths.CATEGORIES;
   static const SELECT_LOCATION = _Paths.SELECT_LOCATION;
@@ -38,7 +40,9 @@ abstract class _Paths {
   static const SPLASH_SCREEN = '/splash-screen';
   static const INTRO_SCREEN = '/intro-screen';
   static const LOGIN = '/login';
+  static const EMAIL_OTP = '/EMAIL_OTP';
   static const VERIFY_OTP = '/verify-otp';
+  static const VERIFY_EMAIL_OTP = '/VERIFY_EMAIL_OTP';
   static const SIGNUP = '/signup';
   static const CATEGORIES = '/categories';
   static const SELECT_LOCATION = '/select-location';

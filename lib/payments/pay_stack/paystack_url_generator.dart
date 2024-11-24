@@ -7,10 +7,10 @@ import 'package:customer/payments/pay_stack/pay_stack_url_model.dart';
 import 'package:http/http.dart' as http;
 
 class PayStackURLGen {
-  static Future payStackURLGen({required String amount, required String secretKey, required String currency, required UserModel userModel}) async {
+  static Future payStackURLGen({required String amount, required String secretKey, required String currency, required UserData userModel}) async {
     const url = "https://api.pay_stack.co/transaction/initialize";
     final response = await http.post(Uri.parse(url), body: {
-      "email": userModel.email,
+      "email": userModel.name,
       "amount": amount,
       "currency": currency,
     }, headers: {
@@ -49,7 +49,7 @@ class PayStackURLGen {
     //PayPalClientSettleModel.fromJson(data);
   }
 
-  static Future<String> getPayHTML({required String amount, required PayFast payFastSettingData, required UserModel userModel}) async {
+  static Future<String> getPayHTML({required String amount, required PayFast payFastSettingData, required UserData userModel}) async {
     String newUrl = 'https://${payFastSettingData.isSandbox == false ? "www" : "sandbox"}.payfast.co.za/eng/process';
     Map body = {
       'merchant_id': payFastSettingData.merchantId,
@@ -59,9 +59,9 @@ class PayStackURLGen {
       'return_url': payFastSettingData.returnUrl,
       'cancel_url': payFastSettingData.cancelUrl,
       'notify_url': payFastSettingData.notifyUrl,
-      'name_first': userModel.fullName,
-      'name_last': userModel.fullName,
-      'email_address': userModel.email,
+      'name_first': userModel.name,
+      'name_last': userModel.name,
+      'email_address': userModel.name,
     };
 
     final response = await http.post(

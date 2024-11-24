@@ -156,11 +156,9 @@ class SelectLocationBottomSheet extends StatelessWidget {
                         },
                         itemClick: (postalCodeResponse) {
                           if (index == 0) {
-                            controller.pickupLocationController.text =
-                                postalCodeResponse.description ?? '';
+                            controller.pickupLocationController.text = postalCodeResponse.description ?? '';
                           } else {
-                            controller.dropLocationController.text =
-                                postalCodeResponse.description ?? '';
+                            controller.dropLocationController.text = postalCodeResponse.description ?? '';
                           }
                         },
                         itemBuilder: (context, index, Prediction prediction) {

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/app_bar_with_border.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
 import 'package:customer/constant_widgets/text_field_with_title.dart';
@@ -19,48 +20,15 @@ import '../../../../utils/database_helper.dart';
 import '../../../models/user_model.dart';
 import '../controllers/edit_profile_controller.dart';
 
-class EditProfileView extends StatefulWidget {
-  const EditProfileView({super.key});
+class EditProfileView extends StatelessWidget {
+   EditProfileView({super.key});
 
-  @override
-  State<EditProfileView> createState() => _EditProfileViewState();
-}
-
-class _EditProfileViewState extends State<EditProfileView> {
-  UserModel? user;
-
-  DatabaseHelper db = DatabaseHelper();
-
-  TextEditingController? nameController;
-  TextEditingController? emailController;
-  TextEditingController? dobController;
-
-  @override
-  void initState() {
-    _loadUserData();
-    super.initState();
-  }
-
-  Future<void> _loadUserData() async {
-    UserModel? retrievedUser = await DatabaseHelper().retrieveUserFromTable();
-    setState(() {
-      user = retrievedUser;
-      if (user != null) {
-        nameController =
-            TextEditingController(text: '${user!.fullName?.toUpperCase()}');
-        emailController = TextEditingController(
-            text: user!.email); // Adjust according to your UserModel
-        dobController = TextEditingController(
-            text: user!.dateOfBirth); // Adjust according to your UserModel
-      }
-    });
-  }
+  final controller = Get.put(EditProfileController());
 
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
 
-    print('---------token--------${user!.fcmToken}');
     return GetBuilder(
         init: EditProfileController(),
         builder: (controller) {
@@ -125,8 +93,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                       ),
                       const SizedBox(height: 12),
                       Center(
-                        child: Text(
-                          user!.referralCode.toString().toUpperCase(),
+                        child: Text(controller.userModel!.referralCode.toString(),
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
                             color: themeChange.isDarkTheme()
@@ -158,8 +125,9 @@ class _EditProfileViewState extends State<EditProfileView> {
                         title: "Name".tr,
                         hintText: "Enter Name".tr,
                         prefixIcon: const Icon(Icons.person_outline_rounded),
-                        controller: nameController!,
-                        validator: (value) => value != null && value.isNotEmpty
+                        controller: controller.nameController!,
+                        validator: (value) =>
+                        value != null && value.isNotEmpty
                             ? null
                             : 'This field required'.tr,
                       ),
@@ -170,7 +138,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                         prefixIcon: const Icon(Icons.email_outlined),
                         keyboardType: TextInputType.emailAddress,
                         controller: controller.emailController,
-                        validator: (value) => value != null && value.isNotEmpty
+                        validator: (value) =>
+                        value != null && value.isNotEmpty
                             ? null
                             : 'This field required'.tr,
                       ),
@@ -181,7 +150,8 @@ class _EditProfileViewState extends State<EditProfileView> {
                         prefixIcon: const Icon(Icons.date_range),
                         keyboardType: TextInputType.text,
                         controller: controller.dobController,
-                        validator: (value) => value != null && value.isNotEmpty
+                        validator: (value) =>
+                        value != null && value.isNotEmpty
                             ? null
                             : 'This field required'.tr,
                       ),
@@ -258,61 +228,62 @@ class _EditProfileViewState extends State<EditProfileView> {
                             fontWeight: FontWeight.w500),
                       ),
                       Obx(
-                        () => Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Radio(
-                              value: 1,
-                              groupValue: controller.selectedGender.value,
-                              activeColor: AppThemData.primary300,
-                              onChanged: (value) {
-                                controller.selectedGender.value = value ?? 1;
-                                // _radioVal = 'male';
-                              },
-                            ),
-                            InkWell(
-                              onTap: () {
-                                controller.selectedGender.value = 1;
-                              },
-                              child: Text(
-                                'Male'.tr,
-                                style: GoogleFonts.inter(
-                                    fontSize: 14,
-                                    color: controller.selectedGender.value == 1
-                                        ? themeChange.isDarkTheme()
+                            () =>
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Radio(
+                                  value: 1,
+                                  groupValue: controller.selectedGender.value,
+                                  activeColor: AppThemData.primary300,
+                                  onChanged: (value) {
+                                    controller.selectedGender.value = value ?? 1;
+                                    // _radioVal = 'male';
+                                  },
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    controller.selectedGender.value = 1;
+                                  },
+                                  child: Text(
+                                    'Male'.tr,
+                                    style: GoogleFonts.inter(
+                                        fontSize: 14,
+                                        color: controller.selectedGender.value == 1
+                                            ? themeChange.isDarkTheme()
                                             ? AppThemData.white
                                             : AppThemData.grey950
-                                        : AppThemData.grey500,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ),
-                            Radio(
-                              value: 2,
-                              groupValue: controller.selectedGender.value,
-                              activeColor: AppThemData.primary300,
-                              onChanged: (value) {
-                                controller.selectedGender.value = value ?? 2;
-                                // _radioVal = 'female';
-                              },
-                            ),
-                            InkWell(
-                              onTap: () {
-                                controller.selectedGender.value = 2;
-                              },
-                              child: Text(
-                                'Female'.tr,
-                                style: GoogleFonts.inter(
-                                    fontSize: 14,
-                                    color: controller.selectedGender.value == 2
-                                        ? themeChange.isDarkTheme()
+                                            : AppThemData.grey500,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                                Radio(
+                                  value: 2,
+                                  groupValue: controller.selectedGender.value,
+                                  activeColor: AppThemData.primary300,
+                                  onChanged: (value) {
+                                    controller.selectedGender.value = value ?? 2;
+                                    // _radioVal = 'female';
+                                  },
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    controller.selectedGender.value = 2;
+                                  },
+                                  child: Text(
+                                    'Female'.tr,
+                                    style: GoogleFonts.inter(
+                                        fontSize: 14,
+                                        color: controller.selectedGender.value == 2
+                                            ? themeChange.isDarkTheme()
                                             ? AppThemData.white
                                             : AppThemData.grey950
-                                        : AppThemData.grey500,
-                                    fontWeight: FontWeight.w500),
-                              ),
+                                            : AppThemData.grey500,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
                       ),
                       const SizedBox(height: 35),
                       Center(
@@ -323,9 +294,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                           onTap: () {
                             if (controller.formKey.currentState!.validate()) {
                               // controller.saveUserData();
-
-                              controller
-                                  .profileUpdation(user!.fcmToken.toString());
+                              controller.updateUserProfile(token);
                             }
                           },
                           size: const Size(208, 52),
@@ -340,14 +309,7 @@ class _EditProfileViewState extends State<EditProfileView> {
         });
   }
 
-  @override
-  void dispose() {
-    // Dispose the controllers when the widget is removed from the widget tree
-    nameController?.dispose();
-    emailController?.dispose();
-    dobController?.dispose();
-    super.dispose();
-  }
+
 
   myProfileView(EditProfileController controller, BuildContext context) {
     return InkWell(
@@ -356,80 +318,81 @@ class _EditProfileViewState extends State<EditProfileView> {
       },
       child: Center(
           child: SizedBox(
-        height: Responsive.width(30, context),
-        width: Responsive.width(30, context),
-        child: Obx(
-          () => Stack(
-            children: [
-              controller.profileImage.isEmpty
-                  ? Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(60),
-                        //boxShadow: [BoxShadow(offset: const Offset(5, 4), spreadRadius: .2, blurRadius: 12, color: AppColors.gallery400.withOpacity(.5))]
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(60),
-                        child: CachedNetworkImage(
-                            imageUrl: controller.profileImage.value),
-                      ),
-                    )
-                  : (Constant().hasValidUrl(controller.profileImage.value))
-                      ? Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(60),
-                            //  boxShadow: [BoxShadow(offset: const Offset(5, 4), spreadRadius: .2, blurRadius: 12, color: AppColors.gallery400.withOpacity(.5))]
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(60),
-                            child: CachedNetworkImage(
-                              errorWidget: (context, url, error) {
-                                return ClipRRect(
-                                  borderRadius: BorderRadius.circular(0),
-                                  child: Image.asset(
-                                    Constant.userPlaceHolder,
-                                    height: Responsive.height(8, context),
-                                    width: Responsive.width(15, context),
-                                  ),
-                                );
-                              },
-                              imageUrl: controller.profileImage.value,
-                              height: Responsive.width(30, context),
-                              width: Responsive.width(30, context),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        )
-                      : Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(60),
-                            // boxShadow: [BoxShadow(offset: const Offset(5, 4), spreadRadius: .2, blurRadius: 12, color: AppColors.gallery400.withOpacity(.5))]
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(60),
-                            child: Image.file(
-                              File(controller.profileImage.value),
-                              height: Responsive.width(30, context),
-                              width: Responsive.width(30, context),
-                              fit: BoxFit.cover,
-                            ),
+            height: Responsive.width(30, context),
+            width: Responsive.width(30, context),
+            child: Obx(
+                  () =>
+                  Stack(
+                    children: [
+                      controller.profileImage.isEmpty
+                          ? Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(60),
+                          //boxShadow: [BoxShadow(offset: const Offset(5, 4), spreadRadius: .2, blurRadius: 12, color: AppColors.gallery400.withOpacity(.5))]
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(60),
+                          child: CachedNetworkImage(
+                              imageUrl: controller.profileImage.value),
+                        ),
+                      )
+                          : (Constant().hasValidUrl(controller.profileImage.value))
+                          ? Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(60),
+                          //  boxShadow: [BoxShadow(offset: const Offset(5, 4), spreadRadius: .2, blurRadius: 12, color: AppColors.gallery400.withOpacity(.5))]
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(60),
+                          child: CachedNetworkImage(
+                            errorWidget: (context, url, error) {
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(0),
+                                child: Image.asset(
+                                  Constant.userPlaceHolder,
+                                  height: Responsive.height(8, context),
+                                  width: Responsive.width(15, context),
+                                ),
+                              );
+                            },
+                            imageUrl: controller.profileImage.value,
+                            height: Responsive.width(30, context),
+                            width: Responsive.width(30, context),
+                            fit: BoxFit.cover,
                           ),
                         ),
-              Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: CircleAvatar(
-                    radius: 19,
-                    backgroundColor: Colors.white,
-                    child: CircleAvatar(
-                      backgroundColor: AppThemData.primary400,
-                      radius: 18,
-                      child: SvgPicture.asset("assets/icon/ic_drawer_edit.svg"),
-                    ),
-                  ))
-            ],
-          ),
-        ),
-      )),
+                      )
+                          : Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(60),
+                          // boxShadow: [BoxShadow(offset: const Offset(5, 4), spreadRadius: .2, blurRadius: 12, color: AppColors.gallery400.withOpacity(.5))]
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(60),
+                          child: Image.file(
+                            File(controller.profileImage.value),
+                            height: Responsive.width(30, context),
+                            width: Responsive.width(30, context),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: CircleAvatar(
+                            radius: 19,
+                            backgroundColor: Colors.white,
+                            child: CircleAvatar(
+                              backgroundColor: AppThemData.primary400,
+                              radius: 18,
+                              child: SvgPicture.asset("assets/icon/ic_drawer_edit.svg"),
+                            ),
+                          ))
+                    ],
+                  ),
+            ),
+          )),
     );
   }
 
@@ -461,9 +424,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () => controller.pickFile(
-                                    source: ImageSource.camera,
-                                    token: user!.fcmToken.toString()),
+                                onPressed: () =>
+                                    controller.pickFile(
+                                        source: ImageSource.camera,
+                                        token: token),
                                 icon: const Icon(
                                   Icons.camera_alt,
                                   size: 32,
@@ -485,9 +449,10 @@ class _EditProfileViewState extends State<EditProfileView> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () => controller.pickFile(
-                                    source: ImageSource.gallery,
-                                    token: user!.fcmToken.toString()),
+                                onPressed: () =>
+                                    controller.pickFile(
+                                        source: ImageSource.gallery,
+                                        token: token),
                                 icon: const Icon(
                                   Icons.photo_library_sharp,
                                   size: 32,
@@ -512,4 +477,5 @@ class _EditProfileViewState extends State<EditProfileView> {
       },
     );
   }
+
 }

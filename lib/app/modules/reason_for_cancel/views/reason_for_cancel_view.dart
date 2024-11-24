@@ -77,13 +77,13 @@ class ReasonForCancelView extends StatelessWidget {
                                 Get.back();
                                 Get.back();
                                 // Get.offAll(const HomeView());
-                                // Get.to(const HomeView());
+                                // Get.toNamed(Routes.HOME);
                               },
                               negativeClick: () {
                                 Navigator.pop(context);
                                 Get.back();
                                 // Get.offAll(const HomeView());
-                                // Get.to(const HomeView());
+                                // Get.toNamed(Routes.HOME);
                               },
                               positiveString: "Back to Home".tr,
                               negativeString: "Cancel".tr,

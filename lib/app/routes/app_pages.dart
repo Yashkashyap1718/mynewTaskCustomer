@@ -1,9 +1,13 @@
 import 'package:customer/app/modules/create_support_ticket/bindings/create_support_ticket_binding.dart';
 import 'package:customer/app/modules/create_support_ticket/views/create_support_ticket_view.dart';
+import 'package:customer/app/modules/login_email_verification/bindings/login_email_verification_binding.dart';
+import 'package:customer/app/modules/login_email_verification/controllers/login_email_verification_controller.dart';
+import 'package:customer/app/modules/login_email_verification/views/login_email_verification_view.dart';
 import 'package:customer/app/modules/support_screen/bindings/support_screen_binding.dart';
 import 'package:customer/app/modules/support_screen/views/support_screen_view.dart';
 import 'package:customer/app/modules/support_ticket_details/bindings/support_ticket_details_binding.dart';
 import 'package:customer/app/modules/support_ticket_details/views/support_ticket_details_view.dart';
+import 'package:customer/app/modules/verify_email_otp/views/verify_email_otp_view.dart';
 import 'package:get/get.dart';
 
 import '../modules/categories/bindings/categories_binding.dart';
@@ -48,6 +52,8 @@ import '../modules/splash_screen/bindings/splash_screen_binding.dart';
 import '../modules/splash_screen/views/splash_screen_view.dart';
 import '../modules/track_ride_screen/bindings/track_ride_screen_binding.dart';
 import '../modules/track_ride_screen/views/track_ride_screen_view.dart';
+import '../modules/verify_otp/bindings/verify_otp_binding.dart';
+import '../modules/verify_otp/views/verify_otp_view.dart';
 
 // ignore_for_file: constant_identifier_names
 
@@ -65,8 +71,18 @@ class AppPages {
       binding: HomeBinding(),
     ),
     GetPage(
+      name: _Paths.EMAIL_OTP,
+      page: () => const LoginEmailVerificationView(),
+      binding: LoginEmailVerificationBinding(),
+    ),
+    GetPage(
+      name: _Paths.VERIFY_EMAIL_OTP,
+      page: () =>  VerifyEmailOtpView(),
+      binding: VerifyOtpBinding(),
+    ),
+    GetPage(
       name: _Paths.SPLASH_SCREEN,
-      page: () => const SplashScreenView(),
+      page: () =>  SplashScreenView(),
       binding: SplashScreenBinding(),
     ),
     GetPage(
@@ -79,24 +95,24 @@ class AppPages {
       page: () => const LoginView(),
       binding: LoginBinding(),
     ),
-    // GetPage(
-    //   name: _Paths.VERIFY_OTP,
-    //   page: () => const VerifyOtpView(),
-    //   binding: VerifyOtpBinding(),
-    // ),
+    GetPage(
+      name: _Paths.VERIFY_OTP,
+      page: () =>  VerifyOtpView(),
+      binding: VerifyOtpBinding(),
+    ),
     GetPage(
       name: _Paths.SIGNUP,
-      page: () => const SignupView(),
+      page: () =>  SignupView(),
       binding: SignupBinding(),
     ),
     GetPage(
       name: _Paths.CATEGORIES,
-      page: () => const CategoriesView(),
+      page: () =>  CategoriesView(),
       binding: CategoriesBinding(),
     ),
     GetPage(
       name: _Paths.SELECT_LOCATION,
-      page: () => const SelectLocationView(),
+      page: () =>  SelectLocationView(),
       binding: SelectLocationBinding(),
     ),
     GetPage(
@@ -136,7 +152,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.EDIT_PROFILE,
-      page: () => const EditProfileView(),
+      page: () =>  EditProfileView(),
       binding: EditProfileBinding(),
     ),
     GetPage(
@@ -164,9 +180,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.CHAT_SCREEN,
-      page: () => const ChatScreenView(
-        receiverId: '',
-      ),
+      page: () =>  ChatScreenView(),
       binding: ChatScreenBinding(),
     ),
     GetPage(

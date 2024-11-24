@@ -12,25 +12,15 @@ import 'package:provider/provider.dart';
 
 import '../controllers/verify_otp_controller.dart';
 
-class VerifyOtpView extends StatefulWidget {
-  final String? phoneNumder;
-  final String? oTP;
-  const VerifyOtpView({
-    super.key,
-    required this.phoneNumder,
-    required this.oTP,
-  });
+class VerifyOtpView extends StatelessWidget {
 
-  @override
-  State<VerifyOtpView> createState() => _VerifyOtpViewState();
-}
+   VerifyOtpView({super.key});
 
-class _VerifyOtpViewState extends State<VerifyOtpView> {
-  TextEditingController otpController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
-
+    Get.put(VerifyOtpController());
     return GetBuilder<VerifyOtpController>(
         init: VerifyOtpController(),
         builder: (controller) {
@@ -90,6 +80,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                     ),
                     OTPTextField(
                       length: 6,
+                      controller: controller.otpController,
                       width: MediaQuery.of(context).size.width,
                       fieldWidth: 40,
                       style: GoogleFonts.inter(
@@ -191,6 +182,9 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                         //     controller.otpCode.value = pin;
                         //   }
                       },
+                      onChanged: (pin){
+
+                      },
                     ),
                     const SizedBox(height: 90),
                     RoundShapeButton(
@@ -200,9 +194,8 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                         buttonTextColor: AppThemData.black,
                         onTap: () async {
                           // if (controller.otpCode.value.length == 4) {
-                          ShowToastDialog.showLoader("verify_OTP".tr);
-                          controller.confirmOTP(context, widget.oTP.toString(),
-                              widget.phoneNumder.toString());
+                          controller.confirmOTP(context, controller.verificationId.value,
+                              controller.phoneNumber.value.toString());
                           // .then((value) async {
                           // ShowToastDialog.closeLoader();
                           // Get.off(
@@ -303,7 +296,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView> {
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 controller.reSendOTP(
-                                    context, widget.phoneNumder.toString());
+                                    context, controller.phoneNumber.value.toString());
                               },
                           ),
                         ],

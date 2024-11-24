@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:customer/app/routes/app_pages.dart';
 import 'package:get/get.dart';
 import 'package:customer/app/modules/home/views/home_view.dart';
 import 'package:customer/app/modules/intro_screen/views/intro_screen_view.dart';
@@ -38,11 +39,11 @@ class SplashScreenController extends GetxController {
         // bool permissionGiven = await Constant.isPermissionApplied();
         // log('---permission---$permissionGiven');
         // if (permissionGiven) {
-        Get.offAll(const HomeView());
+        Get.offAllNamed(Routes.HOME);
         return;
       } else {
         // Get.offAll(const PermissionView());
-         Get.offAll(const LoginView());
+         Get.offAllNamed(Routes.LOGIN);
         return;
       }
       // } else {

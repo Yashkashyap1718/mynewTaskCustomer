@@ -15,17 +15,16 @@ import 'package:provider/provider.dart';
 import '../controllers/chat_screen_controller.dart';
 
 class ChatScreenView extends StatelessWidget {
-  final String receiverId;
 
-  const ChatScreenView({super.key, required this.receiverId});
+   ChatScreenView({super.key});
 
+  final controller = Get.put(ChatScreenController());
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
     return GetBuilder(
         init: ChatScreenController(),
         builder: (controller) {
-          controller.getData(receiverId);
           return Obx(
             () => Scaffold(
               backgroundColor: themeChange.isDarkTheme()
@@ -54,9 +53,7 @@ class ChatScreenView extends StatelessWidget {
                           height: 36,
                           width: 36,
                           fit: BoxFit.cover,
-                          imageUrl: controller
-                                          .receiverUserModel.value.profilePic ==
-                                      null ||
+                          imageUrl: controller.receiverUserModel.value.profilePic == null ||
                                   controller
                                           .receiverUserModel.value.profilePic ==
                                       ""
@@ -92,45 +89,53 @@ class ChatScreenView extends StatelessWidget {
                   ? Constant.loader()
                   : Column(
                       children: [
-                        Expanded(
-                          child: PaginateFirestore(
-                            scrollDirection: Axis.vertical,
-                            query: FireStoreUtils.fireStore
-                                .collection(CollectionName.chat)
-                                .doc(controller.senderUserModel.value.id)
-                                .collection(controller
-                                    .receiverUserModel.value.id
-                                    .toString())
-                                .orderBy("timestamp", descending: true),
-                            itemBuilderType: PaginateBuilderType.listView,
-                            isLive: true,
-                            physics: const BouncingScrollPhysics(
-                                parent: AlwaysScrollableScrollPhysics()),
-                            shrinkWrap: true,
-                            reverse: true,
-                            onEmpty: Constant.showEmptyView(
-                                message: "No conversion found".tr),
-                            onError: (error) {
-                              return ErrorWidget(error);
-                            },
-                            itemBuilder: (context, documentSnapshots, index) {
-                              ChatModel chatModel = ChatModel.fromJson(
-                                  documentSnapshots[index].data()
-                                      as Map<String, dynamic>);
-                              return Container(
-                                  padding: const EdgeInsets.only(
-                                      left: 14, right: 14, top: 06, bottom: 06),
-                                  child: chatBubbles(
-                                      chatModel.senderId ==
-                                              controller
-                                                  .senderUserModel.value.id
-                                          ? true
-                                          : false,
-                                      chatModel,
-                                      themeChange));
-                            },
-                          ),
-                        ),
+                        Expanded(child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: BouncingScrollPhysics(
+                    parent: AlwaysScrollableScrollPhysics()),
+                          itemCount: controller.chatList.value.length,
+                          itemBuilder: (context, index) {
+                            ChatModel chatModel = controller.chatList[index];
+                          return Container(
+                              padding: const EdgeInsets.only(left: 14, right: 14, top: 06, bottom: 06),
+                              child: chatBubbles(
+                                  chatModel.senderId == controller.senderUserModel.value.id ? true
+                                      : false,
+                                  chatModel,
+                                  themeChange));
+                        },)),
+                        // Expanded(
+                        //   child: PaginateFirestore(
+                        //     scrollDirection: Axis.vertical,
+                        //     query: FireStoreUtils.fireStore
+                        //         .collection(CollectionName.chat)
+                        //         .doc(controller.senderUserModel.value.id)
+                        //         .collection(controller
+                        //             .receiverUserModel.value.id
+                        //             .toString())
+                        //         .orderBy("timestamp", descending: true),
+                        //     itemBuilderType: PaginateBuilderType.listView,
+                        //     isLive: true,
+                        //     reverse: true,
+                        //     onEmpty: Constant.showEmptyView(
+                        //         message: "No conversion found".tr),
+                        //     onError: (error) {
+                        //       return ErrorWidget(error);
+                        //     },
+                        //     itemBuilder: (context, documentSnapshots, index) {
+                        //       ChatModel chatModel = ChatModel.fromJson(
+                        //           documentSnapshots[index].data()
+                        //               as Map<String, dynamic>);
+                        //       return Container(
+                        //           padding: const EdgeInsets.only(left: 14, right: 14, top: 06, bottom: 06),
+                        //           child: chatBubbles(
+                        //               chatModel.senderId == controller.senderUserModel.value.id ? true
+                        //                   : false,
+                        //               chatModel,
+                        //               themeChange));
+                        //     },
+                        //   ),
+                        // ),
                         Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: TextFormField(
@@ -159,9 +164,8 @@ class ChatScreenView extends StatelessWidget {
                                 enabled: true,
                                 suffixIcon: InkWell(
                                   onTap: () {
-                                    if (controller.messageTextEditorController
-                                        .value.text.isNotEmpty) {
-                                      controller.sendMessage();
+                                    if (controller.messageTextEditorController.value.text.isNotEmpty) {
+                                      controller.sendMessageAPI(controller.messageTextEditorController.value.text);
                                     }
                                   },
                                   child: Padding(

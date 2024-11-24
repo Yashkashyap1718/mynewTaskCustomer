@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customer/constant/api_constant.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_paypal_native/flutter_paypal_native.dart';
 // import 'package:flutter_paypal_native/models/custom/currency_code.dart';
@@ -41,7 +42,7 @@ class MyWalletController extends GetxController {
   Rx<PaymentModel> paymentModel = PaymentModel().obs;
   RxString selectedPaymentMethod = "".obs;
   razor_pay_flutter.Razorpay _razorpay = razor_pay_flutter.Razorpay();
-  Rx<UserModel> userModel = UserModel().obs;
+  Rx<UserData> userModel = UserData().obs;
   RxList<WalletTransactionModel> walletTransactionList =
       <WalletTransactionModel>[].obs;
 
@@ -93,11 +94,8 @@ class MyWalletController extends GetxController {
   }
 
   getProfileData() async {
-    await FireStoreUtils.getUserProfile().then((value) {
-      if (value != null) {
-        userModel.value = value;
-      }
-    });
+    userModel.value = userDataModel;
+
   }
 
   completeOrder(String transactionId) async {
@@ -192,7 +190,7 @@ class MyWalletController extends GetxController {
         'currency': "USD",
         'payment_method_types[]': 'card',
         "description": "Strip Payment",
-        "shipping[name]": userModel.value.fullName,
+        "shipping[name]": userModel.value.name,
         "shipping[address][line1]": "510 Townsend St",
         "shipping[address][postal_code]": "98140",
         "shipping[address][city]": "San Francisco",
@@ -281,15 +279,15 @@ class MyWalletController extends GetxController {
         "razorPaySecret": paymentModel.value.razorpay!.razorpayKey,
         'amount': double.parse(amount) * 100,
         "currency": "INR",
-        'name': userModel.value.fullName,
+        'name': userModel.value.name,
         "isSandBoxEnabled": paymentModel.value.razorpay!.isSandbox,
         'external': {
           'wallets': ['paytm']
         },
         'send_sms_hash': true,
         'prefill': {
-          'contact': userModel.value.phoneNumber,
-          'email': userModel.value.email
+          'contact': userModel.value.phone,
+          'email': userModel.value.name
         },
       };
 

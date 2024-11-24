@@ -5,8 +5,6 @@ import '../controllers/verify_otp_controller.dart';
 class VerifyOtpBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(
-      VerifyOtpController(),
-    );
+    Get.lazyPut(() => VerifyOtpController());
   }
 }

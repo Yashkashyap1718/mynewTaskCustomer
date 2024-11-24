@@ -149,8 +149,7 @@ class IntroScreenView extends StatelessWidget {
                         buttonColor: AppThemData.primary300,
                         buttonTextColor: AppThemData.black,
                         onTap: () {
-                          Preferences.setBoolean(
-                              Preferences.isFinishOnBoardingKey, true);
+                          Preferences.setBoolean(Preferences.isFinishOnBoardingKey, true);
                           Get.offAllNamed(Routes.LOGIN);
                         }),
                   ),
