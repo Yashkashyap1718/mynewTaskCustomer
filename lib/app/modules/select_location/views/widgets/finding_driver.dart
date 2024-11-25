@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:customer/api_services.dart';
 import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/app/models/driver_user_model.dart';
 import 'package:customer/app/routes/app_pages.dart';
@@ -7,6 +8,8 @@ import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/pick_drop_point_view.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
+import 'package:customer/models/ride_booking.dart';
+import 'package:customer/new_ride_view.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
@@ -18,12 +21,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-
 class FindingDriverBottomSheet extends StatefulWidget {
   final ScrollController scrollController;
   BookingModel bookingModel;
 
-   FindingDriverBottomSheet({super.key, required this.scrollController, required this.bookingModel});
+  FindingDriverBottomSheet(
+      {super.key, required this.scrollController, required this.bookingModel});
 
   @override
   _FindingDriverBottomSheetState createState() =>
@@ -40,7 +43,7 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
   @override
   void initState() {
     super.initState();
-    _fetchRideRequest();
+    // _fetchRideRequest();
   }
 
   @override
@@ -65,11 +68,10 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
 
             if (rideData['driver_id'] != null &&
                 rideData['driver_id'].isNotEmpty) {
-              final driverProfile =
-              await FireStoreUtils.getDriverUserProfile(rideData['driver_id']);
+              final driverProfile = await FireStoreUtils.getDriverUserProfile(
+                  rideData['driver_id']);
               userModel.value = driverProfile ?? DriverUserModel();
               print("DriverMODDDDDD: ${jsonEncode(userModel.value)}");
-
             }
 
             isLoading.value = false;
@@ -102,18 +104,34 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
       padding: const EdgeInsets.all(10),
       child: SingleChildScrollView(
         controller: widget.scrollController,
-        child: Obx(() => Column(
-          mainAxisSize: MainAxisSize.min,
+        child: Column(
           children: [
-            _buildHandleBar(themeChange),
-            if (isLoading.value)
-              const LinearProgressIndicator()
-            else if (rideData.isEmpty)
-              const Center(child: Text('No ride data available'))
-            else
-              _buildRideDetails(context, themeChange),
+            StreamBuilder<RideBooking?>(
+              stream: checkRequest(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                if (snapshot.hasData && snapshot.data != null) {
+                  return Column(
+                    children: [
+                      Text(snapshot.data!.status,
+                          style: GoogleFonts.inter(
+                              fontSize: 18, fontWeight: FontWeight.w600)),
+                      const SizedBox(height: 16),
+                      NewRideView(bookingModel: snapshot.data)
+                    ],
+                  );
+                }
+                return const SizedBox
+                    .shrink(); // Hide completely if no bookings are available
+              },
+            )
           ],
-        )),
+        ),
       ),
     );
   }
@@ -134,9 +152,10 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
     );
   }
 
-  Widget _buildRideDetails(BuildContext context, DarkThemeProvider themeChange) {
+  Widget _buildRideDetails(
+      BuildContext context, DarkThemeProvider themeChange) {
     print("TYPPEEEE:: ${rideData['status']}");
-     if (rideData['status'] == "requested"){
+    if (rideData['status'] == "requested") {
       return Column(
         children: [
           const Center(child: Text('Searching for driver...')),
@@ -159,17 +178,18 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
           ),
         ],
       );
-    } else if(rideData['status'] == 'accepted'){
-       return _buildDriverArrivingSection(themeChange);
-     }else{
-       return CircularProgressIndicator();
-     }
+    } else if (rideData['status'] == 'accepted') {
+      return _buildDriverArrivingSection(themeChange);
+    } else {
+      return CircularProgressIndicator();
+    }
   }
 
   Widget _buildConfirmationProgress(DarkThemeProvider themeChange) {
     return Column(
       children: [
-        Text('Confirming your trip'.tr,
+        Text(
+          'Confirming your trip'.tr,
           style: GoogleFonts.inter(
             color: themeChange.isDarkTheme()
                 ? AppThemData.white
@@ -185,9 +205,9 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
   }
 
   Widget _buildDriverArrivingSection(DarkThemeProvider themeChange) {
-    if(userModel.value.fullName != null){
+    if (userModel.value.fullName != null) {
       return _buildDriverInfo(themeChange);
-    }else{
+    } else {
       return Column(
         children: [
           Padding(
@@ -269,19 +289,20 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Obx(() => Text(
-          userModel.value.fullName ?? 'Driver Name',
-          style: GoogleFonts.inter(
-            color: themeChange.isDarkTheme()
-                ? AppThemData.grey25
-                : AppThemData.grey950,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-          ),
-        )),
+              userModel.value.fullName ?? 'Driver Name',
+              style: GoogleFonts.inter(
+                color: themeChange.isDarkTheme()
+                    ? AppThemData.grey25
+                    : AppThemData.grey950,
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+              ),
+            )),
         Row(
           children: [
             if ((userModel.value.reviewsSum ?? '').isNotEmpty)
-              const Icon(Icons.star_rate_rounded, color: AppThemData.warning500),
+              const Icon(Icons.star_rate_rounded,
+                  color: AppThemData.warning500),
             Text(
               userModel.value.reviewsSum ?? 'No reviews yet',
               style: GoogleFonts.inter(

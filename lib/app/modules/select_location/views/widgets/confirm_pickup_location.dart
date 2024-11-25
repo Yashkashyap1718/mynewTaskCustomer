@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customer/api_services.dart';
+import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/app/modules/select_location/controllers/select_location_controller.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
@@ -190,10 +192,10 @@ class ConfirmPickupBottomSheet extends StatelessWidget {
                               Timestamp.now();
 
 
-                          // controller.bookingModel.value = BookingModel.fromJson(controller.bookingModel.value.toJson());
+                          controller.bookingModel.value = BookingModel.fromJson(controller.bookingModel.value.toJson());
 
                           try{
-                            var result =  await FireStoreUtils.setBooking(controller.bookingModel.value);
+                            var result =  await setBooking(controller.bookingModel.value);
                             if (result! == true) {
                               ShowToastDialog.showToast("Ride Placed successfully".tr);
                               ShowToastDialog.closeLoader();
@@ -207,31 +209,6 @@ class ConfirmPickupBottomSheet extends StatelessWidget {
                             ShowToastDialog.showToast(e.toString());
                             ShowToastDialog.closeLoader();
                           }
-
-
-
-                          // bool isRideConfirm = false;
-                          // RideRequest req;
-                          // while (!isRideConfirm) {
-                          //   await FireStoreUtils.checkforRealTimebooking(
-                          //           controller.bookingModel.value)
-                          //       .then(
-                          //     (value) async {
-                          //       if (value != null) {
-                          //         RideRequest request = value;
-
-                          //         isRideConfirm = true;
-                          //         print('Driver found');
-
-                          //         req = await FireStoreUtils()
-                          //             .sendOrderData(request);
-                          //       } else {
-                          //         // Wait for 5 seconds before retrying
-                          //         await Future.delayed(Duration(seconds: 5));
-                          //       }
-                          //     },
-                          //   );
-                          // }
                         },
                       ),
                     ],

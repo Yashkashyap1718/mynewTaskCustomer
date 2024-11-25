@@ -39,7 +39,8 @@ class Constant {
   static const String phoneLoginType = "phone";
   static const String googleLoginType = "google";
   static const String appleLoginType = "apple";
-  static const String profileConstant = "https://firebasestorage.googleapis.com/v0/b/gocab-a8627.appspot.com/o/constant_assets%2F59.png?alt=media&token=a0b1aebd-9c01-45f6-9569-240c4bc08e23";
+  static const String profileConstant =
+      "https://firebasestorage.googleapis.com/v0/b/gocab-a8627.appspot.com/o/constant_assets%2F59.png?alt=media&token=a0b1aebd-9c01-45f6-9569-240c4bc08e23";
   static UserModel? userModel;
   static String mapAPIKey = "AIzaSyAsVrHxXGITDH-g6ozMNeoEAtiFuhGulwI";
   static String senderId = "";
@@ -56,7 +57,7 @@ class Constant {
   static String minimumAmountToDeposit = "0.0";
   static String minimumAmountToWithdrawal = "0.0";
   static String? referralAmount = "0.0";
-  static List<VehicleTypeModel>? vehicleTypeList=List.from([]);
+  static List<VehicleTypeModel>? vehicleTypeList = List.from([]);
   // static LocationLatLng? currentLocation = LocationLatLng(latitude: 23.0225, longitude: 72.5714);
   static List<TaxModel>? taxList;
   static String? country;
@@ -73,24 +74,32 @@ class Constant {
   static String paymentCallbackURL = 'https://elaynetech.com/callback';
   static const String typeDriver = "driver";
   static const String typeCustomer = "customer";
-  static const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789';
+  static const _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789';
   static final math.Random _rnd = math.Random();
 
-  getDriverData() async {
+  Future<bool> getDriverData(
+      MapModel? mapModel, BookingModel bookingModel, RxInt popup) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString("token");
       final Map<String, Object> payload = {
         "pickup_location": {
           "type": "Point",
-          "coordinates": [28.6280, 77.3649]
+          "coordinates": [
+            bookingModel.pickUpLocation!.latitude,
+            bookingModel.pickUpLocation!.longitude
+          ]
         },
-        "pickup_address": "Noida Sector 62, UP",
+        "pickup_address": bookingModel.pickUpLocationAddress ?? '',
         "dropoff_location": {
           "type": "Point",
-          "coordinates": [28.6190, 77.0311]
+          "coordinates": [
+            bookingModel.dropLocation!.latitude,
+            bookingModel.dropLocation!.longitude
+          ]
         },
-        "dropoff_address": "Dwarka More Delhi"
+        "dropoff_address": bookingModel.dropLocationAddress ?? ""
       };
 
       final response = await http.post(
@@ -109,10 +118,16 @@ class Constant {
           vehicleTypeList!.addAll(
               data.map((json) => VehicleTypeModel.fromJson(json)).toList());
         }
+
+        if (popup.value == 0) popup.value = 1;
+
+        return true;
       }
     } catch (e) {
       log("Error fetching driver data: $e");
+      return false;
     }
+    return false;
   }
 
   static String getRandomString(int length) {

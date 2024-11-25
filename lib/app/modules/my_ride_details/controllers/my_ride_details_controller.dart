@@ -6,6 +6,7 @@ import 'dart:io';
 import 'dart:math' as maths;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:customer/api_services.dart';
 import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/app/models/driver_user_model.dart';
 import 'package:customer/app/models/map_model.dart';
@@ -147,7 +148,7 @@ class MyRideDetailsController extends GetxController {
       }
     });
 
-    await FireStoreUtils.setBooking(bookingModel.value).then((value) {
+    await setBooking(bookingModel.value).then((value) {
       ShowToastDialog.closeLoader();
       // Get.offAllNamed(Routes.HOME);
     });

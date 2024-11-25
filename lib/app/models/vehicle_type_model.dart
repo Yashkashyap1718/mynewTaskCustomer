@@ -24,13 +24,14 @@ class VehicleTypeModel {
 
   factory VehicleTypeModel.fromJson(Map<String, dynamic> json) =>
       VehicleTypeModel(
-        id: json["id"] ?? '',
-        image: json["image"],
+        id: json["id"] ?? json["name"],
+        image: json["image"] ?? '',
         isActive: json["isActive"] ?? true,
-        title: json["name"],
+        title: json["title"] ?? json["name"],
         charges: json["charges"] == null
             ? Charges(
-                fareMinimumChargesWithinKm: json["duration_in_minutes"].toString(),
+                fareMinimumChargesWithinKm:
+                    json["duration_in_minutes"].toString(),
                 farMinimumCharges: json["calculate_fare"].toString(),
                 farePerKm: "0",
               )

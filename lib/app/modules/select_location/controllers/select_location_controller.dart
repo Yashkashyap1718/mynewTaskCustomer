@@ -35,8 +35,7 @@ class SelectLocationController extends GetxController {
   FocusNode pickUpFocusNode = FocusNode();
   FocusNode dropFocusNode = FocusNode();
   TextEditingController dropLocationController = TextEditingController();
-  TextEditingController pickupLocationController =
-      TextEditingController();
+  TextEditingController pickupLocationController = TextEditingController();
   LatLng? sourceLocation;
   LatLng? destination;
   Position? currentLocationPosition;
@@ -63,7 +62,7 @@ class SelectLocationController extends GetxController {
     selectVehicleTypeIndex.value = index;
     bookingModel.value.vehicleType = Constant.vehicleTypeList![index];
     bookingModel.value.subTotal =
-        amountShow(Constant.vehicleTypeList![index], mapModel.value!);
+        Constant.vehicleTypeList![index].charges.farMinimumCharges;
     if (bookingModel.value.coupon != null) {
       bookingModel.value.discount = applyCoupon().toString();
     }
@@ -74,7 +73,7 @@ class SelectLocationController extends GetxController {
   void onInit() {
     log('-----mapModel---$mapModel');
     getData();
-    Constant().getDriverData();
+
     super.onInit();
   }
 
@@ -102,7 +101,7 @@ class SelectLocationController extends GetxController {
       "longitude": longitude.toString(),
       "fcmToken": "$token",
     };
-
+    // Constant().getDriverData(mapModel.value, bookingModel.value);
     try {
       // HTTP PUT request
       final response = await http.put(
@@ -187,6 +186,14 @@ class SelectLocationController extends GetxController {
         log("==> ${markers.containsKey(markerId)}");
       }
     }
+    // await Constant()
+    //     .getDriverData(mapModel.value, bookingModel.value, popupIndex);
+    // await Constant().getDriverData(mapModel.value, bookingModel.value);
+    bookingModel.value.dropLocation?.latitude = destination!.latitude;
+    bookingModel.value.dropLocation?.longitude = destination!.longitude;
+    bookingModel.value.pickUpLocation?.latitude = sourceLocation!.latitude;
+    bookingModel.value.pickUpLocation?.longitude = sourceLocation!.longitude;
+
     dropFocusNode.requestFocus();
     isLoading.value = false;
   }
@@ -195,38 +202,51 @@ class SelectLocationController extends GetxController {
     if (isClear) {
       bookingModel.value = BookingModel();
     } else {
-
       SharedPreferences prefs = await SharedPreferences.getInstance();
-     String user_id = await prefs.getString("id")??"";
-      bookingModel.value.customerId = user_id;
-      bookingModel.value.bookingStatus = BookingStatus.bookingPlaced;
-      bookingModel.value.pickUpLocation = LocationLatLng(
-          latitude: sourceLocation!.latitude,
-          longitude: sourceLocation!.longitude);
-      bookingModel.value.dropLocation = LocationLatLng(
-          latitude: destination!.latitude, longitude: destination!.longitude);
-      GeoFirePoint position = GeoFlutterFire().point(
-          latitude: sourceLocation!.latitude,
-          longitude: sourceLocation!.longitude);
+      String user_id = await prefs.getString("id") ?? "";
 
-      bookingModel.value.position =
-          Positions(geoPoint: position.geoPoint, geohash: position.hash);
+      bookingModel.value.dropLocation?.latitude = destination!.latitude;
+      bookingModel.value.dropLocation?.longitude = destination!.longitude;
+      bookingModel.value.pickUpLocation?.latitude = sourceLocation!.latitude;
+      bookingModel.value.pickUpLocation?.longitude = sourceLocation!.longitude;
 
-      bookingModel.value.distance = DistanceModel(
-        distance: distanceCalculate(mapModel.value),
-        distanceType: Constant.distanceType,
-      );
-      bookingModel.value.vehicleType =
-          Constant.vehicleTypeList![selectVehicleTypeIndex.value];
-      bookingModel.value.subTotal = amountShow(
-          Constant.vehicleTypeList![selectVehicleTypeIndex.value],
-          mapModel.value!);
-      bookingModel.value.otp = Constant.getOTPCode();
-      bookingModel.value.paymentType = Constant.paymentModel!.cash!.name;
-      bookingModel.value.paymentStatus = false;
-      bookingModel.value.taxList = taxList;
-      bookingModel.value.adminCommission = Constant.adminCommission!;
-      bookingModel.value = BookingModel.fromJson(bookingModel.value.toJson());
+      bool isDone = await Constant()
+          .getDriverData(mapModel.value, bookingModel.value, popupIndex)
+          .then((onValue) {
+        if (onValue == false) setBookingData(false);
+
+        bookingModel.value.customerId = user_id;
+        bookingModel.value.bookingStatus = BookingStatus.bookingPlaced;
+        bookingModel.value.pickUpLocation = LocationLatLng(
+            latitude: sourceLocation!.latitude,
+            longitude: sourceLocation!.longitude);
+        bookingModel.value.dropLocation = LocationLatLng(
+            latitude: destination!.latitude, longitude: destination!.longitude);
+        GeoFirePoint position = GeoFlutterFire().point(
+            latitude: sourceLocation!.latitude,
+            longitude: sourceLocation!.longitude);
+
+        bookingModel.value.position =
+            Positions(geoPoint: position.geoPoint, geohash: position.hash);
+
+        bookingModel.value.distance = DistanceModel(
+          distance: distanceCalculate(mapModel.value),
+          distanceType: Constant.distanceType,
+        );
+        bookingModel.value.vehicleType =
+            Constant.vehicleTypeList![selectVehicleTypeIndex.value];
+        bookingModel.value.subTotal = Constant
+            .vehicleTypeList![selectVehicleTypeIndex.value]
+            .charges
+            .farMinimumCharges;
+        bookingModel.value.otp = Constant.getOTPCode();
+        bookingModel.value.paymentType = "Cash";
+        bookingModel.value.paymentStatus = false;
+        bookingModel.value.taxList = [];
+        bookingModel.value = BookingModel.fromJson(bookingModel.value.toJson());
+
+        return true;
+      });
     }
   }
 
@@ -263,7 +283,6 @@ class SelectLocationController extends GetxController {
         log("--mapModel--Data : ${mapModel.value!.toJson()}");
 
         // Update popup index if necessary
-        if (popupIndex.value == 0) popupIndex.value = 1;
 
         setBookingData(false);
       } else {
@@ -327,8 +346,8 @@ class SelectLocationController extends GetxController {
       required double? sourceLongitude,
       required double? destinationLatitude,
       required double? destinationLongitude}) async {
-
-    print("sourceLatitude:sourceLatitude ${sourceLatitude}  sourceLongitude: ${sourceLongitude}  destinationLatitude ${destinationLatitude}  destinationLongitude ${destinationLongitude}");
+    print(
+        "sourceLatitude:sourceLatitude ${sourceLatitude}  sourceLongitude: ${sourceLongitude}  destinationLatitude ${destinationLatitude}  destinationLongitude ${destinationLongitude}");
     if (sourceLatitude != null &&
         sourceLongitude != null &&
         destinationLatitude != null &&
@@ -336,7 +355,7 @@ class SelectLocationController extends GetxController {
       List<LatLng> polylineCoordinates = [];
       PolylineResult? result;
       try {
-         result = await polylinePoints.getRouteBetweenCoordinates(
+        result = await polylinePoints.getRouteBetweenCoordinates(
           googleApiKey: Constant.mapAPIKey,
           request: PolylineRequest(
             origin: PointLatLng(sourceLatitude, sourceLongitude),
@@ -379,6 +398,9 @@ class SelectLocationController extends GetxController {
           rotation: 0.0);
 
       _addPolyLine(polylineCoordinates);
+      // if (popupIndex.value == 0) popupIndex.value = 1;
+      // await Constant()
+      //     .getDriverData(mapModel.value, bookingModel.value, popupIndex);
     }
   }
 

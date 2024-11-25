@@ -42,7 +42,7 @@ class FireStoreUtils {
   static Future<bool> isLogin() async {
     bool isLogin = false;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool? isLoggedIn = prefs.getBool('isLoggedIn')??false;
+    bool? isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
     if (isLoggedIn) {
       isLogin = true;
     } else {
@@ -50,9 +50,6 @@ class FireStoreUtils {
     }
     return isLogin;
   }
-
-
-
 
   // static Future<UserData?> getUserProfile() async {
   //   UserData? userModel;
@@ -89,7 +86,6 @@ class FireStoreUtils {
   //   // return userModel;
   // }
 
-
   static Future<UserData?> getUserProfileAPI() async {
     UserData? userModel;
     try {
@@ -108,7 +104,7 @@ class FireStoreUtils {
       // Check if the response status is OK
       if (response.statusCode == 200) {
         ShowToastDialog.closeLoader();
-        Map<String,dynamic> jsonResponse = jsonDecode(response.body);
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         if (jsonResponse['status'] == true) {
           userModel = UserData.fromJson(jsonResponse['data']);
           print("USERDATAAPI  ${jsonEncode(userModel)}");
@@ -128,7 +124,6 @@ class FireStoreUtils {
     return null;
     // return userModel;
   }
-
 
   // static Future<bool?> deleteUser() async {
   //   bool? isDelete;
@@ -381,63 +376,7 @@ class FireStoreUtils {
     return couponList;
   }
 
-  static Future<bool?> setBooking(BookingModel bookingModel) async {
-    bool isAdded = false;
-    print("BookingModelJSONN :: ${jsonEncode(bookingModel.pickUpLocation)}");
-    Map<String, Object> map = {
-      "pickup_location": {
-        "type": "Point",
-        "coordinates": [
-          bookingModel.pickUpLocation!.latitude,
-          bookingModel.pickUpLocation!.longitude
-        ]
-      },
-      "pickup_address": bookingModel.pickUpLocationAddress ?? '',
-      "dropoff_location": {
-        "type": "Point",
-        "coordinates": [
-          bookingModel.dropLocation!.latitude,
-          bookingModel.dropLocation!.longitude
-        ]
-      },
-      "dropoff_address": bookingModel.dropLocationAddress ?? '',
-      "distance": bookingModel.distance!.distance ?? 0.0,
-      "vehicle_type": bookingModel.vehicleType!.title ?? '',
-      "fare_amount": bookingModel.subTotal ?? '',
-      "duration_in_minutes": '50'
-    };
 
-    final response = await http.post(
-      Uri.parse(baseURL + userRideSubmit),
-      body: jsonEncode(map),
-      headers: {"Content-Type": "application/json", "token": token},
-    );
-
-
-    print("RIDEBOOKING REQUST ${response.body}");
-    if (response.statusCode == 200) {
-      isAdded = true;
-      // return jsonDecode(response.body);
-    } else if (response.statusCode == 404) {
-      log("Driver not found");
-      isAdded = false;
-    } else {
-      log("Failed to add ride:");
-      isAdded = false;
-    }
-
-    // await fireStore
-    //     .collection(CollectionName.bookings)
-    //     .doc(bookingModel.id)
-    //     .set(bookingModel.toJson())
-    //     .then((value) {
-    //   isAdded = true;
-    // }).catchError((error) {
-    //   log("Failed to add ride: $error");
-    //   isAdded = false;
-    // });
-    return isAdded;
-  }
   static Future<bool?> setBookingCancel(BookingModel bookingModel) async {
     ShowToastDialog.showLoader("Please wait".tr);
     bool canceled = false;
@@ -677,8 +616,6 @@ class FireStoreUtils {
     return bookingList;
   }
 
-
-
   static Future<List<BookingModel>> getCompletedRides() async {
     List<BookingModel> bookingList = [];
 
@@ -758,24 +695,24 @@ class FireStoreUtils {
   }
 
   static Future<DriverUserModel> getOnlineUserModel(String uuid) async {
-  final response = await http.post(
-    Uri.parse(baseURL + getDriverDetails),
-    body: jsonEncode({'driver_id':uuid}),
-    headers: {"Content-Type": "application/json", "token": token},
-  );
+    final response = await http.post(
+      Uri.parse(baseURL + getDriverDetails),
+      body: jsonEncode({'driver_id': uuid}),
+      headers: {"Content-Type": "application/json", "token": token},
+    );
 
-  print("response.body:::::  ${response.body}");
-  if (response.statusCode == 200) {
-    if (jsonDecode(response.body)["status"]) {
-      print("response.body:::::  ${jsonDecode(response.body)["status"]}");
+    print("response.body:::::  ${response.body}");
+    if (response.statusCode == 200) {
+      if (jsonDecode(response.body)["status"]) {
+        print("response.body:::::  ${jsonDecode(response.body)["status"]}");
 
-      return DriverUserModel.fromJson(jsonDecode(response.body)['data']);
+        return DriverUserModel.fromJson(jsonDecode(response.body)['data']);
+      }
+      return DriverUserModel();
+    } else {
+      return DriverUserModel();
     }
-    return DriverUserModel();
-  } else {
-    return DriverUserModel();
   }
-}
 
   static Future<bool?> setWalletTransaction(
       WalletTransactionModel walletTransactionModel) async {
