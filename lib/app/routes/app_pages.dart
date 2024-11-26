@@ -135,11 +135,7 @@ class AppPages {
       page: () => const MyRideDetailsView(),
       binding: MyRideDetailsBinding(),
     ),
-    GetPage(
-      name: _Paths.REASON_FOR_CANCEL,
-      page: () => const ReasonForCancelView(),
-      binding: ReasonForCancelBinding(),
-    ),
+    
     GetPage(
       name: _Paths.MY_WALLET,
       page: () => const MyWalletView(),

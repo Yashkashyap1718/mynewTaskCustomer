@@ -1,147 +1,124 @@
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customer/constant/booking_status.dart';
 import 'package:customer/constant_widgets/custom_dialog_box.dart';
 import 'package:customer/constant_widgets/pick_drop_point_view.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
-import 'package:customer/models/ride_booking.dart';
-import 'package:customer/theme/app_them_data.dart';
-import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
-import 'package:customer/utils/preferences.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:customer/models/ride_booking.dart';
 import 'package:provider/provider.dart';
 
 class NewRideView extends StatelessWidget {
-  final RideBooking? bookingModel;
+  final RideBooking bookingModel;
 
-  const NewRideView({super.key, this.bookingModel});
+  const NewRideView({Key? key, required this.bookingModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final themeChange = Provider.of<DarkThemeProvider>(context);
-    return InkWell(
+    final theme = Provider.of<DarkThemeProvider>(context);
+
+    return GestureDetector(
       onTap: () {
-        // BookingDetailsController detailsController =
-        //     Get.put(BookingDetailsController());
-        // detailsController.bookingId.value = bookingModel!.id ?? '';
-        // detailsController.bookingModel.value = bookingModel!;
-        // Get.to(() => const BookingDetailsView());
+        // Navigate to ride details view (if implemented)
+        // Navigator.push(context, MaterialPageRoute(builder: (_) => RideDetailsView(bookingModel: bookingModel)));
       },
       child: Container(
-        // width: Responsive.width(100, context),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         padding: const EdgeInsets.all(16),
-        margin: const EdgeInsets.only(bottom: 16),
-        decoration: ShapeDecoration(
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-                width: 1,
-                color: themeChange.isDarkTheme()
-                    ? AppThemData.grey800
-                    : AppThemData.grey100),
-            borderRadius: BorderRadius.circular(12),
+        decoration: BoxDecoration(
+          color: theme.isDarkTheme() ? Colors.grey : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: theme.isDarkTheme() ? Colors.grey : Colors.grey,
+            width: 1,
           ),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 12),
-            PickDropPointView(
-                pickUpAddress: bookingModel == null
-                    ? ""
-                    : bookingModel!.pickupAddress ?? '',
-                dropAddress: bookingModel == null
-                    ? ""
-                    : bookingModel!.dropoffAddress ?? ''),
-            // if ((bookingModel!.status ?? '') == BookingStatus.bookingPlaced &&
-            //     !bookingModel!.!.contains(FireStoreUtils.getCurrentUid())) ...{
-
-            if ((bookingModel!.status ?? '') ==
-                BookingStatus.bookingRequested) ...{
-              const SizedBox(height: 16),
-              RoundShapeButton(
-                title: "Cancel Ride",
-                buttonColor: AppThemData.danger500,
-                buttonTextColor: AppThemData.white,
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return CustomDialogBox(
-                            themeChange: themeChange,
-                            title: "Cancel Ride".tr,
-                            negativeButtonColor: themeChange.isDarkTheme()
-                                ? AppThemData.grey950
-                                : AppThemData.grey50,
-                            negativeButtonTextColor: themeChange.isDarkTheme()
-                                ? AppThemData.grey50
-                                : AppThemData.grey950,
-                            positiveButtonColor: AppThemData.danger500,
-                            positiveButtonTextColor: AppThemData.grey25,
-                            descriptions:
-                                "Are you sure you want cancel this ride?".tr,
-                            positiveString: "Cancel Ride".tr,
-                            negativeString: "Cancel".tr,
-                            positiveClick: () async {
-                              Navigator.pop(context);
-                              // bool value =
-                              //     await cancelRide(bookingModel!.rideId!);
-
-                              // if (value == true) {
-                              //   // ShowToastDialog.showToast(
-                              //   //     "Ride cancelled successfully!");
-
-                              //   Navigator.pop(context);
-                              // } else {
-                              //   ShowToastDialog.showToast(
-                              //       "Something went wrong!");
-                              //   Navigator.pop(context);
-                              // }
-                            },
-                            negativeClick: () {
-                              Navigator.pop(context);
-                            },
-                            img: Image.asset(
-                              "assets/icon/ic_close.png",
-                              height: 58,
-                              width: 58,
-                            ));
-                      });
-                },
-                size: Size(Responsive.width(40, context), 42),
-              ),
-            },
-            if ((bookingModel!.status ?? '') ==
-                BookingStatus.bookingAccepted) ...{
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  RoundShapeButton(
-                    title: "Cancel Ride",
-                    buttonColor: themeChange.isDarkTheme()
-                        ? AppThemData.grey900
-                        : AppThemData.grey50,
-                    buttonTextColor: themeChange.isDarkTheme()
-                        ? AppThemData.white
-                        : AppThemData.black,
-                    onTap: () {
-                      // Get.to(() => ReasonForCancelView(
-                      //       bookingModel: ,
-                      //     ));
-                    },
-                    size: Size(Responsive.width(40, context), 42),
-                  ),
-                ],
-              )
-            }
+          boxShadow: [
+            BoxShadow(
+              color: theme.isDarkTheme()
+                  ? Colors.transparent
+                  : Colors.grey.shade200,
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
           ],
         ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            bookingModel.status == "requested"
+                ? Padding(
+                    padding: EdgeInsets.only(left: 10, right: 10),
+                    child: LinearProgressIndicator(
+                      color: Colors.blue,
+                      backgroundColor: Colors.grey,
+                    ),
+                  )
+                : Container(),
+            PickDropPointView(
+              pickUpAddress: bookingModel.pickupAddress,
+              dropAddress: bookingModel.dropoffAddress,
+            ),
+            const SizedBox(height: 12),
+            if (bookingModel.status == BookingStatus.bookingRequested)
+              _buildCancelRideButton(context, theme),
+            if (bookingModel.status == BookingStatus.bookingAccepted)
+              _buildActionButtons(context, theme),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCancelRideButton(BuildContext context, DarkThemeProvider theme) {
+    return RoundShapeButton(
+      title: "Cancel Ride",
+      buttonColor: Colors.red,
+      buttonTextColor: Colors.white,
+      onTap: () => _showCancelDialog(context, theme),
+      size: const Size(double.infinity, 48),
+    );
+  }
+
+  Widget _buildActionButtons(BuildContext context, DarkThemeProvider theme) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: RoundShapeButton(
+            title: "Cancel Ride",
+            buttonColor: theme.isDarkTheme() ? Colors.grey : Colors.grey,
+            buttonTextColor: theme.isDarkTheme() ? Colors.white : Colors.black,
+            onTap: () => _showCancelDialog(context, theme),
+            size: const Size(double.infinity, 48),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showCancelDialog(BuildContext context, DarkThemeProvider theme) {
+    showDialog(
+      context: context,
+      builder: (_) => CustomDialogBox(
+        title: "Cancel Ride",
+        descriptions: "Are you sure you want to cancel this ride?",
+        positiveString: "Yes",
+        negativeString: "No",
+        positiveButtonColor: Colors.red,
+        positiveButtonTextColor: Colors.white,
+        negativeButtonColor: theme.isDarkTheme() ? Colors.grey : Colors.grey,
+        negativeButtonTextColor:
+            theme.isDarkTheme() ? Colors.white : Colors.black,
+        positiveClick: () {
+          // Handle cancellation logic
+          Navigator.pop(context);
+        },
+        negativeClick: () => Navigator.pop(context),
+        img: Image.asset(
+          "assets/icon/ic_green_right.png",
+          height: 58,
+          width: 58,
+        ),
+        themeChange: theme,
       ),
     );
   }

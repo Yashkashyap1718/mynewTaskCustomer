@@ -377,31 +377,7 @@ class FireStoreUtils {
   }
 
 
-  static Future<bool?> setBookingCancel(BookingModel bookingModel) async {
-    ShowToastDialog.showLoader("Please wait".tr);
-    bool canceled = false;
-    Map<String, Object> map = {};
-    final response = await http.put(
-      Uri.parse(baseURL + userRideCanceled),
-      body: jsonEncode(map),
-      headers: {"Content-Type": "application/json", "token": token},
-    );
-    if (response.statusCode == 200) {
-      canceled = true;
-      ShowToastDialog.closeLoader();
-      // return jsonDecode(response.body);
-    } else if (response.statusCode == 404) {
-      log("Driver not found");
-      canceled = false;
-      ShowToastDialog.closeLoader();
-    } else {
-      log("Failed to add ride:");
-      canceled = false;
-      ShowToastDialog.closeLoader();
-    }
-
-    return canceled;
-  }
+  
 
   static Future<RideRequest?> checkforRealTimebooking(
       BookingModel bookingModel) async {

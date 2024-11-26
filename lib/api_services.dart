@@ -3,8 +3,12 @@ import 'dart:developer';
 
 import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/constant/api_constant.dart';
+import 'package:customer/constant/send_notification.dart';
+import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/models/ride_booking.dart';
+import 'package:customer/utils/fire_store_utils.dart';
 import 'package:customer/utils/preferences.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:http/http.dart' as http;
 
@@ -39,26 +43,11 @@ Future<bool?> setBooking(BookingModel bookingModel) async {
 
   final response = await http.post(
     Uri.parse(baseURL + userRideSubmit),
-    body: jsonEncode({
-      "pickup_location": {
-        "type": "Point",
-        "coordinates": [28.6280, 77.3649]
-      },
-      "pickup_address": "Noida Sector 62, UP",
-      "dropoff_location": {
-        "type": "Point",
-        "coordinates": [28.6190, 77.0311]
-      },
-      "dropoff_address": "Dwarka More Delhi",
-      "distance": 32.63,
-      "vehicle_type": "suv",
-      "fare_amount": "748.79",
-      "duration_in_minutes": "48.95"
-    }),
+    body: jsonEncode(map),
     headers: {"Content-Type": "application/json", "token": token},
   );
 
-  // print("RIDEBOOKING REQUST ${response.body}");  isma be krde 
+  // print("RIDEBOOKING REQUST ${response.body}");  isma be krde
   if (response.statusCode == 200) {
     isAdded = true;
     // return jsonDecode(response.body);
@@ -84,7 +73,8 @@ Stream<RideBooking?> checkRequest() async* {
         "token": token,
       },
     );
-    if (response.statusCode == 200 && jsonDecode(response.body)["status"]) {
+    if (response.statusCode == 200 &&
+        jsonDecode(response.body)["data"] != '[]') {
       RideBooking listModel =
           RideBooking.fromJson(jsonDecode(response.body)["data"]);
       yield listModel; // {{ edit_1 }}
@@ -94,4 +84,55 @@ Stream<RideBooking?> checkRequest() async* {
     await Future.delayed(Duration(
         seconds: 5)); // Delay for 5 seconds before making the next request
   }
+}
+
+Future<bool> cancelBooking(RideBooking bookingModels) async {
+  bool? isCancelled = await setBookingCancel(bookingModels);
+  return (isCancelled ?? false);
+}
+
+sendCancelRideNotification(RideBooking rideData) async {
+  String fcmToken = await FirebaseMessaging.instance.getToken() ?? "";
+  if (fcmToken == "") {
+    ShowToastDialog.showToast("FCM token null");
+    return;
+  }
+  // DriverUserModel? receiverUserModel = await FireStoreUtils.getDriverUserProfile(bookingModel.value.driverId.toString());
+  Map<String, dynamic> playLoad = <String, dynamic>{"bookingId": 'rideData.'};
+  // await SendNotification.sendOneNotification(
+  //     type: "order",
+  //     token: fcmToken.toString(),
+  //     title: 'Ride Cancelled',
+  //     body:
+  //         'Ride #${rideData!.id.toString().substring(0, 4)} is cancelled by Customer',
+  //     bookingId: rideData.,
+  //     driverId: rideData!.driverId,
+  //     senderId: rideData!.passengerId,
+  //     payload: playLoad);
+}
+
+Future<bool?> setBookingCancel(RideBooking bookingModel) async {
+  ShowToastDialog.showLoader("Please wait");
+  bool canceled = false;
+  Map<String, Object> map = {"ride_id": bookingModel.id};
+  final response = await http.put(
+    Uri.parse(baseURL + userRideCanceled),
+    body: jsonEncode(map),
+    headers: {"Content-Type": "application/json", "token": token},
+  );
+  if (response.statusCode == 200) {
+    canceled = true;
+    ShowToastDialog.closeLoader();
+    // return jsonDecode(response.body);
+  } else if (response.statusCode == 404) {
+    log("Driver not found");
+    canceled = false;
+    ShowToastDialog.closeLoader();
+  } else {
+    log("Failed to add ride:");
+    canceled = false;
+    ShowToastDialog.closeLoader();
+  }
+
+  return canceled;
 }

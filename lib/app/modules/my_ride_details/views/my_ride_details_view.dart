@@ -179,9 +179,14 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                             buttonColor: AppThemData.danger_500p,
                             buttonTextColor: AppThemData.white,
                             onTap: () {
-                              Get.to(const ReasonForCancelView(), arguments: {
-                                "bookingModel": controller.bookingModel.value
-                              });
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //       builder: (context) => ReasonForCancelView(
+                              //           rideData:
+                              //               controller.bookingModel.value)),
+                              // );
+                           
                             },
                             size: Size(Responsive.width(45, context), 52),
                           ),
@@ -225,12 +230,11 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                   //       "Your wallet amount is insufficient to Payment"
                                   //           .tr);
                                   // } else {
-                                    ShowToastDialog.showLoader(
-                                        "Please wait".tr);
-                                    await controller.walletPaymentMethod();
-                                    ShowToastDialog.showToast(
-                                        "Payment successful");
-                                    ShowToastDialog.closeLoader();
+                                  ShowToastDialog.showLoader("Please wait".tr);
+                                  await controller.walletPaymentMethod();
+                                  ShowToastDialog.showToast(
+                                      "Payment successful");
+                                  ShowToastDialog.closeLoader();
                                   //}
                                 } else if (controller
                                         .selectedPaymentMethod.value ==
@@ -689,7 +693,12 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                             ),
                                             InkWell(
                                                 onTap: () {
-                                                  Get.toNamed(Routes.CHAT_SCREEN,arguments: {"receiverId":driverUserModel.id});
+                                                  Get.toNamed(
+                                                      Routes.CHAT_SCREEN,
+                                                      arguments: {
+                                                        "receiverId":
+                                                            driverUserModel.id
+                                                      });
                                                 },
                                                 child: SvgPicture.asset(
                                                     "assets/icon/ic_message.svg")),

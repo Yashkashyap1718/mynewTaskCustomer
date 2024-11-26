@@ -1,4 +1,5 @@
 class RideBooking {
+  final String id;
   final String vehicleId;
   final String pickupAddress;
   final Location pickupLocation;
@@ -19,6 +20,7 @@ class RideBooking {
   final Vehicle vehicle;
 
   RideBooking({
+    required this.id,
     required this.vehicleId,
     required this.pickupAddress,
     required this.pickupLocation,
@@ -41,6 +43,7 @@ class RideBooking {
 
   factory RideBooking.fromJson(Map<String, dynamic> json) {
     return RideBooking(
+      id: json['_id'] ?? '',
       vehicleId: json['vehicle_id'] ?? '',
       pickupAddress: json['pickup_address'] ?? '',
       pickupLocation: Location.fromJson(json['pickup_location'] ?? {}),
@@ -73,7 +76,7 @@ class Location {
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
       type: json['type'] ?? '',
-      coordinates: List<double>.from(json['coordinates'] ?? [0.0,0.0]),
+      coordinates: List<double>.from(json['coordinates'] ?? [0.0, 0.0]),
     );
   }
 }
