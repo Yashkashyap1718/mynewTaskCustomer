@@ -12,7 +12,6 @@ import 'package:customer/constant_widgets/pick_drop_point_view.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/models/ride_booking.dart';
-import 'package:customer/new_ride_view.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';

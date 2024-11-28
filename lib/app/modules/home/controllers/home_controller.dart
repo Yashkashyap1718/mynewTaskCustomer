@@ -10,7 +10,6 @@ import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/utils/fire_store_utils.dart';
-import 'package:customer/utils/notification_service.dart';
 import 'package:customer/utils/utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +21,6 @@ import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../constant_widgets/show_toast_dialog.dart';
-import '../../login/views/login_view.dart';
 
 class HomeController extends GetxController {
   final count = 0.obs;

@@ -1,6 +1,5 @@
 // ignore_for_file: unnecessary_overrides
 
-import 'package:customer/app/api_models/ride_history_data.dart';
 import 'package:customer/app/models/booking_model.dart';
 import 'package:get/get.dart';
 

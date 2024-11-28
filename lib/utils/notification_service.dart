@@ -4,7 +4,6 @@ import 'dart:developer';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:customer/utils/fire_store_utils.dart';
 
 Future<void> firebaseMessageBackgroundHandle(RemoteMessage message) async {
   log("BackGround Message :: ${message.messageId}");

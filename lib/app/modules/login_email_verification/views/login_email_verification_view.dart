@@ -1,14 +1,12 @@
 import 'package:customer/constant_widgets/round_shape_button.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
-import 'package:customer/utils/validate_mobile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../constant_widgets/country_code_selector_view.dart';
 import '../../../../theme/responsive.dart';
 import '../../../../utils/loading_wrapper.dart';
 import '../controllers/login_email_verification_controller.dart';

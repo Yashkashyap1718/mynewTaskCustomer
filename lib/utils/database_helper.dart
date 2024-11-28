@@ -1,9 +1,7 @@
-import 'dart:developer';
 
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../app/models/user_model.dart';
 
 // class DatabaseHelper {
 //   static final DatabaseHelper _instance = DatabaseHelper._internal();

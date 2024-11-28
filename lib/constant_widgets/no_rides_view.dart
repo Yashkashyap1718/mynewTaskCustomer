@@ -2,7 +2,6 @@ import 'package:customer/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:customer/app/modules/select_location/views/select_location_view.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';

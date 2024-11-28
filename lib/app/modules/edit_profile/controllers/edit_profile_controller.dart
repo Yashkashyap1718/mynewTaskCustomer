@@ -6,10 +6,7 @@ import 'dart:io';
 
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/constant/api_constant.dart';
-import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
-import 'package:customer/extension/string_extensions.dart';
-import 'package:customer/utils/fire_store_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -18,7 +15,6 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../utils/database_helper.dart';
 
 class EditProfileController extends GetxController {
   //TODO: Implement EditProfileController

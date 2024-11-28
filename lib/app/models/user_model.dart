@@ -140,7 +140,7 @@ class UserData {
   String? status;
   String? suspend;
   String? gender;
-  dynamic? createdAt;
+  dynamic createdAt;
 
   UserData(
       {this.id,

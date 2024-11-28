@@ -75,7 +75,7 @@ buildTypes {
 }
 signingConfigs {
     release {
-        storeFile file('/Volumes/Vinay/Vinay/Projects/mynewTaskCustomer/android/releaseKey.jks')
+        storeFile file('/Users/vinayji/Documents/Vinay/mynewTaskCustomer/android/releaseKey.jks')
         storePassword 'devvinay'
         keyAlias 'keyAlias'
         keyPassword 'devvinay'

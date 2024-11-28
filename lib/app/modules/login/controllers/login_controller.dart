@@ -1,18 +1,11 @@
 // ignore_for_file: unnecessary_overrides, invalid_return_type_for_catch_error
 
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:crypto/crypto.dart';
-import 'package:customer/app/models/user_model.dart';
-import 'package:customer/app/modules/home/views/home_view.dart';
-import 'package:customer/app/modules/signup/views/signup_view.dart';
-import 'package:customer/app/modules/verify_otp/views/verify_otp_view.dart';
 import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/api_constant.dart';
-import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
-import 'package:customer/utils/fire_store_utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -1,10 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customer/app/models/driver_user_model.dart';
 import 'package:customer/app/models/tax_model.dart';
-import 'package:customer/app/modules/chat_screen/views/chat_screen_view.dart';
 import 'package:customer/app/modules/my_ride_details/views/widgets/payment_dialog_view.dart';
 import 'package:customer/app/modules/payment_method/views/widgets/price_row_view.dart';
-import 'package:customer/app/modules/reason_for_cancel/views/reason_for_cancel_view.dart';
 import 'package:customer/app/modules/review_screen/views/review_screen_view.dart';
 import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/booking_status.dart';

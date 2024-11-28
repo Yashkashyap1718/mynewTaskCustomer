@@ -1,17 +1,14 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:customer/app/models/user_model.dart';
-import 'package:customer/app/modules/edit_profile/views/edit_profile_view.dart';
 import 'package:customer/app/modules/home/controllers/home_controller.dart';
 import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/custom_dialog_box.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
-import 'package:customer/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';

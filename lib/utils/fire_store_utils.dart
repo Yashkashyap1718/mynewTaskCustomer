@@ -22,7 +22,6 @@ import 'package:customer/app/models/wallet_transaction_model.dart';
 import 'package:customer/constant/booking_status.dart';
 import 'package:customer/constant/collection_name.dart';
 import 'package:customer/constant/constant.dart';
-import 'package:customer/constant/send_notification.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geoflutterfire2/geoflutterfire2.dart';
@@ -30,7 +29,6 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:customer/constant/api_constant.dart';
 
-import '../app/api_models/ride_history_data.dart';
 
 class FireStoreUtils {
   static FirebaseFirestore fireStore = FirebaseFirestore.instance;
@@ -480,11 +478,11 @@ class FireStoreUtils {
         BookingModel bookingModel = BookingModel.fromJson(data);
         bookingsList.add(bookingModel);
       }
-      final closetsDateTimeToNow = bookingsList.reduce((a, b) =>
-          (a.bookingTime!).toDate().difference(DateTime.now()).abs() <
-                  (b.bookingTime!).toDate().difference(DateTime.now()).abs()
-              ? a
-              : b);
+      // final closetsDateTimeToNow = bookingsList.reduce((a, b) =>
+      //     (a.bookingTime!).toDate().difference(DateTime.now()).abs() <
+      //             (b.bookingTime!).toDate().difference(DateTime.now()).abs()
+      //         ? a
+      //         : b);
 
       getHomeOngoingBookingController!.sink.add(bookingsList);
     });

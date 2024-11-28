@@ -1,6 +1,5 @@
 // ignore_for_file: must_be_immutable
 
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:animated_snack_bar/animated_snack_bar.dart';
@@ -14,7 +13,6 @@ import 'package:customer/app/modules/my_ride_details/controllers/my_ride_details
 import 'package:customer/app/modules/my_ride_details/views/my_ride_details_view.dart';
 import 'package:customer/app/modules/my_wallet/views/my_wallet_view.dart';
 import 'package:customer/app/modules/notification/views/notification_view.dart';
-import 'package:customer/app/modules/select_location/views/select_location_view.dart';
 import 'package:customer/app/modules/support_screen/views/support_screen_view.dart';
 import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/booking_status.dart';
@@ -32,7 +30,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
-import '../../../../utils/database_helper.dart';
 import '../../../models/user_model.dart';
 import '../controllers/home_controller.dart';
 

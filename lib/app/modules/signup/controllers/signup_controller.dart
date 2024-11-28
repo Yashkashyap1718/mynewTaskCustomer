@@ -1,16 +1,10 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customer/app/models/user_model.dart';
-import 'package:customer/app/modules/home/views/home_view.dart';
 import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
-import 'package:customer/extension/string_extensions.dart';
-import 'package:customer/utils/database_helper.dart';
-import 'package:customer/utils/fire_store_utils.dart';
-import 'package:customer/utils/notification_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;

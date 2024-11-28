@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:customer/app/routes/app_pages.dart';
 import 'package:get/get.dart';
-import 'package:customer/app/modules/home/views/home_view.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:location/location.dart';
 

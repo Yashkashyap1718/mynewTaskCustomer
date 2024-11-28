@@ -1,7 +1,6 @@
 import 'package:customer/app/modules/create_support_ticket/bindings/create_support_ticket_binding.dart';
 import 'package:customer/app/modules/create_support_ticket/views/create_support_ticket_view.dart';
 import 'package:customer/app/modules/login_email_verification/bindings/login_email_verification_binding.dart';
-import 'package:customer/app/modules/login_email_verification/controllers/login_email_verification_controller.dart';
 import 'package:customer/app/modules/login_email_verification/views/login_email_verification_view.dart';
 import 'package:customer/app/modules/support_screen/bindings/support_screen_binding.dart';
 import 'package:customer/app/modules/support_screen/views/support_screen_view.dart';
@@ -40,8 +39,6 @@ import '../modules/payment_method/bindings/payment_method_binding.dart';
 import '../modules/payment_method/views/payment_method_view.dart';
 import '../modules/permission/bindings/permission_binding.dart';
 import '../modules/permission/views/permission_view.dart';
-import '../modules/reason_for_cancel/bindings/reason_for_cancel_binding.dart';
-import '../modules/reason_for_cancel/views/reason_for_cancel_view.dart';
 import '../modules/review_screen/bindings/review_screen_binding.dart';
 import '../modules/review_screen/views/review_screen_view.dart';
 import '../modules/select_location/bindings/select_location_binding.dart';

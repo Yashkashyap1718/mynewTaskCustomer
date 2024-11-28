@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:customer/app/models/user_model.dart';
-import 'package:customer/app/modules/signup/views/signup_view.dart';
 import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
-import 'package:customer/utils/database_helper.dart';
 import 'package:customer/utils/preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';

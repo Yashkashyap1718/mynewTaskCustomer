@@ -16,8 +16,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../constant/constant.dart';
-import '../../../../utils/database_helper.dart';
-import '../../../models/user_model.dart';
 import '../controllers/edit_profile_controller.dart';
 
 class EditProfileView extends StatelessWidget {

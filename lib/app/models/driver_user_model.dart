@@ -1,8 +1,4 @@
-import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:customer/app/models/location_lat_lng.dart';
-import 'package:customer/app/models/positions.dart';
 
 class DriverUserModel {
   String? id;
@@ -20,9 +16,9 @@ class DriverUserModel {
   bool? suspend;
   String? createdAt;
   DriverVehicleDetails? driverVehicleDetails;
-  dynamic? rotation;
-  dynamic? reviewsCount;
-  dynamic? reviewsSum;
+  dynamic rotation;
+  dynamic reviewsCount;
+  dynamic reviewsSum;
   List<dynamic>? driverdDocs;
 
   DriverUserModel(

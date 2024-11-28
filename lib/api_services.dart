@@ -3,11 +3,8 @@ import 'dart:developer';
 
 import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/constant/api_constant.dart';
-import 'package:customer/constant/send_notification.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/models/ride_booking.dart';
-import 'package:customer/utils/fire_store_utils.dart';
-import 'package:customer/utils/preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:http/http.dart' as http;
@@ -34,6 +31,7 @@ Future<bool?> setBooking(BookingModel bookingModel) async {
     "dropoff_address": bookingModel.dropLocationAddress,
     "distance": 4.2,
     // "distance": double.tryParse(bookingModel.distance?.distance ?? '0'),
+    // ignore: unnecessary_null_comparison
     "vehicle_type": (bookingModel.vehicleType!.title == null)
         ? ''
         : bookingModel.vehicleType!.title,
