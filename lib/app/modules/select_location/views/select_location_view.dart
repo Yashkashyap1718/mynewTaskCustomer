@@ -36,9 +36,11 @@ class SelectLocationView extends StatelessWidget {
                         height: Responsive.height(80, context),
                         child: GoogleMap(
                           initialCameraPosition: CameraPosition(
-                            target: LatLng(controller.sourceLocation!.latitude,
-                                controller.sourceLocation!.longitude),
-                            zoom: 5,
+                            target: LatLng(
+                              controller.sourceLocation!.latitude,
+                              controller.sourceLocation!.longitude,
+                            ),
+                            zoom: 15,
                           ),
                           padding: const EdgeInsets.only(
                             top: 22.0,

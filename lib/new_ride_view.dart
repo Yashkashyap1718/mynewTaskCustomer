@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class NewRideView extends StatelessWidget {
   final RideBooking bookingModel;
 
-  const NewRideView({Key? key, required this.bookingModel}) : super(key: key);
+  const NewRideView({super.key, required this.bookingModel});
 
   @override
   Widget build(BuildContext context) {

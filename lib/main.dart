@@ -206,7 +206,7 @@ Future<void> main() async {
   if(prefs.getString("token") != null){
     token = prefs.getString("token")!;
 
-    print("TOKEN:: ${token}");
+    print("TOKEN:: $token");
   }
   runApp(MyApp());
   // }

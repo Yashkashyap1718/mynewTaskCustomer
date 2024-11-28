@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/constant.dart';

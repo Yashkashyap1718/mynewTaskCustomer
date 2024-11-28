@@ -139,7 +139,7 @@ class VerifyOtpController extends GetxController {
 
       if(response.statusCode==200){
         final Map<String, dynamic> data = jsonDecode(response.body);
-        print("VERIFIYOTP:: ${data}");
+        print("VERIFIYOTP:: $data");
         ShowToastDialog.closeLoader();
         if (data['status'] == true) {
           final String token = data['token'];

@@ -4,13 +4,13 @@ import 'dart:developer';
 import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
+import 'package:customer/models/near_by_drivers.dart';
 import 'package:customer/models/ride_booking.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:http/http.dart' as http;
 
-Future<bool?> setBooking(BookingModel bookingModel) async {
-  bool isAdded = false;
+Future<NearbyDriversResponse?> setBooking(BookingModel bookingModel) async {
   // print("BookingModelJSONN :: ${jsonEncode(bookingModel.pickUpLocation)}");
   Map<String, dynamic> map = {
     "pickup_location": {
@@ -45,18 +45,20 @@ Future<bool?> setBooking(BookingModel bookingModel) async {
     headers: {"Content-Type": "application/json", "token": token},
   );
 
+    NearbyDriversResponse nearbyDrivers;
   // print("RIDEBOOKING REQUST ${response.body}");  isma be krde
   if (response.statusCode == 200) {
-    isAdded = true;
+
+     nearbyDrivers = NearbyDriversResponse.fromJson(jsonDecode(response.body));
     // return jsonDecode(response.body);
   } else if (response.statusCode == 404) {
+        nearbyDrivers = NearbyDriversResponse(status: false, msg: "Failed to add ride", data: [], rideId: ""); // Initialize with default value
     log("Driver not found");
-    isAdded = false;
   } else {
     log("Failed to add ride:");
-    isAdded = false;
+    nearbyDrivers = NearbyDriversResponse(status: false, msg: "Failed to add ride", data: [], rideId: ""); // Initialize with default value
   }
-  return isAdded;
+  return nearbyDrivers;
 }
 
 Stream<RideBooking?> checkRequest() async* {

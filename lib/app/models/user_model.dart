@@ -112,13 +112,13 @@ class UserModel {
   UserModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     msg = json['msg'];
-    data = json['data'] != null ? new UserData.fromJson(json['data']) : null;
+    data = json['data'] != null ? UserData.fromJson(json['data']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['msg'] = this.msg;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['status'] = status;
+    data['msg'] = msg;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
     }
@@ -178,21 +178,21 @@ class UserData {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.id;
-    data['name'] = this.name;
-    data['country_code'] = this.countryCode;
-    data['phone'] = this.phone;
-    data['referral_code'] = this.referralCode;
-    data['verified'] = this.verified;
-    data['role'] = this.role;
-    data['languages'] = this.languages;
-    data['profile'] = this.profile;
-    data['push_notification'] = this.pushNotification;
-    data['status'] = this.status;
-    data['suspend'] = this.suspend;
-    data['gender'] = this.gender;
-    data['createdAt'] = this.createdAt;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['_id'] = id;
+    data['name'] = name;
+    data['country_code'] = countryCode;
+    data['phone'] = phone;
+    data['referral_code'] = referralCode;
+    data['verified'] = verified;
+    data['role'] = role;
+    data['languages'] = languages;
+    data['profile'] = profile;
+    data['push_notification'] = pushNotification;
+    data['status'] = status;
+    data['suspend'] = suspend;
+    data['gender'] = gender;
+    data['createdAt'] = createdAt;
     return data;
   }
 }

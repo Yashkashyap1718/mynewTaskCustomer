@@ -3,7 +3,6 @@
 import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/utils/fire_store_utils.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

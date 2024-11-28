@@ -67,10 +67,8 @@ class ReasonForCancelView extends StatelessWidget {
                           width: 58,
                         ),
                         positiveClick: () async {
-                          if (rideData.driver.id != null) {
-                            sendCancelRideNotification(rideData);
-                          }
-                          ShowToastDialog.showToast(
+                          sendCancelRideNotification(rideData);
+                                                  ShowToastDialog.showToast(
                               "Ride Cancelled Successfully..");
                           Navigator.pop(context);
                           Get.back();

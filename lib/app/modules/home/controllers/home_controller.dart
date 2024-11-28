@@ -56,7 +56,7 @@ class HomeController extends GetxController {
     String? fcmToken;
     try {
       fcmToken = await FirebaseMessaging.instance.getToken();
-      print("FCMTOKEN:: ${fcmToken}");
+      print("FCMTOKEN:: $fcmToken");
     } catch (e) {
       print("Error fetching FCM token: $e");
     }
@@ -93,7 +93,7 @@ class HomeController extends GetxController {
  void getUserData() async {
     isLoading.value = true;
     userData =  await FireStoreUtils.getUserProfileAPI();
-    print("USERDATA::: ${userData}");
+    print("USERDATA::: $userData");
     if(userData != null){
       isLoading.value = false;
       if(userData!.status!="Active"){

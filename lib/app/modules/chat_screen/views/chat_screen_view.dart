@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutterflow_paginate_firestore/paginate_firestore.dart';
 import 'package:get/get.dart';
 import 'package:customer/app/models/chat_model/chat_model.dart';
 import 'package:customer/constant/constant.dart';

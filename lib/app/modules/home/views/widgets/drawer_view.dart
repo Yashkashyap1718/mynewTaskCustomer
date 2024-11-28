@@ -94,7 +94,7 @@ class DrawerView extends StatelessWidget {
                                         ),
                                       ),
                                       Text(
-                                        "${user.countryCode.toString()+user.phone.toString()}",
+                                        user.countryCode.toString()+user.phone.toString(),
                                         style: GoogleFonts.inter(
                                           color: themeChange.isDarkTheme()
                                               ? AppThemData.white

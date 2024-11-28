@@ -2,16 +2,12 @@
 
 import 'dart:convert';
 
-import 'package:crypto/crypto.dart';
 import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class LoginController extends GetxController {
   TextEditingController countryCodeController =

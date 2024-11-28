@@ -1,4 +1,3 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customer/api_services.dart';
 import 'package:customer/app/models/booking_model.dart';
@@ -6,6 +5,7 @@ import 'package:customer/app/modules/select_location/controllers/select_location
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
+import 'package:customer/models/near_by_drivers.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
@@ -178,9 +178,10 @@ class ConfirmPickupBottomSheet extends StatelessWidget {
                         buttonTextColor: AppThemData.black,
                         onTap: () async {
                           ShowToastDialog.showLoader("Please wait...");
-                          SharedPreferences prefs = await SharedPreferences.getInstance();
-                          String user_id = await prefs.getString("id")??"";
-                          controller.bookingModel.value.id = user_id;
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          String userId = prefs.getString("id") ?? "";
+                          controller.bookingModel.value.id = userId;
                           controller.bookingModel.value.createAt =
                               Timestamp.now();
                           controller.bookingModel.value.updateAt =
@@ -188,12 +189,30 @@ class ConfirmPickupBottomSheet extends StatelessWidget {
                           controller.bookingModel.value.bookingTime =
                               Timestamp.now();
 
+                          controller.bookingModel.value = BookingModel.fromJson(
+                              controller.bookingModel.value.toJson());
 
-                          controller.bookingModel.value = BookingModel.fromJson(controller.bookingModel.value.toJson());
+                          List<dynamic> map = [];
 
-                          try{
-                            var result =  await setBooking(controller.bookingModel.value);
-                            if (result! == true) {
+                          try {
+                            NearbyDriversResponse? result =
+                                await setBooking(controller.bookingModel.value);
+                            if (result != null) {
+                              // Clear existing driver markers first
+                              controller.markers.removeWhere((key, value) => key.value.startsWith('driver_'));
+                              
+                              for (var driver in result.data) {
+                                // Add each driver's coordinates to the map
+                                controller.addMarker(
+                                  latitude: driver.location.coordinates[0],
+                                  longitude: driver.location.coordinates[1],
+                                  id: "driver_${driver.id}",
+                                  descriptor: controller.driverIcon!, // You'll need to add this to your controller
+                                  rotation: 0.0
+                                );
+                                map.add(driver.location.coordinates);
+                              }
+
                               ShowToastDialog.showToast("Ride Placed successfully".tr);
                               ShowToastDialog.closeLoader();
                               controller.popupIndex.value = 3;
@@ -202,7 +221,7 @@ class ConfirmPickupBottomSheet extends StatelessWidget {
                               ShowToastDialog.showToast("Request failed".tr);
                               ShowToastDialog.closeLoader();
                             }
-                          }catch(e){
+                          } catch (e) {
                             ShowToastDialog.showToast(e.toString());
                             ShowToastDialog.closeLoader();
                           }

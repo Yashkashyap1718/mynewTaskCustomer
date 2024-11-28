@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/app/models/coupon_model.dart';
@@ -57,6 +58,8 @@ class SelectLocationController extends GetxController {
 
   RxList<TaxModel> taxList = (Constant.taxList ?? []).obs;
 
+  BitmapDescriptor? driverIcon;
+
   changeVehicleType(int index) {
     selectVehicleTypeIndex.value = index;
     bookingModel.value.vehicleType = Constant.vehicleTypeList![index];
@@ -98,7 +101,7 @@ class SelectLocationController extends GetxController {
     final Map<String, dynamic> body = {
       "latitude": latitude.toString(),
       "longitude": longitude.toString(),
-      "fcmToken": "$token",
+      "fcmToken": token,
     };
     // Constant().getDriverData(mapModel.value, bookingModel.value);
     try {
@@ -158,7 +161,7 @@ class SelectLocationController extends GetxController {
             latitude: destination!.latitude,
             longitude: destination!.longitude,
             id: "drop",
-            descriptor: dropIcon!,
+            descriptor: pickUpIcon!,
             rotation: 0.0);
         updateCameraLocation(destination!, destination!, mapController);
       } else {
@@ -173,7 +176,7 @@ class SelectLocationController extends GetxController {
             latitude: sourceLocation!.latitude,
             longitude: sourceLocation!.longitude,
             id: "pickUp",
-            descriptor: pickUpIcon!,
+            descriptor: dropIcon!,
             rotation: 0.0);
         updateCameraLocation(sourceLocation!, sourceLocation!, mapController);
       } else {
@@ -202,7 +205,7 @@ class SelectLocationController extends GetxController {
       bookingModel.value = BookingModel();
     } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String user_id = await prefs.getString("id") ?? "";
+      String userId = prefs.getString("id") ?? "";
 
       bookingModel.value.dropLocation?.latitude = destination!.latitude;
       bookingModel.value.dropLocation?.longitude = destination!.longitude;
@@ -214,7 +217,7 @@ class SelectLocationController extends GetxController {
           .then((onValue) {
         if (onValue == false) setBookingData(false);
 
-        bookingModel.value.customerId = user_id;
+        bookingModel.value.customerId = userId;
         bookingModel.value.bookingStatus = BookingStatus.bookingPlaced;
         bookingModel.value.pickUpLocation = LocationLatLng(
             latitude: sourceLocation!.latitude,
@@ -251,8 +254,8 @@ class SelectLocationController extends GetxController {
 
   updateData() async {
     log("--mapModel--Data : ${mapModel.value!.toJson()}");
-    log("--destination--sourceLocation : ${destination}");
-    log("--sourceLocation--sourceLocation : ${sourceLocation}");
+    log("--destination--sourceLocation : $destination");
+    log("--sourceLocation--sourceLocation : $sourceLocation");
 
     // Check if both source and destination locations are set
     if (destination != null && sourceLocation != null) {
@@ -263,6 +266,9 @@ class SelectLocationController extends GetxController {
         destinationLatitude: destination!.latitude,
         destinationLongitude: destination!.longitude,
       );
+
+      // Animate camera to show both points
+      await animateCameraToLocation(sourceLocation!, destination!);
 
       ShowToastDialog.showLoader("Please wait".tr);
 
@@ -291,31 +297,35 @@ class SelectLocationController extends GetxController {
             "Something went wrong!, Please select location again");
       }
     } else {
-      // Handle cases when source or destination is null
+      // Handle single point cases
       if (destination != null) {
-        // Add drop marker
         addMarker(
           latitude: destination!.latitude,
           longitude: destination!.longitude,
           id: "drop",
-          descriptor: dropIcon!,
+          descriptor: pickUpIcon!,
           rotation: 0.0,
         );
-        updateCameraLocation(destination!, destination!, mapController);
+        // Animate to destination
+        await mapController?.animateCamera(
+          CameraUpdate.newLatLngZoom(destination!, 15),
+        );
       } else {
         removeMarker("drop");
       }
 
       if (sourceLocation != null) {
-        // Add pickup marker
         addMarker(
           latitude: sourceLocation!.latitude,
           longitude: sourceLocation!.longitude,
           id: "pickUp",
-          descriptor: pickUpIcon!,
+          descriptor: dropIcon!,
           rotation: 0.0,
         );
-        updateCameraLocation(sourceLocation!, sourceLocation!, mapController);
+        // Animate to source
+        await mapController?.animateCamera(
+          CameraUpdate.newLatLngZoom(sourceLocation!, 15),
+        );
       } else {
         removeMarker("pickUp");
       }
@@ -346,7 +356,7 @@ class SelectLocationController extends GetxController {
       required double? destinationLatitude,
       required double? destinationLongitude}) async {
     print(
-        "sourceLatitude:sourceLatitude ${sourceLatitude}  sourceLongitude: ${sourceLongitude}  destinationLatitude ${destinationLatitude}  destinationLongitude ${destinationLongitude}");
+        "sourceLatitude:sourceLatitude $sourceLatitude  sourceLongitude: $sourceLongitude  destinationLatitude $destinationLatitude  destinationLongitude $destinationLongitude");
     if (sourceLatitude != null &&
         sourceLongitude != null &&
         destinationLatitude != null &&
@@ -387,13 +397,13 @@ class SelectLocationController extends GetxController {
           latitude: sourceLatitude,
           longitude: sourceLongitude,
           id: "pickUp",
-          descriptor: pickUpIcon!,
+          descriptor: dropIcon!,
           rotation: 0.0);
       addMarker(
           latitude: destinationLatitude,
           longitude: destinationLongitude,
           id: "drop",
-          descriptor: dropIcon!,
+          descriptor: pickUpIcon!,
           rotation: 0.0);
 
       _addPolyLine(polylineCoordinates);
@@ -425,8 +435,12 @@ class SelectLocationController extends GetxController {
         .getBytesFromAsset('assets/icon/ic_pick_up_map.png', 100);
     final Uint8List dropUint8List = await Constant()
         .getBytesFromAsset('assets/icon/ic_drop_in_map.png', 100);
+    final Uint8List driverUint8List = await Constant()
+        .getBytesFromAsset('assets/icon/car_image.png', 50);
+      
     pickUpIcon = BitmapDescriptor.fromBytes(pickUpUint8List);
     dropIcon = BitmapDescriptor.fromBytes(dropUint8List);
+    driverIcon = BitmapDescriptor.fromBytes(driverUint8List);
   }
 
   RxMap<PolylineId, Polyline> polyLines = <PolylineId, Polyline>{}.obs;
@@ -552,6 +566,31 @@ class SelectLocationController extends GetxController {
       }
     } else {
       return 0.0;
+    }
+  }
+
+  Future<void> animateCameraToLocation(LatLng start, LatLng end) async {
+    if (mapController == null) return;
+
+    // Calculate the bounds that include both points
+    LatLngBounds bounds = LatLngBounds(
+      southwest: LatLng(
+        math.min(start.latitude, end.latitude),
+        math.min(start.longitude, end.longitude),
+      ),
+      northeast: LatLng(
+        math.max(start.latitude, end.latitude),
+        math.max(start.longitude, end.longitude),
+      ),
+    );
+
+    // Add padding to the bounds
+    CameraUpdate cameraUpdate = CameraUpdate.newLatLngBounds(bounds, 100);
+
+    try {
+      await mapController!.animateCamera(cameraUpdate);
+    } catch (e) {
+      log("Error animating camera: $e");
     }
   }
 }

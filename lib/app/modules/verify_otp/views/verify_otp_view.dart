@@ -13,7 +13,7 @@ import '../controllers/verify_otp_controller.dart';
 
 class VerifyOtpView extends StatelessWidget {
 
-   VerifyOtpView({super.key});
+   const VerifyOtpView({super.key});
 
 
   @override

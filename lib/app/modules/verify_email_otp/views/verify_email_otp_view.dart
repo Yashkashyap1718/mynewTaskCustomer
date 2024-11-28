@@ -13,7 +13,7 @@ import '../controllers/verify_email_otp_controller.dart';
 
 class VerifyEmailOtpView extends StatelessWidget {
 
-   VerifyEmailOtpView({super.key});
+   const VerifyEmailOtpView({super.key});
 
 
   @override

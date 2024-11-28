@@ -21,7 +21,7 @@ class MyNotificationHandler {
       } else {
         print('User declined or has not accepted permission on iOS');
       }
-      return null;
+      return;
 
     } else if (Platform.isAndroid && Platform.version.compareTo('13') >= 0) {
       try{
@@ -34,7 +34,7 @@ class MyNotificationHandler {
       }catch(err){
         print("ERROR while fetching Permissions : $err");
       }
-      return null;
+      return;
     }
   }
 
@@ -59,7 +59,7 @@ class MyNotificationHandler {
     // var title = message.notification?.title;
     // var body = message.notification?.body;
     var channelKey = message.data["channelKey"];
-    print('NOTIFICATION : ${title}');
+    print('NOTIFICATION : $title');
     if(title != null && title.toString().isNotEmpty){
       try {
         flutterLocalNotificationsPlugin.show(

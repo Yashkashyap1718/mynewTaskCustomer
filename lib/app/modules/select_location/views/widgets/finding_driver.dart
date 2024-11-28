@@ -145,8 +145,7 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
                   Get.back();
                 }
                 widget.bookingModel.driverId = snapshot.data!.driver.id;
-                return (snapshot.data!.driver.id != null &&
-                        snapshot.data!.driver.id!.isNotEmpty &&
+                return (snapshot.data!.driver.id.isNotEmpty &&
                         (snapshot.data!.status == "accepted" ||
                             snapshot.data!.status == "in_progress"))
                     ? Column(

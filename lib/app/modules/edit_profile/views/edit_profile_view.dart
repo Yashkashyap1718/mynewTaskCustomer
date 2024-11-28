@@ -123,7 +123,7 @@ class EditProfileView extends StatelessWidget {
                         title: "Name".tr,
                         hintText: "Enter Name".tr,
                         prefixIcon: const Icon(Icons.person_outline_rounded),
-                        controller: controller.nameController!,
+                        controller: controller.nameController,
                         validator: (value) =>
                         value != null && value.isNotEmpty
                             ? null

@@ -41,7 +41,7 @@ class VerifyEmailOtpController extends GetxController {
 
   Future<void> reSendOTP(BuildContext context, String email) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = await prefs.getString("token") ?? "";
+    String token = prefs.getString("token") ?? "";
     final Map<String, String> payload = {
       "email_address": email, // Dynamic phone number input
     };
@@ -58,7 +58,7 @@ class VerifyEmailOtpController extends GetxController {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         if (responseData["status"] == true) {
           AnimatedSnackBar.material(
-            'Otp resend on email ${email}',
+            'Otp resend on email $email',
             type: AnimatedSnackBarType.success,
             duration: const Duration(seconds: 5),
             mobileSnackBarPosition: MobileSnackBarPosition.top,
@@ -94,10 +94,10 @@ class VerifyEmailOtpController extends GetxController {
 
   Future<void> confirmOTP(
       BuildContext context, String otp, String email) async {
-    print("OTP::: ${otp}");
+    print("OTP::: $otp");
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String token = await prefs.getString("token") ?? "";
+    String token = prefs.getString("token") ?? "";
     final Map<String, String> payload = {"otp": otp, "email_address": email};
     try {
       ShowToastDialog.showLoader("verify_OTP".tr);

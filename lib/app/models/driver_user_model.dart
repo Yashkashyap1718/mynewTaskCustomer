@@ -52,7 +52,7 @@ class DriverUserModel {
     totalEarning = json['totalEarning'];
     gender = json['gender'];
     location = json['location'] != null
-        ? new Location.fromJson(json['location'])
+        ? Location.fromJson(json['location'])
         : null;
     isActive = json['isActive'];
     isOnline = json['isOnline'];
@@ -60,7 +60,7 @@ class DriverUserModel {
     suspend = json['suspend'];
     createdAt = json['createdAt'];
     driverVehicleDetails = json['driverVehicleDetails'] != null
-        ? new DriverVehicleDetails.fromJson(json['driverVehicleDetails'])
+        ? DriverVehicleDetails.fromJson(json['driverVehicleDetails'])
         : null;
     rotation = json['rotation'];
     reviewsCount = json['reviewsCount'];
@@ -74,31 +74,31 @@ class DriverUserModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['_id'] = this.id;
-    data['fullName'] = this.fullName;
-    data['profilePic'] = this.profilePic;
-    data['countryCode'] = this.countryCode;
-    data['phoneNumber'] = this.phoneNumber;
-    data['walletAmount'] = this.walletAmount;
-    data['totalEarning'] = this.totalEarning;
-    data['gender'] = this.gender;
-    if (this.location != null) {
-      data['location'] = this.location!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['_id'] = id;
+    data['fullName'] = fullName;
+    data['profilePic'] = profilePic;
+    data['countryCode'] = countryCode;
+    data['phoneNumber'] = phoneNumber;
+    data['walletAmount'] = walletAmount;
+    data['totalEarning'] = totalEarning;
+    data['gender'] = gender;
+    if (location != null) {
+      data['location'] = location!.toJson();
     }
-    data['isActive'] = this.isActive;
-    data['isOnline'] = this.isOnline;
-    data['isVerified'] = this.isVerified;
-    data['suspend'] = this.suspend;
-    data['createdAt'] = this.createdAt;
-    if (this.driverVehicleDetails != null) {
-      data['driverVehicleDetails'] = this.driverVehicleDetails!.toJson();
+    data['isActive'] = isActive;
+    data['isOnline'] = isOnline;
+    data['isVerified'] = isVerified;
+    data['suspend'] = suspend;
+    data['createdAt'] = createdAt;
+    if (driverVehicleDetails != null) {
+      data['driverVehicleDetails'] = driverVehicleDetails!.toJson();
     }
-    data['rotation'] = this.rotation;
-    data['reviewsCount'] = this.reviewsCount;
-    data['reviewsSum'] = this.reviewsSum;
-    if (this.driverdDocs != null) {
-      data['driverdDocs'] = this.driverdDocs!.map((v) => v.toJson()).toList();
+    data['rotation'] = rotation;
+    data['reviewsCount'] = reviewsCount;
+    data['reviewsSum'] = reviewsSum;
+    if (driverdDocs != null) {
+      data['driverdDocs'] = driverdDocs!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -116,9 +116,9 @@ class Location {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['type'] = this.type;
-    data['coordinates'] = this.coordinates;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['type'] = type;
+    data['coordinates'] = coordinates;
     return data;
   }
 }
@@ -167,19 +167,19 @@ class DriverVehicleDetails {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['user_id'] = this.userId;
-    data['vehicleTypeName'] = this.vehicleTypeName;
-    data['vehicleTypeId'] = this.vehicleTypeId;
-    data['brandName'] = this.brandName;
-    data['brandId'] = this.brandId;
-    data['modelName'] = this.modelName;
-    data['modelId'] = this.modelId;
-    data['vehicleNumber'] = this.vehicleNumber;
-    data['vehicleColor'] = this.vehicleColor;
-    data['status'] = this.status;
-    data['isVerified'] = this.isVerified;
-    data['image'] = this.image;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['user_id'] = userId;
+    data['vehicleTypeName'] = vehicleTypeName;
+    data['vehicleTypeId'] = vehicleTypeId;
+    data['brandName'] = brandName;
+    data['brandId'] = brandId;
+    data['modelName'] = modelName;
+    data['modelId'] = modelId;
+    data['vehicleNumber'] = vehicleNumber;
+    data['vehicleColor'] = vehicleColor;
+    data['status'] = status;
+    data['isVerified'] = isVerified;
+    data['image'] = image;
     return data;
   }
 }

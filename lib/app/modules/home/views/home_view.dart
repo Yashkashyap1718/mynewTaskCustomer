@@ -2,7 +2,6 @@
 
 import 'dart:developer';
 
-import 'package:animated_snack_bar/animated_snack_bar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/app/modules/home/views/widgets/drawer_view.dart';
@@ -27,7 +26,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import '../../../models/user_model.dart';

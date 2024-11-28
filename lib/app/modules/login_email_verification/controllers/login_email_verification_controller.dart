@@ -41,7 +41,7 @@ class LoginEmailVerificationController extends GetxController {
       return;
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = await prefs.getString("token")??"";
+    String token = prefs.getString("token")??"";
     final Map<String, String> payload = {
       "email_address": emailController.text, // Dynamic phone number input
     };
@@ -74,7 +74,7 @@ class LoginEmailVerificationController extends GetxController {
             ),
           );
         }
-        print("EMAIlRESPONSE: ${responseData}");
+        print("EMAIlRESPONSE: $responseData");
         // // Extract the "msg" field which contains the OTP
         // final String msg = responseData['msg'];
         // // Split the message by comma to get the OTP (the first part)

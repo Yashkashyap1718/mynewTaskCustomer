@@ -24,7 +24,6 @@ import 'package:customer/constant/collection_name.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:geoflutterfire2/geoflutterfire2.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:customer/constant/api_constant.dart';
