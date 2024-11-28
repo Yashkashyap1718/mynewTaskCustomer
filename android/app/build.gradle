@@ -29,7 +29,7 @@ if (flutterVersionName == null) {
 // apply plugin: 'com.google.gms.google-services'
 
 android {
-    namespace "com.ideativemind.customer"
+    namespace "com.travel.teacher.customer"
     compileSdkVersion 34
     ndkVersion = "27.0.12077973"
 
@@ -49,7 +49,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.ideativemind.customer"
+        applicationId "com.travel.teacher.customer"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdkVersion 23
@@ -59,14 +59,36 @@ android {
         multiDexEnabled true
     }
 
-    signingConfigs {
-        release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-        }
+signingConfigs {
+    release {
+        storeFile file('/Volumes/Vinay/Vinay/Projects/mynewTaskCustomer/releaseKey.jks')
+        storePassword 'your-store-password'
+        keyAlias 'keyAlias'
+        keyPassword 'your-key-password'
     }
+}
+
+buildTypes {
+    release {
+        signingConfig signingConfigs.release
+    }
+}
+signingConfigs {
+    release {
+        storeFile file('/Volumes/Vinay/Vinay/Projects/mynewTaskCustomer/android/releaseKey.jks')
+        storePassword 'devvinay'
+        keyAlias 'keyAlias'
+        keyPassword 'devvinay'
+    }
+}
+        // signingConfigs {
+        //     release {
+        //         keyAlias keystoreProperties['keyAlias']
+        //         keyPassword keystoreProperties['keyPassword']
+        //         storeFile file(keystoreProperties['storeFile'])
+        //         storePassword keystoreProperties['storePassword']
+        //     }
+        // }
 
     buildTypes {
         release {
