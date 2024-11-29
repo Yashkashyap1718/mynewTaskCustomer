@@ -29,11 +29,12 @@ class LoginController extends GetxController {
   void onClose() {}
 
   Future<void> sendOTP(BuildContext context) async {
-    final Map<String, String> payload = {
-      "country_code": "91", // Assuming you want to keep this static for now
-      "mobile_number": phoneNumberController.text, // Dynamic phone number input
-    };
     try {
+      final Map<String, String> payload = {
+        "country_code": "91", // Assuming you want to keep this static for now
+        "mobile_number":
+            phoneNumberController.text, // Dynamic phone number input
+      };
       ShowToastDialog.showLoader("Please wait".tr);
       final response = await http.post(
         Uri.parse(baseURL + sendOtpEndpoint),
@@ -42,13 +43,18 @@ class LoginController extends GetxController {
       );
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        if(responseData["status"]==true){
+        if (responseData["status"] == true) {
           final String msg = responseData['msg'];
           final List<String> parts = msg.split(',');
-          final String otp = parts.first.trim(); // Trim to remove any surrounding spaces
+          final String otp =
+              parts.first.trim(); // Trim to remove any surrounding spaces
           print('Extracted OTP: $otp');
           ShowToastDialog.closeLoader();
-          Get.toNamed(Routes.VERIFY_OTP,arguments: {"countryCode":"91","phoneNumber":phoneNumberController.text,"verificationId":otp});
+          Get.toNamed(Routes.VERIFY_OTP, arguments: {
+            "countryCode": "91",
+            "phoneNumber": phoneNumberController.text,
+            "verificationId": otp
+          });
         }
       } else {
         ShowToastDialog.closeLoader();
@@ -69,6 +75,4 @@ class LoginController extends GetxController {
       print(e);
     }
   }
-
-
 }

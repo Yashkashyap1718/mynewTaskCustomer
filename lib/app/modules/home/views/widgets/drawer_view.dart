@@ -23,7 +23,7 @@ import '../../../html_view_screen/views/html_view_screen_view.dart';
 class DrawerView extends StatelessWidget {
   UserData user;
 
-  DrawerView({super.key,required this.user});
+  DrawerView({super.key, required this.user});
 
 
   @override
@@ -48,7 +48,6 @@ class DrawerView extends StatelessWidget {
                             top: 50, bottom: 30, left: 16, right: 24),
                         child: InkWell(
                           onTap: () async {
-
                             Get.toNamed(Routes.EDIT_PROFILE);
                           },
                           child: Obx(
@@ -84,7 +83,7 @@ class DrawerView extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        user.name??"Customer",
+                                        user.name ?? "Customer",
                                         style: GoogleFonts.inter(
                                           color: themeChange.isDarkTheme()
                                               ? AppThemData.white
@@ -94,7 +93,10 @@ class DrawerView extends StatelessWidget {
                                         ),
                                       ),
                                       Text(
-                                        user.countryCode.toString()+user.phone.toString(),
+                                        (user.countryCode != null &&
+                                                user.phone != null)
+                                            ? "${user.countryCode}${user.phone}"
+                                            : "+91xxx-xxxx-xxx",
                                         style: GoogleFonts.inter(
                                           color: themeChange.isDarkTheme()
                                               ? AppThemData.white
@@ -414,8 +416,7 @@ class DrawerView extends StatelessWidget {
                               positiveString: "Log out".tr,
                               negativeString: "Cancel".tr,
                               positiveClick: () async {
-                                await controller.logOutUser(
-                                    context, token);
+                                await controller.logOutUser(context);
 
                                 // await FirebaseAuth.instance.signOut();
 

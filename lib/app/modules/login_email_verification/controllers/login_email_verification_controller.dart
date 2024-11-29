@@ -13,7 +13,6 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginEmailVerificationController extends GetxController {
-
   TextEditingController emailController = TextEditingController();
   Rx<GlobalKey<FormState>> formKey = GlobalKey<FormState>().obs;
 
@@ -31,12 +30,12 @@ class LoginEmailVerificationController extends GetxController {
   void onClose() {}
 
   Future<void> sendOTPOnEmail(BuildContext context) async {
-    if(!emailController.text.isEmail){
+    if (!emailController.text.isEmail) {
       ShowToastDialog.showToast("Please provide valid email");
       return;
     }
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString("token")??"";
+    String token = prefs.getString("token") ?? "";
     final Map<String, String> payload = {
       "email_address": emailController.text, // Dynamic phone number input
     };
@@ -45,7 +44,7 @@ class LoginEmailVerificationController extends GetxController {
       ShowToastDialog.showLoader("Please wait".tr);
       final response = await http.post(
         Uri.parse(baseURL + sendOtpOnEmail),
-        headers: {"Content-Type": "application/json","token":token},
+        headers: {"Content-Type": "application/json", "token": token},
         body: jsonEncode(payload),
       );
 
@@ -53,15 +52,16 @@ class LoginEmailVerificationController extends GetxController {
       if (response.statusCode == 200) {
         ShowToastDialog.closeLoader();
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        if(responseData["status"]==true){
-          Get.toNamed(Routes.VERIFY_EMAIL_OTP,arguments: {"emailID":emailController.text});
+        if (responseData["status"] == true) {
+          Get.toNamed(Routes.VERIFY_EMAIL_OTP,
+              arguments: {"emailID": emailController.text});
           AnimatedSnackBar.material(
             'Otp send on email ${emailController.text}',
             type: AnimatedSnackBarType.success,
             duration: const Duration(seconds: 5),
             mobileSnackBarPosition: MobileSnackBarPosition.top,
           ).show(context);
-        }else{
+        } else {
           ShowToastDialog.closeLoader();
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -95,6 +95,4 @@ class LoginEmailVerificationController extends GetxController {
       print(e);
     }
   }
-
-
 }

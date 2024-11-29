@@ -1,4 +1,3 @@
-
 // class UserModel {
 //   String? fullName;
 //   String? slug;
@@ -143,19 +142,19 @@ class UserData {
 
   UserData(
       {this.id,
-        this.name,
-        this.countryCode,
-        this.phone,
-        this.referralCode,
-        this.verified,
-        this.role,
-        this.languages,
-        this.profile,
-        this.pushNotification,
-        this.status,
-        this.suspend,
-        this.gender,
-        this.createdAt});
+      this.name,
+      this.countryCode,
+      this.phone,
+      this.referralCode,
+      this.verified,
+      this.role,
+      this.languages,
+      this.profile,
+      this.pushNotification,
+      this.status,
+      this.suspend,
+      this.gender,
+      this.createdAt});
 
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(

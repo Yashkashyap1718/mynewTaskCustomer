@@ -374,7 +374,7 @@ class FireStoreUtils {
   }
 
 
-  
+
 
   static Future<RideRequest?> checkforRealTimebooking(
       BookingModel bookingModel) async {
@@ -610,9 +610,20 @@ class FireStoreUtils {
               .toList();
         } else {
           ShowToastDialog.closeLoader();
+          ScaffoldMessenger.of(Get.context!).showSnackBar(
+            SnackBar(
+              content: Text(
+                  responseData['msg'] ?? "Failed to fetch completed rides"),
+            ),
+          );
         }
       } else {
         ShowToastDialog.closeLoader();
+        ScaffoldMessenger.of(Get.context!).showSnackBar(
+          const SnackBar(
+            content: Text("Server error. Please try again later."),
+          ),
+        );
       }
     } catch (error) {
       ShowToastDialog.closeLoader();
@@ -622,10 +633,13 @@ class FireStoreUtils {
         ),
       );
     }
+
+    ShowToastDialog.closeLoader(); // Ensure loader is closed
     return bookingList;
   }
 
   static Future<List<BookingModel>?> getRejectedRides() async {
+    log('*********getRejectedRides-----call');
     List<BookingModel> bookingList = [];
 
     try {

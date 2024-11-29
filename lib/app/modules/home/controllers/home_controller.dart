@@ -60,7 +60,7 @@ class HomeController extends GetxController {
     } catch (e) {
       print("Error fetching FCM token: $e");
     }
-    if(fcmToken==null){
+    if (fcmToken == null) {
       return;
     }
     final Map<String, String> payload = {
@@ -78,7 +78,6 @@ class HomeController extends GetxController {
       final Map<String, dynamic> data = jsonDecode(response.body);
       // await db.cleanUserTable();
       if (data['status'] == true && data['data'] != null) {
-
       } else {
         print(data['msg']); // Example: "Please sign in to continue."
       }
@@ -88,22 +87,20 @@ class HomeController extends GetxController {
     }
   }
 
-
-
- void getUserData() async {
+  void getUserData() async {
     isLoading.value = true;
-    userData =  await FireStoreUtils.getUserProfileAPI();
+    userData = await FireStoreUtils.getUserProfileAPI();
     print("USERDATA::: $userData");
-    if(userData != null){
+    if (userData != null) {
       isLoading.value = false;
-      if(userData!.status!="Active"){
+      if (userData!.status != "Active") {
         Get.defaultDialog(
             titlePadding: const EdgeInsets.only(top: 16),
             title: "Account Disabled",
             middleText:
-            "Your account has been disabled. Please contact the administrator.",
+                "Your account has been disabled. Please contact the administrator.",
             titleStyle:
-            GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
+                GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w700),
             barrierDismissible: false,
             onWillPop: () async {
               SystemNavigator.pop();
@@ -111,20 +108,16 @@ class HomeController extends GetxController {
             });
         return;
       }
-      profilePic.value ="https://avatar.iran.liara.run/public";
+      profilePic.value = "https://avatar.iran.liara.run/public";
       name.value = userData!.name ?? '';
-      phoneNumber.value = (userData!.countryCode ?? '91') + (userData!.phone ?? '****');
-
+      phoneNumber.value =
+          (userData!.countryCode ?? '91') + (userData!.phone ?? '****');
     }
-
 
     await Utils.getCurrentLocation();
     updateCurrentLocation();
     update();
   }
-
-
-
 
   Location location = Location();
 
@@ -142,8 +135,8 @@ class HomeController extends GetxController {
         log(locationData.toString());
         Constant.currentLocation = LocationLatLng(
             latitude: locationData.latitude, longitude: locationData.longitude);
-        sendLatLon(locationData.latitude.toString(),locationData.longitude.toString());
-
+        sendLatLon(locationData.latitude.toString(),
+            locationData.longitude.toString());
       });
     } else {
       location.requestPermission().then((permissionStatus) {
@@ -160,7 +153,8 @@ class HomeController extends GetxController {
                 latitude: locationData.latitude,
                 longitude: locationData.longitude);
             log("------>4");
-            sendLatLon(locationData.latitude.toString(),locationData.longitude.toString());
+            sendLatLon(locationData.latitude.toString(),
+                locationData.longitude.toString());
 
             // FireStoreUtils.getDriverUserProfile(FireStoreUtils.getCurrentUid()).then((value) {
             //   DriveruserData driveruserData = value!;
@@ -184,39 +178,64 @@ class HomeController extends GetxController {
     update();
   }
 
-  logOutUser(BuildContext context, String token) async {
+  Future<void> logOutUser(
+    BuildContext context,
+  ) async {
     try {
       print('---logOutUser----function call-----');
 
+      // Show loader
       ShowToastDialog.showLoader("Please wait".tr);
-      final res = await http.post(Uri.parse(baseURL + logOutEndpoint),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode({'token': token}));
+
+      // API call to logout endpoint
+      final response = await http.post(
+        Uri.parse(baseURL + logOutEndpoint),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({'token': token}),
+      );
 
       print('---logOutUser----token-----$token');
 
-      if (res.statusCode == 200) {
-        final Map<String, dynamic> responseData = jsonDecode(res.body);
-
+      // Handle response
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = jsonDecode(response.body);
         print('---logOutUser----response-----$responseData');
 
-        final String msg = responseData['msg'];
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isLoggedIn', false);
-        Get.offAllNamed(Routes.SPLASH_SCREEN);
-        ShowToastDialog.closeLoader();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(msg),
-          ),
-        );
+        if (responseData['msg'] != null) {
+          final String msg = responseData['msg'];
+
+          // Reset shared preferences
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('isLoggedIn', false);
+
+          // Navigate to Splash Screen
+          Get.offAllNamed(Routes.SPLASH_SCREEN);
+
+          // Close loader
+          ShowToastDialog.closeLoader();
+
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(msg)),
+          );
+        } else {
+          // Handle missing message key
+          throw Exception("Invalid response from server");
+        }
+      } else {
+        // Handle non-200 status codes
+        throw Exception(
+            "Failed to logout, status code: ${response.statusCode}");
       }
     } catch (e) {
       print('-----logout-----error---$e');
+
+      // Close loader in case of error
+      ShowToastDialog.closeLoader();
+
+      // Show error message to user
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Failed to logout user: $e'),
-        ),
+        SnackBar(content: Text('Failed to logout user: $e')),
       );
     }
   }

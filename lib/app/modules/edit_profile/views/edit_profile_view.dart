@@ -19,7 +19,7 @@ import '../../../../constant/constant.dart';
 import '../controllers/edit_profile_controller.dart';
 
 class EditProfileView extends StatelessWidget {
-   EditProfileView({super.key});
+  EditProfileView({super.key});
 
   final controller = Get.put(EditProfileController());
 
@@ -91,7 +91,9 @@ class EditProfileView extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       Center(
-                        child: Text(controller.userModel!.referralCode.toString(),
+                        child: Text(
+                          controller.userModel?.referralCode?.toString() ??
+                              "Hi User",
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
                             color: themeChange.isDarkTheme()
@@ -124,8 +126,7 @@ class EditProfileView extends StatelessWidget {
                         hintText: "Enter Name".tr,
                         prefixIcon: const Icon(Icons.person_outline_rounded),
                         controller: controller.nameController,
-                        validator: (value) =>
-                        value != null && value.isNotEmpty
+                        validator: (value) => value != null && value.isNotEmpty
                             ? null
                             : 'This field required'.tr,
                       ),
@@ -136,8 +137,7 @@ class EditProfileView extends StatelessWidget {
                         prefixIcon: const Icon(Icons.email_outlined),
                         keyboardType: TextInputType.emailAddress,
                         controller: controller.emailController,
-                        validator: (value) =>
-                        value != null && value.isNotEmpty
+                        validator: (value) => value != null && value.isNotEmpty
                             ? null
                             : 'This field required'.tr,
                       ),
@@ -148,8 +148,7 @@ class EditProfileView extends StatelessWidget {
                         prefixIcon: const Icon(Icons.date_range),
                         keyboardType: TextInputType.text,
                         controller: controller.dobController,
-                        validator: (value) =>
-                        value != null && value.isNotEmpty
+                        validator: (value) => value != null && value.isNotEmpty
                             ? null
                             : 'This field required'.tr,
                       ),
@@ -226,62 +225,61 @@ class EditProfileView extends StatelessWidget {
                             fontWeight: FontWeight.w500),
                       ),
                       Obx(
-                            () =>
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Radio(
-                                  value: 1,
-                                  groupValue: controller.selectedGender.value,
-                                  activeColor: AppThemData.primary300,
-                                  onChanged: (value) {
-                                    controller.selectedGender.value = value ?? 1;
-                                    // _radioVal = 'male';
-                                  },
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    controller.selectedGender.value = 1;
-                                  },
-                                  child: Text(
-                                    'Male'.tr,
-                                    style: GoogleFonts.inter(
-                                        fontSize: 14,
-                                        color: controller.selectedGender.value == 1
-                                            ? themeChange.isDarkTheme()
-                                            ? AppThemData.white
-                                            : AppThemData.grey950
-                                            : AppThemData.grey500,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                                Radio(
-                                  value: 2,
-                                  groupValue: controller.selectedGender.value,
-                                  activeColor: AppThemData.primary300,
-                                  onChanged: (value) {
-                                    controller.selectedGender.value = value ?? 2;
-                                    // _radioVal = 'female';
-                                  },
-                                ),
-                                InkWell(
-                                  onTap: () {
-                                    controller.selectedGender.value = 2;
-                                  },
-                                  child: Text(
-                                    'Female'.tr,
-                                    style: GoogleFonts.inter(
-                                        fontSize: 14,
-                                        color: controller.selectedGender.value == 2
-                                            ? themeChange.isDarkTheme()
-                                            ? AppThemData.white
-                                            : AppThemData.grey950
-                                            : AppThemData.grey500,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                ),
-                              ],
+                        () => Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Radio(
+                              value: 1,
+                              groupValue: controller.selectedGender.value,
+                              activeColor: AppThemData.primary300,
+                              onChanged: (value) {
+                                controller.selectedGender.value = value ?? 1;
+                                // _radioVal = 'male';
+                              },
                             ),
+                            InkWell(
+                              onTap: () {
+                                controller.selectedGender.value = 1;
+                              },
+                              child: Text(
+                                'Male'.tr,
+                                style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    color: controller.selectedGender.value == 1
+                                        ? themeChange.isDarkTheme()
+                                            ? AppThemData.white
+                                            : AppThemData.grey950
+                                        : AppThemData.grey500,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                            Radio(
+                              value: 2,
+                              groupValue: controller.selectedGender.value,
+                              activeColor: AppThemData.primary300,
+                              onChanged: (value) {
+                                controller.selectedGender.value = value ?? 2;
+                                // _radioVal = 'female';
+                              },
+                            ),
+                            InkWell(
+                              onTap: () {
+                                controller.selectedGender.value = 2;
+                              },
+                              child: Text(
+                                'Female'.tr,
+                                style: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    color: controller.selectedGender.value == 2
+                                        ? themeChange.isDarkTheme()
+                                            ? AppThemData.white
+                                            : AppThemData.grey950
+                                        : AppThemData.grey500,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       const SizedBox(height: 35),
                       Center(
@@ -307,8 +305,6 @@ class EditProfileView extends StatelessWidget {
         });
   }
 
-
-
   myProfileView(EditProfileController controller, BuildContext context) {
     return InkWell(
       onTap: () {
@@ -316,81 +312,80 @@ class EditProfileView extends StatelessWidget {
       },
       child: Center(
           child: SizedBox(
-            height: Responsive.width(30, context),
-            width: Responsive.width(30, context),
-            child: Obx(
-                  () =>
-                  Stack(
-                    children: [
-                      controller.profileImage.isEmpty
-                          ? Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(60),
-                          //boxShadow: [BoxShadow(offset: const Offset(5, 4), spreadRadius: .2, blurRadius: 12, color: AppColors.gallery400.withOpacity(.5))]
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(60),
-                          child: CachedNetworkImage(
-                              imageUrl: controller.profileImage.value),
-                        ),
-                      )
-                          : (Constant().hasValidUrl(controller.profileImage.value))
-                          ? Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(60),
-                          //  boxShadow: [BoxShadow(offset: const Offset(5, 4), spreadRadius: .2, blurRadius: 12, color: AppColors.gallery400.withOpacity(.5))]
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(60),
-                          child: CachedNetworkImage(
-                            errorWidget: (context, url, error) {
-                              return ClipRRect(
-                                borderRadius: BorderRadius.circular(0),
-                                child: Image.asset(
-                                  Constant.userPlaceHolder,
-                                  height: Responsive.height(8, context),
-                                  width: Responsive.width(15, context),
-                                ),
-                              );
-                            },
-                            imageUrl: controller.profileImage.value,
-                            height: Responsive.width(30, context),
-                            width: Responsive.width(30, context),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      )
-                          : Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(60),
-                          // boxShadow: [BoxShadow(offset: const Offset(5, 4), spreadRadius: .2, blurRadius: 12, color: AppColors.gallery400.withOpacity(.5))]
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(60),
-                          child: Image.file(
-                            File(controller.profileImage.value),
-                            height: Responsive.width(30, context),
-                            width: Responsive.width(30, context),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
+        height: Responsive.width(30, context),
+        width: Responsive.width(30, context),
+        child: Obx(
+          () => Stack(
+            children: [
+              controller.profileImage.isEmpty
+                  ? Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(60),
+                        //boxShadow: [BoxShadow(offset: const Offset(5, 4), spreadRadius: .2, blurRadius: 12, color: AppColors.gallery400.withOpacity(.5))]
                       ),
-                      Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: CircleAvatar(
-                            radius: 19,
-                            backgroundColor: Colors.white,
-                            child: CircleAvatar(
-                              backgroundColor: AppThemData.primary400,
-                              radius: 18,
-                              child: SvgPicture.asset("assets/icon/ic_drawer_edit.svg"),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(60),
+                        child: CachedNetworkImage(
+                            imageUrl: controller.profileImage.value),
+                      ),
+                    )
+                  : (Constant().hasValidUrl(controller.profileImage.value))
+                      ? Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(60),
+                            //  boxShadow: [BoxShadow(offset: const Offset(5, 4), spreadRadius: .2, blurRadius: 12, color: AppColors.gallery400.withOpacity(.5))]
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(60),
+                            child: CachedNetworkImage(
+                              errorWidget: (context, url, error) {
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(0),
+                                  child: Image.asset(
+                                    Constant.userPlaceHolder,
+                                    height: Responsive.height(8, context),
+                                    width: Responsive.width(15, context),
+                                  ),
+                                );
+                              },
+                              imageUrl: controller.profileImage.value,
+                              height: Responsive.width(30, context),
+                              width: Responsive.width(30, context),
+                              fit: BoxFit.cover,
                             ),
-                          ))
-                    ],
-                  ),
-            ),
-          )),
+                          ),
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(60),
+                            // boxShadow: [BoxShadow(offset: const Offset(5, 4), spreadRadius: .2, blurRadius: 12, color: AppColors.gallery400.withOpacity(.5))]
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(60),
+                            child: Image.file(
+                              File(controller.profileImage.value),
+                              height: Responsive.width(30, context),
+                              width: Responsive.width(30, context),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+              Positioned(
+                  bottom: 0,
+                  right: 0,
+                  child: CircleAvatar(
+                    radius: 19,
+                    backgroundColor: Colors.white,
+                    child: CircleAvatar(
+                      backgroundColor: AppThemData.primary400,
+                      radius: 18,
+                      child: SvgPicture.asset("assets/icon/ic_drawer_edit.svg"),
+                    ),
+                  ))
+            ],
+          ),
+        ),
+      )),
     );
   }
 
@@ -422,10 +417,8 @@ class EditProfileView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () =>
-                                    controller.pickFile(
-                                        source: ImageSource.camera,
-                                        token: token),
+                                onPressed: () => controller.pickFile(
+                                    source: ImageSource.camera, token: token),
                                 icon: const Icon(
                                   Icons.camera_alt,
                                   size: 32,
@@ -447,10 +440,8 @@ class EditProfileView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () =>
-                                    controller.pickFile(
-                                        source: ImageSource.gallery,
-                                        token: token),
+                                onPressed: () => controller.pickFile(
+                                    source: ImageSource.gallery, token: token),
                                 icon: const Icon(
                                   Icons.photo_library_sharp,
                                   size: 32,
@@ -475,5 +466,4 @@ class EditProfileView extends StatelessWidget {
       },
     );
   }
-
 }

@@ -36,8 +36,8 @@ import '../controllers/home_controller.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
-  
-  
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +154,7 @@ class HomeView extends StatelessWidget {
                                                       StreamBuilder<RideBooking?>(
                                                           stream: checkRequest(),
                                                           builder: (context, snapshot) {
-                                                            
+
                                                             log("---------------State : ${snapshot.connectionState}");
                                                             log("--------------State : ${snapshot.data}");
                                                             if (snapshot.connectionState == ConnectionState.waiting) {
