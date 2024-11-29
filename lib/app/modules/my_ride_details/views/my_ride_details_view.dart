@@ -317,7 +317,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                                     null
                                                 ? ""
                                                 : controller.bookingModel.value
-                                                    .vehicle!.name,
+                                                    .vehicle!.vehicleType,
                                             style: GoogleFonts.inter(
                                               color: AppThemData.primary400,
                                               fontSize: 16,

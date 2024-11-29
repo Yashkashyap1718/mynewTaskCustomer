@@ -271,8 +271,7 @@ class MyRideView extends StatelessWidget {
                                                               .vehicle ==
                                                           null
                                                       ? Constant.profileConstant
-                                                      : "$imageBaseUrl${bookingModel
-                                                          .vehicle!.image}",
+                                                      : "$imageBaseUrl${bookingModel.vehicle!.image}",
                                                   fit: BoxFit.cover,
                                                   placeholder: (context, url) =>
                                                       Constant.loader(),
@@ -298,8 +297,7 @@ class MyRideView extends StatelessWidget {
                                                               null
                                                           ? ""
                                                           : bookingModel
-                                                              .vehicle!
-                                                              .vehicleType,
+                                                              .vehicle!.name,
                                                       style: GoogleFonts.inter(
                                                         color: themeChange
                                                                 .isDarkTheme()
