@@ -36,7 +36,7 @@ Future<NearbyDriversResponse?> setBooking(BookingModel bookingModel) async {
     "vehicle_type": (bookingModel.vehicleType!.title == null)
         ? ''
         : bookingModel.vehicleType!.title,
-    "fare_amount": (bookingModel.subTotal == null) ? '' : "40",
+    "fare_amount": (bookingModel.subTotal == null) ? '' : bookingModel.subTotal.toString(),
     "duration_in_minutes": "50",
   };
 
@@ -114,7 +114,7 @@ Stream<RideBooking?> checkRequest() async* {
       yield null; // {{ edit_2 }}
     }
     await Future.delayed(Duration(
-        seconds: 5)); // Delay for 5 seconds before making the next request
+        seconds: 2)); // Delay for 5 seconds before making the next request
   }
 }
 

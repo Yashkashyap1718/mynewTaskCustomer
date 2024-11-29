@@ -109,7 +109,7 @@ class FireStoreUtils {
           userDataModel = userModel;
 
          FirebaseMessaging messaging = FirebaseMessaging.instance;
-         await messaging.subscribeToTopic(userDataModel!.id!);
+         await messaging.subscribeToTopic(userDataModel.id!);
 
           return userModel;
         } else {

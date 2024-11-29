@@ -31,4 +31,4 @@ UserData userDataModel = UserData();
 //Not use
 const String driverListEndpoint = "/driver/driver/list"; //GET
 const String resendOtpEndpoint = "/users/resendotp"; //POST
-const String imagePath = baseURL+"/uploads/"; //POST
+const String imagePath = "$baseURL/uploads/"; //POST

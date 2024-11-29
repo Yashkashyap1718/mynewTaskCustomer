@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "633383824112",
-    "project_id": "my-taxi-customer-c4c9b",
-    "storage_bucket": "my-taxi-customer-c4c9b.firebasestorage.app"
+    "project_number": "316861812533",
+    "project_id": "mytaxicustomer-ab2bd",
+    "storage_bucket": "mytaxicustomer-ab2bd.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:633383824112:android:a1cedd9f6677c104147035",
+        "mobilesdk_app_id": "1:316861812533:android:fc9c5fc0e2d4c62edf067c",
         "android_client_info": {
-          "package_name": "com.travel.teacher.customer"
+          "package_name": "com.ideativemind.customer"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCMRryPgY1DJOc7a7sp81Y88oBhmXkDLR8"
+          "current_key": "AIzaSyAbexQUEM9fs8MVaWkSMP-n3eSxdTvBcuQ"
         }
       ],
       "services": {

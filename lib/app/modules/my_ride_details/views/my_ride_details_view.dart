@@ -746,7 +746,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                     ),
                                     Text(
                                       DateTime.fromMillisecondsSinceEpoch(
-                                              controller.bookingModel.value.createdAt! * 1000) as String,
+                                              controller.bookingModel.value.createdAt * 1000) as String,
                                       textAlign: TextAlign.right,
                                       style: GoogleFonts.inter(
                                         color: themeChange.isDarkTheme()

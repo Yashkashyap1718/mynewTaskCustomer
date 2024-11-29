@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:customer/app/models/booking_model.dart';
-import 'package:customer/app/modules/my_ride_details/controllers/my_ride_details_controller.dart';
-import 'package:customer/app/modules/my_ride_details/views/my_ride_details_view.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/no_rides_view.dart';
 import 'package:customer/constant_widgets/pick_drop_point_view.dart';

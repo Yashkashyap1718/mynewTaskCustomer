@@ -102,7 +102,7 @@ class MyNotificationHandler {
     // var body = message.notification?.body;
     var channelKey = "channelKey";
     print('NOTIFICATION : $title');
-    if(title != null && title.toString().isNotEmpty){
+    if(title.toString().isNotEmpty){
       try {
         flutterLocalNotificationsPlugin.show(
           id,

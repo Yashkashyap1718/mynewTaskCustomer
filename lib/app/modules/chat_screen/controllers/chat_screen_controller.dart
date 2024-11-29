@@ -14,7 +14,6 @@ import 'package:customer/app/models/chat_model/inbox_model.dart';
 import 'package:customer/app/models/driver_user_model.dart';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/constant/collection_name.dart';
-import 'package:customer/constant/constant.dart';
 import 'package:customer/constant/send_notification.dart';
 import 'package:customer/utils/fire_store_utils.dart';
 import 'package:http/http.dart' as http;

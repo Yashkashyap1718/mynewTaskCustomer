@@ -80,59 +80,56 @@ class SelectLocationController extends GetxController {
     rideBooking = Get.arguments;
     log("bookingModel.value: ${bookingModel.value.toJson()}");  
 
-    if(bookingModel.value!=null) {
+    try {
 
-      try {
+ sourceLocation=LatLng(
+      rideBooking!.pickupLocation.coordinates[0], rideBooking!.pickupLocation.coordinates[1]);
+ destination=LatLng(
+      rideBooking!.dropoffLocation.coordinates[0], rideBooking!.dropoffLocation.coordinates[1]);
 
-   sourceLocation=LatLng(
-        rideBooking!.pickupLocation.coordinates[0], rideBooking!.pickupLocation.coordinates[1]);
-   destination=LatLng(
-        rideBooking!.dropoffLocation.coordinates[0], rideBooking!.dropoffLocation.coordinates[1]);
-
-      bookingModel.value = BookingModel(
-                              id: rideBooking?.id,
-                              pickUpLocation: LocationLatLng(
-                                latitude: rideBooking?.pickupLocation.coordinates[1] ?? 0,
-                                longitude: rideBooking?.pickupLocation.coordinates[0] ?? 0
-                              ),
-                              dropLocation: LocationLatLng(
-                                latitude: rideBooking?.dropoffLocation.coordinates[1] ?? 0,
-                                longitude: rideBooking?.dropoffLocation.coordinates[0] ?? 0
-                              ),
-                              pickUpLocationAddress: rideBooking?.pickupAddress,
-                              dropLocationAddress: rideBooking?.dropoffAddress,
-                              paymentType: rideBooking?.paymentMode,
-                              otp: rideBooking?.otp,
-                              bookingStatus: rideBooking?.status,
-                              driverId: rideBooking?.driver.id,
-                              customerId: rideBooking?.passenger.id,
-                              subTotal: rideBooking?.fareAmount,
-                              vehicleType: rideBooking?.vehicleType,
-                              // createAt: rideBooking?.createdAt != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
-                              // updateAt: rideBooking?.endTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
-                              // bookingTime: rideBooking?.startTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
-                              // pickupTime: rideBooking?.startTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
-                              // dropTime: rideBooking?.endTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
-                            paymentStatus: rideBooking?.paymentStatus == "cash",
-                            rejectedDriverId: [],
-                            taxList: [],
-                            position: null,
-                            coupon: null,
-                            adminCommission: null,
-                            distance: null,
-                            cancelledBy: null,
-                            cancelledReason: null,
-                            discount: "0"
-                            );
+    bookingModel.value = BookingModel(
+                            id: rideBooking?.id,
+                            pickUpLocation: LocationLatLng(
+                              latitude: rideBooking?.pickupLocation.coordinates[1] ?? 0,
+                              longitude: rideBooking?.pickupLocation.coordinates[0] ?? 0
+                            ),
+                            dropLocation: LocationLatLng(
+                              latitude: rideBooking?.dropoffLocation.coordinates[1] ?? 0,
+                              longitude: rideBooking?.dropoffLocation.coordinates[0] ?? 0
+                            ),
+                            pickUpLocationAddress: rideBooking?.pickupAddress,
+                            dropLocationAddress: rideBooking?.dropoffAddress,
+                            paymentType: rideBooking?.paymentMode,
+                            otp: rideBooking?.otp,
+                            bookingStatus: rideBooking?.status,
+                            driverId: rideBooking?.driver.id,
+                            customerId: rideBooking?.passenger.id,
+                            subTotal: rideBooking?.fareAmount,
+                            vehicleType: rideBooking?.vehicleType,
+                            // createAt: rideBooking?.createdAt != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+                            // updateAt: rideBooking?.endTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+                            // bookingTime: rideBooking?.startTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+                            // pickupTime: rideBooking?.startTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+                            // dropTime: rideBooking?.endTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+                          paymentStatus: rideBooking?.paymentStatus == "cash",
+                          rejectedDriverId: [],
+                          taxList: [],
+                          position: null,
+                          coupon: null,
+                          adminCommission: null,
+                          distance: null,
+                          cancelledBy: null,
+                          cancelledReason: null,
+                          discount: "0"
+                          );
 
 
-      popupIndex.value = 3;
-      }catch(e){
-
-      }
+    popupIndex.value = 3;
+    }catch(e){
 
     }
 
+  
     getData();
 
     super.onInit();
