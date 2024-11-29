@@ -1,6 +1,7 @@
 import 'package:customer/app/models/user_model.dart';
 
 const String baseURL = "http://172.93.54.177:3002";
+const String imageBaseUrl = "http://172.93.54.177:3002/uploads/";
 const String sendOtpEndpoint = "/users/signin"; //POST
 const String sendOtpOnEmail = "/users/send/email"; //POST
 const String veriftOtpEndpoint = "/users/confirmation"; //POST
@@ -19,11 +20,14 @@ const String completedRide = "/users/ride/completed/list";
 const String canceledRide = "/users/ride/canceled/list";
 const String acceptedRide = "/users/ride/accepted/list";
 const String getDriverDetails = "/users/get_driver_detail";
-const String sendEmailOtp = "/users/send/email";//POST
-const String updatedCurrentLocation = "/users/current_location";//PUT
-const String createChat = "/users/ride/chat/create";//PUT
-const String findDriverChat = "/users/ride/chat/finddriverchat";//PUT
-const String sendMessageAPIHttp = "/users/ride/chat/send_message";//PUT
+const String sendEmailOtp = "/users/send/email"; //POST
+const String updatedCurrentLocation = "/users/current_location"; //PUT
+const String createChat = "/users/ride/chat/create"; //PUT
+const String findDriverChat = "/users/ride/chat/finddriverchat"; //PUT
+const String sendMessageAPIHttp = "/users/ride/chat/send_message"; //PUT
+const String ongoingRidesEndpoint = "/users/ride/inprogress/list"; //POST
+const String completedRidesEndpoint = "/users/ride/completed/list"; //POST
+const String rejectedRidesEndpoint = "/users/ride/canceled/list"; //POST
 String token = "";
 
 UserData userDataModel = UserData();

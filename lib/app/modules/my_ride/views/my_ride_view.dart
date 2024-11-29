@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:customer/extension/date_time_extension.dart';
+import 'package:customer/app/models/my_ride_model.dart';
+import 'package:customer/constant/api_constant.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -10,6 +11,7 @@ import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/no_rides_view.dart';
 import 'package:customer/constant_widgets/pick_drop_point_view.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
+import 'package:customer/extension/date_time_extension.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
@@ -28,6 +30,9 @@ class MyRideView extends StatelessWidget {
         init: MyRideController(),
         builder: (controller) {
           return Scaffold(
+            appBar: AppBar(
+              title: Text("My Rides".tr),
+            ),
             backgroundColor: themeChange.isDarkTheme()
                 ? AppThemData.black
                 : AppThemData.white,
@@ -57,12 +62,8 @@ class MyRideView extends StatelessWidget {
                               : themeChange.isDarkTheme()
                                   ? AppThemData.white
                                   : AppThemData.black,
-                          onTap: () async {
+                          onTap: () {
                             controller.selectedType.value = 0;
-                            await controller.getData(
-                                isOngoingDataFetch: true,
-                                isCompletedDataFetch: false,
-                                isRejectedDataFetch: false);
                           },
                           size: Size((Responsive.width(90, context) / 3), 38),
                           textSize: 12,
@@ -79,11 +80,7 @@ class MyRideView extends StatelessWidget {
                               : (themeChange.isDarkTheme()
                                   ? AppThemData.white
                                   : AppThemData.black),
-                          onTap: () async {
-                            await controller.getData(
-                                isOngoingDataFetch: false,
-                                isCompletedDataFetch: true,
-                                isRejectedDataFetch: false);
+                          onTap: () {
                             controller.selectedType.value = 1;
                           },
                           size: Size((Responsive.width(90, context) / 3), 38),
@@ -101,12 +98,8 @@ class MyRideView extends StatelessWidget {
                               : themeChange.isDarkTheme()
                                   ? AppThemData.white
                                   : AppThemData.black,
-                          onTap: () async {
+                          onTap: () {
                             controller.selectedType.value = 2;
-                            await controller.getData(
-                                isOngoingDataFetch: false,
-                                isCompletedDataFetch: false,
-                                isRejectedDataFetch: true);
                           },
                           size: Size((Responsive.width(90, context) / 3), 38),
                           textSize: 12,
@@ -124,8 +117,6 @@ class MyRideView extends StatelessWidget {
                           isCompletedDataFetch: false,
                           isRejectedDataFetch: false);
                     } else if (controller.selectedType.value == 1) {
-                      print(
-                          "controller.selectedType.value: ${controller.selectedType.value}");
                       await controller.getData(
                           isOngoingDataFetch: false,
                           isCompletedDataFetch: true,
@@ -154,7 +145,7 @@ class MyRideView extends StatelessWidget {
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 RxBool isOpen = false.obs;
-                                BookingModel bookingModel =
+                                MyRideModel bookingModel =
                                     controller.selectedType.value == 0
                                         ? controller.ongoingRides[index]
                                         : controller.selectedType.value == 1
@@ -203,11 +194,10 @@ class MyRideView extends StatelessWidget {
                                                 CrossAxisAlignment.center,
                                             children: [
                                               Text(
-                                                bookingModel.bookingTime == null
+                                                bookingModel.startTime == null
                                                     ? ""
-                                                    : bookingModel.bookingTime!
-                                                        .toDate()
-                                                        .dateMonthYear(),
+                                                    : bookingModel.createdAt
+                                                        .toString(),
                                                 style: GoogleFonts.inter(
                                                   color:
                                                       themeChange.isDarkTheme()
@@ -237,13 +227,10 @@ class MyRideView extends StatelessWidget {
                                               const SizedBox(width: 8),
                                               Expanded(
                                                 child: Text(
-                                                  bookingModel.bookingTime ==
-                                                          null
+                                                  bookingModel.createdAt == null
                                                       ? ""
-                                                      : bookingModel
-                                                          .bookingTime!
-                                                          .toDate()
-                                                          .time(),
+                                                      : bookingModel.createdAt
+                                                          .toString(),
                                                   style: GoogleFonts.inter(
                                                     color: themeChange
                                                             .isDarkTheme()
@@ -281,11 +268,11 @@ class MyRideView extends StatelessWidget {
                                                 width: 60,
                                                 child: CachedNetworkImage(
                                                   imageUrl: bookingModel
-                                                              .vehicleType ==
+                                                              .vehicle ==
                                                           null
                                                       ? Constant.profileConstant
-                                                      : bookingModel
-                                                          .vehicleType!.image,
+                                                      : "$imageBaseUrl${bookingModel
+                                                          .vehicle!.image}",
                                                   fit: BoxFit.cover,
                                                   placeholder: (context, url) =>
                                                       Constant.loader(),
@@ -306,12 +293,13 @@ class MyRideView extends StatelessWidget {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      bookingModel.vehicleType ==
+                                                      bookingModel.vehicle
+                                                                  ?.vehicleType ==
                                                               null
                                                           ? ""
                                                           : bookingModel
-                                                              .vehicleType!
-                                                              .title,
+                                                              .vehicle!
+                                                              .vehicleType,
                                                       style: GoogleFonts.inter(
                                                         color: themeChange
                                                                 .isDarkTheme()
@@ -325,12 +313,12 @@ class MyRideView extends StatelessWidget {
                                                     ),
                                                     const SizedBox(height: 2),
                                                     Text(
-                                                      (bookingModel
-                                                                  .paymentStatus ??
+                                                      (bookingModel.paymentStatus ==
+                                                                  "cash" ??
                                                               false)
                                                           ? 'Payment is Completed'
                                                               .tr
-                                                          : 'Payment is Pending'
+                                                          : 'Payment is Completed'
                                                               .tr,
                                                       style: GoogleFonts.inter(
                                                         color: themeChange
@@ -355,12 +343,8 @@ class MyRideView extends StatelessWidget {
                                                     CrossAxisAlignment.end,
                                                 children: [
                                                   Text(
-                                                    Constant.amountToShow(
-                                                        amount: Constant
-                                                                .calculateFinalAmount(
-                                                                    bookingModel)
-                                                            .toStringAsFixed(
-                                                                2)),
+                                                    bookingModel.fareAmount ??
+                                                        "0",
                                                     textAlign: TextAlign.right,
                                                     style: GoogleFonts.inter(
                                                       color: themeChange
@@ -386,12 +370,11 @@ class MyRideView extends StatelessWidget {
                                                           "assets/icon/ic_multi_person.svg"),
                                                       const SizedBox(width: 6),
                                                       Text(
-                                                        bookingModel.vehicleType ==
+                                                        bookingModel.vehicle ==
                                                                 null
                                                             ? ""
                                                             : bookingModel
-                                                                .vehicleType!
-                                                                .persons,
+                                                                .vehicle!.name,
                                                         style:
                                                             GoogleFonts.inter(
                                                           color: AppThemData
@@ -412,10 +395,10 @@ class MyRideView extends StatelessWidget {
                                               visible: isOpen.value,
                                               child: PickDropPointView(
                                                   pickUpAddress: bookingModel
-                                                          .pickUpLocationAddress ??
+                                                          .pickupAddress ??
                                                       '',
                                                   dropAddress: bookingModel
-                                                          .dropLocationAddress ??
+                                                          .dropoffAddress ??
                                                       ''),
                                             )),
                                       ],
