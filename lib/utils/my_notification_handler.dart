@@ -81,4 +81,49 @@ class MyNotificationHandler {
       }
     }
   }
+
+
+
+  void showDefaultNotification(String title,String message) {
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    const AndroidNotificationChannel channel = AndroidNotificationChannel(
+      'high_importance_channel', // id
+      'High Importance Notifications', // title
+      description: 'This channel is used for important notifications.', // description
+      importance: Importance.high,
+      playSound: true,
+
+
+    );
+    // var id = Random().nextInt(1000);
+    var id = 1001;
+
+    // var title = message.notification?.title;
+    // var body = message.notification?.body;
+    var channelKey = "channelKey";
+    print('NOTIFICATION : $title');
+    if(title != null && title.toString().isNotEmpty){
+      try {
+        flutterLocalNotificationsPlugin.show(
+          id,
+          title,
+          message,
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              channel.id,
+              channel.name,
+              color: CupertinoColors.systemYellow,
+              channelDescription: channel.description,
+              icon: '@mipmap/ic_launcher',
+            ),
+          ),
+        );
+      } catch (e) {
+        print('NOTIFICATION ERROR: $e');
+      }
+    }
+  }
+
+
+
 }

@@ -44,7 +44,7 @@ class RideBooking {
   factory RideBooking.fromJson(Map<String, dynamic> json) {
     return RideBooking(
       id: json['_id'] ?? '',
-      vehicleId: json['vehicle_id'] ?? '',
+      vehicleId: (json['vehicle_id'] is Map) ? json['vehicle_id']['_id'] ?? '' : json['vehicle_id'] ?? '',
       pickupAddress: json['pickup_address'] ?? '',
       pickupLocation: Location.fromJson(json['pickup_location'] ?? {}),
       dropoffAddress: json['dropoff_address'] ?? '',

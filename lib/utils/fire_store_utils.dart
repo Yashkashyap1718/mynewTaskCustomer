@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -106,6 +107,10 @@ class FireStoreUtils {
           userModel = UserData.fromJson(jsonResponse['data']);
           print("USERDATAAPI  ${jsonEncode(userModel)}");
           userDataModel = userModel;
+
+         FirebaseMessaging messaging = FirebaseMessaging.instance;
+         await messaging.subscribeToTopic(userDataModel!.id!);
+
           return userModel;
         } else {
           ShowToastDialog.closeLoader();

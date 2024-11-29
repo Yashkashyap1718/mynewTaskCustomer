@@ -24,6 +24,11 @@ import '../../../../constant_widgets/show_toast_dialog.dart';
 
 class HomeController extends GetxController {
   final count = 0.obs;
+
+
+
+
+
   RxString profilePic =
       "https://avatar.iran.liara.run/public"
           .obs;
