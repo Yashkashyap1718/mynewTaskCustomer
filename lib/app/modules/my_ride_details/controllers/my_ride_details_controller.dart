@@ -7,7 +7,6 @@ import 'dart:math' as maths;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customer/api_services.dart';
-import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/app/models/driver_user_model.dart';
 import 'package:customer/app/models/map_model.dart';
 import 'package:customer/app/models/payment_method_model.dart';
@@ -18,6 +17,7 @@ import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant/send_notification.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
+import 'package:customer/models/ride_booking.dart' as ride_booking;
 import 'package:customer/payments/marcado_pago/mercado_pago_screen.dart';
 import 'package:customer/payments/pay_fast/pay_fast_screen.dart';
 import 'package:customer/payments/pay_stack/pay_stack_screen.dart';
@@ -27,13 +27,6 @@ import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/fire_store_utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_paypal_native/flutter_paypal_native.dart';
-// import 'package:flutter_paypal_native/models/custom/currency_code.dart';
-// import 'package:flutter_paypal_native/models/custom/environment.dart';
-// import 'package:flutter_paypal_native/models/custom/order_callback.dart';
-// import 'package:flutter_paypal_native/models/custom/purchase_unit.dart';
-// import 'package:flutter_paypal_native/models/custom/user_action.dart';
-// import 'package:flutter_paypal_native/str_helper.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 // import 'package:flutterwave_standard/flutterwave.dart';
 import 'package:get/get.dart';
@@ -45,7 +38,52 @@ import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class MyRideDetailsController extends GetxController {
   RxString bookingId = ''.obs;
-  Rx<BookingModel> bookingModel = BookingModel().obs;
+  Rx<ride_booking.RideBooking> bookingModel = ride_booking.RideBooking(
+    id: '',
+    vehicleId: '',
+    pickupAddress: '',
+    pickupLocation: ride_booking.Location.fromJson({'type': 'Point', 'coordinates': [0.0, 0.0]}),
+    dropoffAddress: '',
+    dropoffLocation: ride_booking.Location.fromJson({'type': 'Point', 'coordinates': [0.0, 0.0]}),
+    distance: '',
+    fareAmount: '',
+    durationInMinutes: '',
+    paymentMode: '',
+    otp: '',
+    status: '',
+    startTime: DateTime.now(),
+    createdAt: 0,
+    passenger: ride_booking.Passenger(
+      id: '',
+      email: '',
+      phone: '',
+      location: ride_booking.Location(type: 'Point', coordinates: [0.0, 0.0]),
+      profile: '',
+      rideStatus: '',
+      pushNotification: '',
+      createdAt: 0,
+    ),
+    driver: ride_booking.Driver(
+      id: '',
+      name: '',
+      phone: '',
+      location: ride_booking.Location(type: 'Point', coordinates: [0.0, 0.0]),
+      profile: '',
+      gender: '',
+      rideStatus: '',
+      pushNotification: '',
+      createdAt: 0,
+    ),
+    vehicle: ride_booking.  Vehicle(
+      name: '',
+      model: '',
+      vehicleNumber: '',
+      color: '',
+      type: '',
+      image: '',
+      createdAt: 0,
+    ),
+  ).obs;
   Rx<UserData> userModel = UserData().obs;
   Rx<PaymentModel> paymentModel = PaymentModel().obs;
   RxString selectedPaymentMethod = "".obs;
@@ -81,10 +119,10 @@ class MyRideDetailsController extends GetxController {
         }
       }
     });
-    bookingModel.value =
-        (await FireStoreUtils.getRideDetails(bookingId.value)) ??
-            BookingModel();
-    selectedPaymentMethod.value = bookingModel.value.paymentType.toString();
+      // bookingModel.value =
+      //     (await FireStoreUtils.getRideDetails(bookingId.value)) ??
+      //           ride_booking.RideBooking();
+    selectedPaymentMethod.value = bookingModel.value.paymentMode.toString();
     await getProfileData();
   }
 
@@ -94,100 +132,100 @@ class MyRideDetailsController extends GetxController {
   }
 
   completeOrder(String transactionId) async {
-    ShowToastDialog.showLoader("Please wait".tr);
+    // ShowToastDialog.showLoader("Please wait".tr);
 
-    bookingModel.value.paymentType = selectedPaymentMethod.value;
-    if (bookingModel.value.paymentType == Constant.paymentModel!.cash!.name) {
-      bookingModel.value.paymentStatus =
-          selectedPaymentMethod.value == Constant.paymentModel!.cash!.name
-              ? false
-              : true;
-    }
-    //if payment type cash -------->send notification to driver
-    WalletTransactionModel transactionModel = WalletTransactionModel(
-        id: Constant.getUuid(),
-        amount: Constant.calculateFinalAmount(bookingModel.value).toString(),
-        createdDate: Timestamp.now(),
-        paymentType: selectedPaymentMethod.value,
-        transactionId: transactionId,
-        userId: bookingModel.value.driverId,
-        isCredit: true,
-        type: Constant.typeDriver,
-        note: "Ride fee Credited ");
+    // bookingModel.value.paymentMode = selectedPaymentMethod.value;
+    // if (bookingModel.value.paymentMode == Constant.paymentModel!.cash!.name) {
+    //   bookingModel.value.paymentStatus =
+    //       selectedPaymentMethod.value == Constant.paymentModel!.cash!.name
+    //           ? false
+    //           : true;
+    // }
+    // //if payment type cash -------->send notification to driver
+    // WalletTransactionModel transactionModel = WalletTransactionModel(
+    //     id: Constant.getUuid(),
+    //     amount: Constant.calculateFinalAmount(bookingModel.value).toString(),
+    //     createdDate: Timestamp.now(),
+    //     paymentType: selectedPaymentMethod.value,
+    //     transactionId: transactionId,
+    //     userId: bookingModel.value.driverId,
+    //     isCredit: true,
+    //     type: Constant.typeDriver,
+    //     note: "Ride fee Credited ");
 
-    await FireStoreUtils.setWalletTransaction(transactionModel)
-        .then((value) async {
-      if (value == true) {
-        await FireStoreUtils.updateOtherUserWallet(
-            amount:
-                Constant.calculateFinalAmount(bookingModel.value).toString(),
-            id: bookingModel.value.driverId!);
-      }
-    });
+    // await FireStoreUtils.setWalletTransaction(transactionModel)
+    //     .then((value) async {
+    //   if (value == true) {
+    //     await FireStoreUtils.updateOtherUserWallet(
+    //         amount:
+    //             Constant.calculateFinalAmount(bookingModel.value).toString(),
+    //         id: bookingModel.value.driverId!);
+    //   }
+    // });
 
-    WalletTransactionModel adminCommissionWallet = WalletTransactionModel(
-        id: Constant.getUuid(),
-        amount:
-            "${Constant.calculateAdminCommission(amount: Constant.calculateFinalAmount(bookingModel.value).toString(), adminCommission: bookingModel.value.adminCommission)}",
-        createdDate: Timestamp.now(),
-        paymentType: "Wallet",
-        transactionId: bookingModel.value.id,
-        isCredit: false,
-        type: Constant.typeDriver,
-        userId: bookingModel.value.driverId,
-        note: "Admin commission Debited",
-        adminCommission: bookingModel.value.adminCommission);
+    // WalletTransactionModel adminCommissionWallet = WalletTransactionModel(
+    //     id: Constant.getUuid(),
+    //     amount:
+    //         "${Constant.calculateAdminCommission(amount: Constant.calculateFinalAmount(bookingModel.value).toString(), adminCommission: bookingModel.value.adminCommission)}",
+    //     createdDate: Timestamp.now(),
+    //     paymentType: "Wallet",
+    //     transactionId: bookingModel.value.id,
+    //     isCredit: false,
+    //     type: Constant.typeDriver,
+    //     userId: bookingModel.value.driverId,
+    //     note: "Admin commission Debited",
+    //     adminCommission: bookingModel.value.adminCommission);
 
-    await FireStoreUtils.setWalletTransaction(adminCommissionWallet)
-        .then((value) async {
-      if (value == true) {
-        await FireStoreUtils.updateOtherUserWallet(
-            amount:
-                "-${Constant.calculateAdminCommission(amount: Constant.calculateFinalAmount(bookingModel.value).toString(), adminCommission: bookingModel.value.adminCommission)}",
-            id: bookingModel.value.driverId!);
-      }
-    });
+    // await FireStoreUtils.setWalletTransaction(adminCommissionWallet)
+    //     .then((value) async {
+    //   if (value == true) {
+    //     await FireStoreUtils.updateOtherUserWallet(
+    //         amount:
+    //             "-${Constant.calculateAdminCommission(amount: Constant.calculateFinalAmount(bookingModel.value).toString(), adminCommission: bookingModel.value.adminCommission)}",
+    //         id: bookingModel.value.driverId!);
+    //   }
+    // });
 
-    await setBooking(bookingModel.value).then((value) {
-      ShowToastDialog.closeLoader();
-      // Get.offAllNamed(Routes.HOME);
-    });
+    // await setBooking(bookingModel.value).then((value) {
+    //   ShowToastDialog.closeLoader();
+    //   // Get.offAllNamed(Routes.HOME);
+    // });
 
-    DriverUserModel? receiverUserModel =
-        await FireStoreUtils.getDriverUserProfile(
-            bookingModel.value.driverId.toString());
-    Map<String, dynamic> playLoad = <String, dynamic>{
-      "bookingId": bookingModel.value.id
-    };
-    String   fcmToken = await FirebaseMessaging.instance.getToken()??"";
-    if(fcmToken==""){
-      ShowToastDialog.showToast("FCM token null");
-      return;
-    }
-    await SendNotification.sendOneNotification(
-        type: "order",
-        token: fcmToken.toString(),
-        title: 'Payment Received'.tr,
-        body:
-            'Payment Received for Ride #${bookingModel.value.id.toString().substring(0, 4)}',
-        bookingId: bookingModel.value.id,
-        driverId: bookingModel.value.driverId.toString(),
-        senderId: FireStoreUtils.getCurrentUid(),
-        payload: playLoad);
+    // DriverUserModel? receiverUserModel =
+    //     await FireStoreUtils.getDriverUserProfile(
+    //         bookingModel.value.driverId.toString());
+    // Map<String, dynamic> playLoad = <String, dynamic>{
+    //   "bookingId": bookingModel.value.id
+    // };
+    // String   fcmToken = await FirebaseMessaging.instance.getToken()??"";
+    // if(fcmToken==""){
+    //   ShowToastDialog.showToast("FCM token null");
+    //   return;
+    // }
+    // await SendNotification.sendOneNotification(
+    //     type: "order",
+    //     token: fcmToken.toString(),
+    //     title: 'Payment Received'.tr,
+    //     body:
+    //         'Payment Received for Ride #${bookingModel.value.id.toString().substring(0, 4)}',
+    //     bookingId: bookingModel.value.id,
+    //     driverId: bookingModel.value.driverId.toString(),
+    //     senderId: FireStoreUtils.getCurrentUid(),
+    //     payload: playLoad);
 
-    await ShowToastDialog.closeLoader();
-    Get.back();
+    // await ShowToastDialog.closeLoader();
+    // Get.back();
     // Get.offAllNamed(Routes.HOME);
   }
 
   Future<String> getDistanceInKm() async {
     String km = '';
     LatLng departureLatLong = LatLng(
-        bookingModel.value.pickUpLocation!.latitude ?? 0.0,
-        bookingModel.value.pickUpLocation!.longitude ?? 0.0);
+        bookingModel.value.pickupLocation.coordinates[0] ?? 0.0,
+        bookingModel.value.pickupLocation.coordinates[1] ?? 0.0);
     LatLng destinationLatLong = LatLng(
-        bookingModel.value.dropLocation!.latitude ?? 0.0,
-        bookingModel.value.dropLocation!.longitude ?? 0.0);
+        bookingModel.value.dropoffLocation.coordinates[0] ?? 0.0,
+        bookingModel.value.dropoffLocation.coordinates[1] ?? 0.0);
     MapModel? mapModel = await Constant.getDurationDistance(
         departureLatLong, destinationLatLong);
     if (mapModel != null) {
@@ -199,35 +237,35 @@ class MyRideDetailsController extends GetxController {
 
   // ::::::::::::::::::::::::::::::::::::::::::::Wallet::::::::::::::::::::::::::::::::::::::::::::::::::::
   walletPaymentMethod() async {
-    ShowToastDialog.showLoader("Please wait".tr);
+    // ShowToastDialog.showLoader("Please wait".tr);
 
-    bookingModel.value.paymentStatus = true;
-    // ShowToastDialog.showToast("Payment successful");
-    WalletTransactionModel transactionModel = WalletTransactionModel(
-        id: Constant.getUuid(),
-        amount: Constant.calculateFinalAmount(bookingModel.value).toString(),
-        createdDate: Timestamp.now(),
-        paymentType: selectedPaymentMethod.value,
-        transactionId: DateTime.now().millisecondsSinceEpoch.toString(),
-        userId: FireStoreUtils.getCurrentUid(),
-        isCredit: false,
-        type: Constant.typeCustomer,
-        note: "Ride fee Debited");
+    // bookingModel.value.paymentStatus = true;
+    // // ShowToastDialog.showToast("Payment successful");
+    // WalletTransactionModel transactionModel = WalletTransactionModel(
+    //     id: Constant.getUuid(),
+    //     amount: Constant.calculateFinalAmount(bookingModel.value).toString(),
+    //     createdDate: Timestamp.now(),
+    //     paymentType: selectedPaymentMethod.value,
+    //     transactionId: DateTime.now().millisecondsSinceEpoch.toString(),
+    //     userId: FireStoreUtils.getCurrentUid(),
+    //     isCredit: false,
+    //     type: Constant.typeCustomer,
+    //     note: "Ride fee Debited");
 
-    await FireStoreUtils.setWalletTransaction(transactionModel)
-        .then((value) async {
-      if (value == true) {
-        await FireStoreUtils.updateUserWallet(
-                amount:
-                    "-${Constant.calculateFinalAmount(bookingModel.value).toString()}")
-            .then((value) async {
-          await getProfileData();
-        });
-      }
-    });
-    ShowToastDialog.closeLoader();
+    // await FireStoreUtils.setWalletTransaction(transactionModel)
+    //     .then((value) async {
+    //   if (value == true) {
+    //     await FireStoreUtils.updateUserWallet(
+    //             amount:
+    //                 "-${Constant.calculateFinalAmount(bookingModel.value).toString()}")
+    //         .then((value) async {
+    //       await getProfileData();
+    //     });
+    //   }
+    // });
+    // ShowToastDialog.closeLoader();
 
-    completeOrder(DateTime.now().millisecondsSinceEpoch.toString());
+    // completeOrder(DateTime.now().millisecondsSinceEpoch.toString());
   }
 
   // ::::::::::::::::::::::::::::::::::::::::::::Stripe::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -270,21 +308,21 @@ class MyRideDetailsController extends GetxController {
   }
 
   displayStripePaymentSheet({required String amount}) async {
-    try {
-      await Stripe.instance.presentPaymentSheet().then((value) {
-        ShowToastDialog.showToast("Payment successfully");
-        bookingModel.value.paymentStatus = true;
-        completeOrder(DateTime.now().millisecondsSinceEpoch.toString());
-      });
-    } on StripeException catch (e) {
-      var lo1 = jsonEncode(e);
-      var lo2 = jsonDecode(lo1);
-      StripePayFailedModel lom = StripePayFailedModel.fromJson(lo2);
-      ShowToastDialog.showToast(lom.error.message);
-    } catch (e) {
-      ShowToastDialog.showToast(e.toString());
-      log('Existing in displayStripePaymentSheet: $e');
-    }
+    // try {
+    //   await Stripe.instance.presentPaymentSheet().then((value) {
+    //     ShowToastDialog.showToast("Payment successfully");
+    //     bookingModel.value.s = true;
+    //     completeOrder(DateTime.now().millisecondsSinceEpoch.toString());
+    //   });
+    // } on StripeException catch (e) {
+    //   var lo1 = jsonEncode(e);
+    //   var lo2 = jsonDecode(lo1);
+    //   StripePayFailedModel lom = StripePayFailedModel.fromJson(lo2);
+    //   ShowToastDialog.showToast(lom.error.message);
+    // } catch (e) {
+    //   ShowToastDialog.showToast(e.toString());
+    //   log('Existing in displayStripePaymentSheet: $e');
+    // }
   }
 
   createStripeIntent({required String amount}) async {
@@ -417,7 +455,7 @@ class MyRideDetailsController extends GetxController {
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
     // Payment success logic
     ShowToastDialog.showToast("Payment Successfully");
-    bookingModel.value.paymentStatus = true;
+    // bookingModel.value = bookingModel.value.copyWith(paymentStatus: "true");
 
     log('Payment Success: ${response.paymentId}');
     _razorpay.clear();
@@ -505,7 +543,7 @@ class MyRideDetailsController extends GetxController {
             .then((value) {
           if (value) {
             ShowToastDialog.showToast("Payment Successful!!");
-            bookingModel.value.paymentStatus = true;
+            // bookingModel.value.paymentStatus = true;
 
             completeOrder(DateTime.now().millisecondsSinceEpoch.toString());
           } else {
@@ -538,7 +576,7 @@ class MyRideDetailsController extends GetxController {
 
               if (value) {
                 ShowToastDialog.showToast("Payment Successful!");
-                bookingModel.value.paymentStatus = true;
+                // bookingModel.value.paymentStatus = true;
 
                 completeOrder(DateTime.now().millisecondsSinceEpoch.toString());
               } else {
@@ -594,7 +632,7 @@ class MyRideDetailsController extends GetxController {
       if (isDone) {
         Get.back();
         ShowToastDialog.showToast("Payment successfully");
-        bookingModel.value.paymentStatus = true;
+        // bookingModel.value.paymentStatus = true;
 
         completeOrder(DateTime.now().millisecondsSinceEpoch.toString());
       } else {
@@ -603,4 +641,5 @@ class MyRideDetailsController extends GetxController {
       }
     });
   }
+
 }

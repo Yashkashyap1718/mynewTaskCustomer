@@ -4,18 +4,13 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:animated_snack_bar/animated_snack_bar.dart';
-import 'package:crypto/crypto.dart';
 import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:win32/win32.dart';
 
 class LoginEmailVerificationController extends GetxController {
 

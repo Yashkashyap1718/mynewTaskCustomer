@@ -12,7 +12,6 @@ import 'package:customer/constant_widgets/pick_drop_point_view.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/constant_widgets/title_view.dart';
-import 'package:customer/extension/date_time_extension.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
@@ -56,7 +55,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                         onTap: () async {
                           if (controller.bookingModel.value.paymentStatus !=
                                   true &&
-                              controller.bookingModel.value.bookingStatus ==
+                              controller.bookingModel.value.status ==
                                   BookingStatus.bookingOngoing) {
                             showModalBottomSheet(
                               context: context,
@@ -96,49 +95,49 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                 // controller.selectedPaymentMethod.value == Constant.paymentModel!.cash!.name
                                 //     ? SvgPicture.asset("assets/icon/ic_cash.svg")
                                 //     : SvgPicture.asset("assets/icon/ic_cash.svg"),
-                                (controller.selectedPaymentMethod.value ==
-                                        Constant.paymentModel!.cash!.name)
-                                    ? SvgPicture.asset(
-                                        "assets/icon/ic_cash.svg")
-                                    : (controller.selectedPaymentMethod.value ==
-                                            Constant.paymentModel!.wallet!.name)
-                                        ? SvgPicture.asset(
-                                            "assets/icon/ic_wallet.svg")
-                                        : (controller.selectedPaymentMethod.value ==
-                                                Constant
-                                                    .paymentModel!.paypal!.name)
-                                            ? Image.asset("assets/images/ig_paypal.png",
-                                                height: 24, width: 24)
-                                            : (controller.selectedPaymentMethod.value ==
-                                                    Constant.paymentModel!
-                                                        .strip!.name)
-                                                ? Image.asset(
-                                                    "assets/images/ig_stripe.png",
-                                                    height: 24,
-                                                    width: 24)
-                                                : (controller.selectedPaymentMethod.value ==
-                                                        Constant.paymentModel!
-                                                            .razorpay!.name)
-                                                    ? Image.asset(
-                                                        "assets/images/ig_razorpay.png",
-                                                        height: 24,
-                                                        width: 24)
-                                                    : (controller.selectedPaymentMethod.value ==
-                                                            Constant
-                                                                .paymentModel!
-                                                                .payStack!
-                                                                .name)
-                                                        ? Image.asset(
-                                                            "assets/images/ig_paystack.png",
-                                                            height: 24,
-                                                            width: 24)
-                                                        : (controller.selectedPaymentMethod.value == Constant.paymentModel!.mercadoPago!.name)
-                                                            ? Image.asset("assets/images/ig_marcadopago.png", height: 24, width: 24)
-                                                            : (controller.selectedPaymentMethod.value == Constant.paymentModel!.payFast!.name)
-                                                                ? Image.asset("assets/images/ig_payfast.png", height: 24, width: 24)
-                                                                : (controller.selectedPaymentMethod.value == Constant.paymentModel!.flutterWave!.name)
-                                                                    ? Image.asset("assets/images/ig_flutterwave.png", height: 24, width: 24)
-                                                                    : const SizedBox(height: 24, width: 24),
+                                // (controller.selectedPaymentMethod.value ==
+                                //         "cash")
+                                //     ? SvgPicture.asset(
+                                //         "assets/icon/ic_cash.svg")
+                                //     : (controller.selectedPaymentMethod.value ==
+                                //             Constant.paymentModel!.wallet!.name)
+                                //         ? SvgPicture.asset(
+                                //             "assets/icon/ic_wallet.svg")
+                                //         : (controller.selectedPaymentMethod.value ==
+                                //                 Constant
+                                //                     .paymentModel!.paypal!.name)
+                                //             ? Image.asset("assets/images/ig_paypal.png",
+                                //                 height: 24, width: 24)
+                                //             : (controller.selectedPaymentMethod.value ==
+                                //                     Constant.paymentModel!
+                                //                         .strip!.name)
+                                //                 ? Image.asset(
+                                //                     "assets/images/ig_stripe.png",
+                                //                     height: 24,
+                                //                     width: 24)
+                                //                 : (controller.selectedPaymentMethod.value ==
+                                //                         Constant.paymentModel!
+                                //                             .razorpay!.name)
+                                //                     ? Image.asset(
+                                //                         "assets/images/ig_razorpay.png",
+                                //                         height: 24,
+                                //                         width: 24)
+                                //                     : (controller.selectedPaymentMethod.value ==
+                                //                             Constant
+                                //                                 .paymentModel!
+                                //                                 .payStack!
+                                //                                 .name)
+                                //                         ? Image.asset(
+                                //                             "assets/images/ig_paystack.png",
+                                //                             height: 24,
+                                //                             width: 24)
+                                //                         : (controller.selectedPaymentMethod.value == Constant.paymentModel!.mercadoPago!.name)
+                                //                             ? Image.asset("assets/images/ig_marcadopago.png", height: 24, width: 24)
+                                //                             : (controller.selectedPaymentMethod.value == Constant.paymentModel!.payFast!.name)
+                                //                                 ? Image.asset("assets/images/ig_payfast.png", height: 24, width: 24)
+                                //                                 : (controller.selectedPaymentMethod.value == Constant.paymentModel!.flutterWave!.name)
+                                //                                     ? Image.asset("assets/images/ig_flutterwave.png", height: 24, width: 24)
+                                //                                     : const SizedBox(height: 24, width: 24),
 
                                 const SizedBox(width: 12),
                                 Expanded(
@@ -160,13 +159,13 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                         ),
                       ),
                     ),
-                    if (controller.bookingModel.value.bookingStatus !=
+                    if (controller.bookingModel.value.status !=
                             BookingStatus.bookingCompleted &&
-                        controller.bookingModel.value.bookingStatus !=
+                        controller.bookingModel.value.status !=
                             BookingStatus.bookingRejected &&
-                        controller.bookingModel.value.bookingStatus !=
+                        controller.bookingModel.value.status !=
                             BookingStatus.bookingOngoing &&
-                        controller.bookingModel.value.bookingStatus !=
+                        controller.bookingModel.value.status !=
                             BookingStatus.bookingCancelled)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -177,14 +176,9 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                             buttonColor: AppThemData.danger_500p,
                             buttonTextColor: AppThemData.white,
                             onTap: () {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //       builder: (context) => ReasonForCancelView(
-                              //           rideData:
-                              //               controller.bookingModel.value)),
-                              // );
-                           
+                              Get.toNamed(Routes.REASON_FOR_CANCEL, arguments: {
+                                "bookingModel": controller.bookingModel.value
+                              });
                             },
                             size: Size(Responsive.width(45, context), 52),
                           ),
@@ -202,7 +196,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                         ],
                       ),
                     if (controller.bookingModel.value.paymentStatus != true &&
-                        controller.bookingModel.value.bookingStatus ==
+                        controller.bookingModel.value.status ==
                             BookingStatus.bookingOngoing)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -216,48 +210,25 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                               buttonColor: AppThemData.success500,
                               buttonTextColor: AppThemData.black,
                               onTap: () async {
-                                if (controller.selectedPaymentMethod.value ==
-                                    Constant.paymentModel!.wallet!.name) {
-                                  controller.getProfileData();
 
-                                  // if (double.parse(controller
-                                  //         .userModel.value.walletAmount!) <
-                                  //     Constant.calculateFinalAmount(
-                                  //         controller.bookingModel.value)) {
-                                  //   ShowToastDialog.showToast(
-                                  //       "Your wallet amount is insufficient to Payment"
-                                  //           .tr);
-                                  // } else {
-                                  ShowToastDialog.showLoader("Please wait".tr);
-                                  await controller.walletPaymentMethod();
-                                  ShowToastDialog.showToast(
-                                      "Payment successful");
-                                  ShowToastDialog.closeLoader();
-                                  //}
-                                } else if (controller
-                                        .selectedPaymentMethod.value ==
-                                    Constant.paymentModel!.paypal!.name) {
-                                  await controller.paypalPaymentSheet(
-                                      Constant.calculateFinalAmount(
-                                              controller.bookingModel.value)
+                                 await controller.razorpayMakePayment(
+                                      amount:controller.bookingModel.value.fareAmount
                                           .toString());
-                                } else if (controller
-                                        .selectedPaymentMethod.value ==
-                                    Constant.paymentModel!.strip!.name) {
-                                  ShowToastDialog.showLoader("Please wait".tr);
-                                  await controller.stripeMakePayment(
-                                      amount: Constant.calculateFinalAmount(
-                                              controller.bookingModel.value)
-                                          .toString());
-                                  ShowToastDialog.closeLoader();
-                                } else if (controller
-                                        .selectedPaymentMethod.value ==
-                                    Constant.paymentModel!.razorpay!.name) {
-                                  await controller.razorpayMakePayment(
-                                      amount: Constant.calculateFinalAmount(
-                                              controller.bookingModel.value)
-                                          .toString());
-                                }
+
+                                // if (controller.selectedPaymentMethod.value ==
+                                //     Constant.paymentModel!.wallet!.name) {
+                                //   try {
+                                //     controller.getProfileData();
+                                //     ShowToastDialog.showLoader("Please wait".tr);
+                                //     await controller.walletPaymentMethod();
+                                //     ShowToastDialog.showToast("Payment successful");
+                                //   } catch (e) {
+                                //     ShowToastDialog.showToast("Payment failed: ${e.toString()}");
+                                //   } finally {
+                                //     ShowToastDialog.closeLoader();
+                                //   }
+                                // } 
+
 
                                 // else if (controller.selectedPaymentMethod.value == Constant.paymentModel!.flutterWave!.name) {
                                 //   ShowToastDialog.showLoader("Please wait".tr);
@@ -266,36 +237,36 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                 //   ShowToastDialog.closeLoader();
                                 // }
 
-                                else if (controller
-                                        .selectedPaymentMethod.value ==
-                                    Constant.paymentModel!.payStack!.name) {
-                                  ShowToastDialog.showLoader("Please wait".tr);
-                                  await controller.payStackPayment(
-                                      Constant.calculateFinalAmount(
-                                              controller.bookingModel.value)
-                                          .toString());
-                                  ShowToastDialog.closeLoader();
-                                } else if (controller
-                                        .selectedPaymentMethod.value ==
-                                    Constant.paymentModel!.mercadoPago!.name) {
-                                  ShowToastDialog.showLoader("Please wait".tr);
-                                  await controller.mercadoPagoMakePayment(
-                                      context: context,
-                                      amount: Constant.calculateFinalAmount(
-                                              controller.bookingModel.value)
-                                          .toString());
-                                  ShowToastDialog.closeLoader();
-                                } else if (controller
-                                        .selectedPaymentMethod.value ==
-                                    Constant.paymentModel!.payFast!.name) {
-                                  ShowToastDialog.showLoader("Please wait".tr);
-                                  await controller.payFastPayment(
-                                      context: context,
-                                      amount: Constant.calculateFinalAmount(
-                                              controller.bookingModel.value)
-                                          .toString());
-                                  ShowToastDialog.closeLoader();
-                                }
+                                // else if (controller
+                                //         .selectedPaymentMethod.value ==
+                                //     Constant.paymentModel!.payStack!.name) {
+                                //   ShowToastDialog.showLoader("Please wait".tr);
+                                //   await controller.payStackPayment(
+                                //       Constant.calculateFinalAmount(
+                                //               controller.bookingModel.value)
+                                //           .toString());
+                                //   ShowToastDialog.closeLoader();
+                                // } else if (controller
+                                //         .selectedPaymentMethod.value ==
+                                //     Constant.paymentModel!.mercadoPago!.name) {
+                                //   ShowToastDialog.showLoader("Please wait".tr);
+                                //   await controller.mercadoPagoMakePayment(
+                                //       context: context,
+                                //       amount: Constant.calculateFinalAmount(
+                                //               controller.bookingModel.value)
+                                //           .toString());
+                                //   ShowToastDialog.closeLoader();
+                                // } else if (controller
+                                //         .selectedPaymentMethod.value ==
+                                //     Constant.paymentModel!.payFast!.name) {
+                                //   ShowToastDialog.showLoader("Please wait".tr);
+                                //   await controller.payFastPayment(
+                                //       context: context,
+                                //       amount: Constant.calculateFinalAmount(
+                                //               controller.bookingModel.value)
+                                //           .toString());
+                                //   ShowToastDialog.closeLoader();
+                                // }
                               },
                               size: Size(Responsive.width(45, context), 52),
                             ),
@@ -314,7 +285,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                         ],
                       ),
                     if (controller.bookingModel.value.paymentStatus == true &&
-                        controller.bookingModel.value.bookingStatus ==
+                        controller.bookingModel.value.status ==
                             BookingStatus.bookingOngoing)
                       RoundShapeButton(
                         title: "Track Ride".tr,
@@ -328,7 +299,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                         size: Size(Responsive.width(45, context), 52),
                       ),
                     if (controller.bookingModel.value.paymentStatus == true &&
-                        controller.bookingModel.value.bookingStatus ==
+                        controller.bookingModel.value.status ==
                             BookingStatus.bookingCompleted)
                       RoundShapeButton(
                         title: "Review".tr,
@@ -349,8 +320,15 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
               onRefresh: () => controller.getBookingDetails(),
               child: FutureBuilder(
                 future: controller.getBookingDetails(),
-                builder:
-                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+
                   return SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -374,14 +352,14 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                               ),
                               Text(
                                 BookingStatus.getBookingStatusTitle(controller
-                                        .bookingModel.value.bookingStatus ??
+                                        .bookingModel.value.status ??
                                     ''),
                                 textAlign: TextAlign.right,
                                 style: GoogleFonts.inter(
                                   color:
                                       BookingStatus.getBookingStatusTitleColor(
                                           controller.bookingModel.value
-                                                  .bookingStatus ??
+                                                  .status ??
                                               ''),
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -392,7 +370,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                           const SizedBox(height: 16),
                           Visibility(
                             visible:
-                                controller.bookingModel.value.bookingStatus ==
+                                controller.bookingModel.value.status ==
                                     BookingStatus.bookingAccepted,
                             child: Row(
                               children: [
@@ -489,9 +467,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
-                                          (controller.bookingModel.value
-                                                      .paymentStatus ??
-                                                  false)
+                                          controller.bookingModel.value.paymentStatus == true
                                               ? 'Payment is Completed'.tr
                                               : 'Payment is Pending'.tr,
                                           style: GoogleFonts.inter(
@@ -513,11 +489,8 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                     children: [
                                       Text(
                                         Constant.amountToShow(
-                                            amount:
-                                                Constant.calculateFinalAmount(
-                                                        controller
-                                                            .bookingModel.value)
-                                                    .toStringAsFixed(2)),
+                                            amount: controller.bookingModel.value
+                                                .fareAmount),
                                         textAlign: TextAlign.right,
                                         style: GoogleFonts.inter(
                                           color: themeChange.isDarkTheme()
@@ -559,11 +532,11 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                               ),
                             ),
                           ),
-                          if (controller.bookingModel.value.bookingStatus !=
+                          if (controller.bookingModel.value.status !=
                               BookingStatus.bookingPlaced) ...{
                             FutureBuilder<DriverUserModel?>(
                                 future: FireStoreUtils.getDriverUserProfile(
-                                    controller.bookingModel.value.driverId ??
+                                    controller.bookingModel.value.driver.id ??
                                         ''),
                                 builder: (context, snapshot) {
                                   if (!snapshot.hasData) {
@@ -720,10 +693,10 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                           },
                           PickDropPointView(
                             pickUpAddress: controller
-                                    .bookingModel.value.pickUpLocationAddress ??
+                                    .bookingModel.value.pickupAddress ??
                                 '',
                             dropAddress: controller
-                                    .bookingModel.value.dropLocationAddress ??
+                                    .bookingModel.value.dropoffAddress ??
                                 '',
                           ),
                           TitleView(
@@ -772,14 +745,8 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                       ),
                                     ),
                                     Text(
-                                      controller.bookingModel.value
-                                                  .bookingTime ==
-                                              null
-                                          ? ""
-                                          : controller
-                                              .bookingModel.value.bookingTime!
-                                              .toDate()
-                                              .dateMonthYear(),
+                                      DateTime.fromMillisecondsSinceEpoch(
+                                              controller.bookingModel.value.createdAt! * 1000) as String,
                                       textAlign: TextAlign.right,
                                       style: GoogleFonts.inter(
                                         color: themeChange.isDarkTheme()
@@ -820,25 +787,8 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                         ),
                                       ),
                                     ),
-                                    Text(
-                                      controller.bookingModel.value
-                                                  .bookingTime ==
-                                              null
-                                          ? ""
-                                          : controller
-                                              .bookingModel.value.bookingTime!
-                                              .toDate()
-                                              .time(),
-                                      textAlign: TextAlign.right,
-                                      style: GoogleFonts.inter(
-                                        color: themeChange.isDarkTheme()
-                                            ? AppThemData.grey25
-                                            : AppThemData.grey950,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        height: 0.11,
-                                      ),
-                                    ),
+                                    
+                                    
                                   ],
                                 ),
                                 const SizedBox(height: 12),
@@ -917,7 +867,7 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                 children: [
                                   PriceRowView(
                                     price: controller
-                                        .bookingModel.value.subTotal
+                                        .bookingModel.value.fareAmount
                                         .toString(),
                                     title: "Amount".tr,
                                     priceColor: themeChange.isDarkTheme()
@@ -928,67 +878,14 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                         : AppThemData.grey950,
                                   ),
                                   const SizedBox(height: 16),
-                                  PriceRowView(
-                                      price: Constant.amountToShow(
-                                          amount: controller.bookingModel.value
-                                                  .discount ??
-                                              '0.0'),
-                                      title: "Discount".tr,
-                                      priceColor: themeChange.isDarkTheme()
-                                          ? AppThemData.grey25
-                                          : AppThemData.grey950,
-                                      titleColor: themeChange.isDarkTheme()
-                                          ? AppThemData.grey25
-                                          : AppThemData.grey950),
-                                  const SizedBox(height: 16),
-                                  ListView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: controller
-                                        .bookingModel.value.taxList!.length,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      TaxModel taxModel = controller
-                                          .bookingModel.value.taxList![index];
-                                      return Column(
-                                        children: [
-                                          PriceRowView(
-                                              price: Constant.amountToShow(
-                                                  amount: Constant.calculateTax(
-                                                          amount: Constant
-                                                                  .amountBeforeTax(
-                                                                      controller
-                                                                          .bookingModel
-                                                                          .value)
-                                                              .toString(),
-                                                          taxModel: taxModel)
-                                                      .toString()),
-                                              title:
-                                                  "${taxModel.name!} (${taxModel.isFix == true ? Constant.amountToShow(amount: taxModel.value) : "${taxModel.value}%"})",
-                                              priceColor:
-                                                  themeChange.isDarkTheme()
-                                                      ? AppThemData.grey25
-                                                      : AppThemData.grey950,
-                                              titleColor:
-                                                  themeChange.isDarkTheme()
-                                                      ? AppThemData.grey25
-                                                      : AppThemData.grey950),
-                                          const SizedBox(height: 16),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                  const SizedBox(height: 8),
+                                const SizedBox(height: 8),
                                   Divider(
                                       color: themeChange.isDarkTheme()
                                           ? AppThemData.grey800
                                           : AppThemData.grey100),
                                   const SizedBox(height: 12),
                                   PriceRowView(
-                                    price: Constant.amountToShow(
-                                        amount: Constant.calculateFinalAmount(
-                                                controller.bookingModel.value)
-                                            .toString()),
+                                    price: controller.bookingModel.value.fareAmount.toString(),
                                     title: "Total Amount".tr,
                                     priceColor: AppThemData.primary400,
                                     titleColor: themeChange.isDarkTheme()

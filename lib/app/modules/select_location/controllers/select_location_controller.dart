@@ -15,6 +15,7 @@ import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/booking_status.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
+import 'package:customer/models/ride_booking.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/fire_store_utils.dart';
 import 'package:customer/utils/utils.dart';
@@ -59,6 +60,7 @@ class SelectLocationController extends GetxController {
   RxList<TaxModel> taxList = (Constant.taxList ?? []).obs;
 
   BitmapDescriptor? driverIcon;
+  RideBooking? rideBooking;
 
   changeVehicleType(int index) {
     selectVehicleTypeIndex.value = index;
@@ -74,6 +76,63 @@ class SelectLocationController extends GetxController {
   @override
   void onInit() {
     log('-----mapModel---$mapModel');
+
+    rideBooking = Get.arguments;
+    log("bookingModel.value: ${bookingModel.value.toJson()}");  
+
+    if(bookingModel.value!=null) {
+
+      try {
+
+   sourceLocation=LatLng(
+        rideBooking!.pickupLocation.coordinates[0], rideBooking!.pickupLocation.coordinates[1]);
+   destination=LatLng(
+        rideBooking!.dropoffLocation.coordinates[0], rideBooking!.dropoffLocation.coordinates[1]);
+
+      bookingModel.value = BookingModel(
+                              id: rideBooking?.id,
+                              pickUpLocation: LocationLatLng(
+                                latitude: rideBooking?.pickupLocation.coordinates[1] ?? 0,
+                                longitude: rideBooking?.pickupLocation.coordinates[0] ?? 0
+                              ),
+                              dropLocation: LocationLatLng(
+                                latitude: rideBooking?.dropoffLocation.coordinates[1] ?? 0,
+                                longitude: rideBooking?.dropoffLocation.coordinates[0] ?? 0
+                              ),
+                              pickUpLocationAddress: rideBooking?.pickupAddress,
+                              dropLocationAddress: rideBooking?.dropoffAddress,
+                              paymentType: rideBooking?.paymentMode,
+                              otp: rideBooking?.otp,
+                              bookingStatus: rideBooking?.status,
+                              driverId: rideBooking?.driver.id,
+                              customerId: rideBooking?.passenger.id,
+                              subTotal: rideBooking?.fareAmount,
+                              vehicleType: rideBooking?.vehicleType,
+                              // createAt: rideBooking?.createdAt != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+                              // updateAt: rideBooking?.endTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+                              // bookingTime: rideBooking?.startTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+                              // pickupTime: rideBooking?.startTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+                              // dropTime: rideBooking?.endTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+                            paymentStatus: rideBooking?.paymentStatus == "cash",
+                            rejectedDriverId: [],
+                            taxList: [],
+                            position: null,
+                            coupon: null,
+                            adminCommission: null,
+                            distance: null,
+                            cancelledBy: null,
+                            cancelledReason: null,
+                            discount: "0"
+                            );
+
+
+      popupIndex.value = 3;
+      }catch(e){
+
+      }
+
+    }
+
     getData();
 
     super.onInit();

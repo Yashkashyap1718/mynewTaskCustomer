@@ -1,3 +1,6 @@
+import 'package:customer/app/models/booking_model.dart';
+import 'package:customer/app/models/location_lat_lng.dart';
+import 'package:customer/app/modules/home/views/home_view.dart';
 import 'package:customer/app/modules/select_location/views/widgets/confirm_pickup_location.dart';
 import 'package:customer/app/modules/select_location/views/widgets/finding_driver.dart';
 import 'package:customer/app/modules/select_location/views/widgets/select_location_bottom_sheet.dart';
@@ -9,13 +12,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore_platform_interface/src/timestamp.dart' as timestamp;
 
 import '../controllers/select_location_controller.dart';
 
 class SelectLocationView extends StatelessWidget {
-   SelectLocationView({super.key});
+  SelectLocationView({super.key});
 
- final controller =  Get.put(SelectLocationController());
+  final controller = Get.put(SelectLocationController());
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
@@ -124,6 +128,7 @@ class SelectLocationView extends StatelessWidget {
                           expand: true,
                           builder: (BuildContext context,
                               ScrollController scrollController) {
+                            
                             return FindingDriverBottomSheet(
                               scrollController: scrollController,
                               bookingModel: controller.bookingModel.value,
@@ -147,8 +152,8 @@ class SelectLocationView extends StatelessWidget {
                               controller.setBookingData(true);
                             }
                           } else {
-                            // Get.offAll(const HomeView());
-                            Get.back();
+                            Get.offAll(const HomeView());
+                            // Get.back();
                           }
                         },
                         child: Container(

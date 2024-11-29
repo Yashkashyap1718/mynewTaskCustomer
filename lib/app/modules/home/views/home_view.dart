@@ -3,6 +3,7 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:customer/api_services.dart';
 import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/app/modules/home/views/widgets/drawer_view.dart';
 import 'package:customer/app/modules/html_view_screen/views/html_view_screen_view.dart';
@@ -14,10 +15,12 @@ import 'package:customer/app/modules/my_wallet/views/my_wallet_view.dart';
 import 'package:customer/app/modules/notification/views/notification_view.dart';
 import 'package:customer/app/modules/support_screen/views/support_screen_view.dart';
 import 'package:customer/app/routes/app_pages.dart';
+import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/booking_status.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/no_rides_view.dart';
 import 'package:customer/extension/date_time_extension.dart';
+import 'package:customer/models/ride_booking.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
@@ -33,9 +36,14 @@ import '../controllers/home_controller.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
+  
+  
 
   @override
   Widget build(BuildContext context) {
+
+    RideBooking? bookingModel;
+
     final themeChange = Provider.of<DarkThemeProvider>(context);
     Get.put(HomeController());
     return GetBuilder<HomeController>(
@@ -96,7 +104,7 @@ class HomeView extends StatelessWidget {
                                                     children: [
                                                       InkWell(
                                                         onTap: () {
-                                                          Get.toNamed(Routes.SELECT_LOCATION);
+                                                          Get.toNamed(Routes.SELECT_LOCATION, arguments: bookingModel!);
                                                         },
                                                         child: Container(
                                                           width: Responsive.width(100, context),
@@ -143,25 +151,27 @@ class HomeView extends StatelessWidget {
                                                         ),
                                                       ),
                                                       const SizedBox(height: 20),
-                                                      StreamBuilder<List<BookingModel>>(
-                                                          stream: FireStoreUtils().getHomeOngoingBookings(),
+                                                      StreamBuilder<RideBooking?>(
+                                                          stream: checkRequest(),
                                                           builder: (context, snapshot) {
+                                                            
                                                             log("---------------State : ${snapshot.connectionState}");
                                                             log("--------------State : ${snapshot.data}");
                                                             if (snapshot.connectionState == ConnectionState.waiting) {
                                                               return Constant.loader();
                                                             }
-                                                            if (!snapshot.hasData || (snapshot.data?.isEmpty ?? true)) {
+                                                            if (!snapshot.hasData) {
                                                               return NoRidesView(
                                                                 themeChange: themeChange,
                                                                 height: Responsive.height(40, context),
                                                               );
                                                             } else {
-                                                              List<BookingModel> bookingModelList = snapshot.data!;
+                                                              RideBooking bookingModelList = snapshot.data!;
+                                                              bookingModel=bookingModelList   ;
                                                               return ListView.builder(
                                                                 shrinkWrap: true,
                                                                 physics: const NeverScrollableScrollPhysics(),
-                                                                itemCount: bookingModelList.length,
+                                                                itemCount: 1,
                                                                 itemBuilder: (context, index) {
                                                                   return Column(
                                                                     mainAxisSize: MainAxisSize.min,
@@ -170,10 +180,18 @@ class HomeView extends StatelessWidget {
                                                                     children: [
                                                                       InkWell(
                                                                         onTap: () {
-                                                                          MyRideDetailsController detailsController = Get.put(MyRideDetailsController());
-                                                                          detailsController.bookingId.value = bookingModelList[index].id ?? '';
-                                                                          detailsController.bookingModel.value = bookingModelList[index];
-                                                                          Get.to(const MyRideDetailsView());
+
+
+
+
+ Get.toNamed(Routes.SELECT_LOCATION,arguments: bookingModelList);
+
+
+
+                                                                          // MyRideDetailsController detailsController = Get.put(MyRideDetailsController());
+                                                                          // detailsController.bookingId.value = bookingModelList.id ?? '';
+                                                                          // detailsController.bookingModel.value = bookingModelList;
+                                                                          // Get.to(const MyRideDetailsView());
                                                                         },
                                                                         child: Container(
                                                                           width: Responsive.width(100, context),
@@ -195,7 +213,7 @@ class HomeView extends StatelessWidget {
                                                                                 crossAxisAlignment: CrossAxisAlignment.center,
                                                                                 children: [
                                                                                   Text(
-                                                                                    bookingModelList[index].bookingTime == null ? "" : bookingModelList[index].bookingTime!.toDate().dateMonthYear(),
+                                                                                    DateTime.fromMillisecondsSinceEpoch(bookingModelList.createdAt).time(),
                                                                                     style: GoogleFonts.inter(
                                                                                       color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
                                                                                       fontSize: 14,
@@ -203,35 +221,11 @@ class HomeView extends StatelessWidget {
                                                                                     ),
                                                                                   ),
                                                                                   const SizedBox(width: 8),
-                                                                                  Container(
-                                                                                    height: 15,
-                                                                                    decoration: ShapeDecoration(
-                                                                                      shape: RoundedRectangleBorder(
-                                                                                        side: BorderSide(
-                                                                                          width: 1,
-                                                                                          strokeAlign: BorderSide.strokeAlignCenter,
-                                                                                          color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  const SizedBox(width: 8),
-                                                                                  Expanded(
-                                                                                    child: Text(
-                                                                                      bookingModelList[index].bookingTime == null ? "" : bookingModelList[index].bookingTime!.toDate().time(),
-                                                                                      style: GoogleFonts.inter(
-                                                                                        color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
-                                                                                        fontSize: 14,
-                                                                                        fontWeight: FontWeight.w400,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                  const SizedBox(width: 8),
                                                                                   Text(
-                                                                                    BookingStatus.getBookingStatusTitle(bookingModelList[index].bookingStatus ?? ''),
+                                                                                    BookingStatus.getBookingStatusTitle(bookingModelList.status),
                                                                                     textAlign: TextAlign.right,
                                                                                     style: GoogleFonts.inter(
-                                                                                      color: BookingStatus.getBookingStatusTitleColor(bookingModelList[index].bookingStatus ?? ''),
+                                                                                      color: BookingStatus.getBookingStatusTitleColor(bookingModelList.status),
                                                                                       fontSize: 16,
                                                                                       fontWeight: FontWeight.w600,
                                                                                     ),
@@ -246,8 +240,8 @@ class HomeView extends StatelessWidget {
                                                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                                                   children: [
-                                                                                    CachedNetworkImage(
-                                                                                      imageUrl: bookingModelList[index].vehicleType == null ? Constant.profileConstant : bookingModelList[index].vehicleType!.image,
+                                                                                     CachedNetworkImage(
+                                                                                      imageUrl: Constant.profileConstant,
                                                                                     ),
                                                                                     const SizedBox(width: 12),
                                                                                     Expanded(
@@ -257,7 +251,7 @@ class HomeView extends StatelessWidget {
                                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                                         children: [
                                                                                           Text(
-                                                                                            bookingModelList[index].vehicleType == null ? "" : bookingModelList[index].vehicleType!.title,
+                                                                                             bookingModelList.vehicleType?.title ?? '',
                                                                                             style: GoogleFonts.inter(
                                                                                               color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
                                                                                               fontSize: 16,
@@ -265,7 +259,7 @@ class HomeView extends StatelessWidget {
                                                                                             ),
                                                                                           ),
                                                                                           const SizedBox(height: 2),
-                                                                                          if (bookingModelList[index].bookingStatus == BookingStatus.bookingAccepted)
+                                                                                          if (bookingModelList.status == "accepted")
                                                                                             Row(
                                                                                               children: [
                                                                                                 Text(
@@ -277,7 +271,7 @@ class HomeView extends StatelessWidget {
                                                                                                   ),
                                                                                                 ),
                                                                                                 Text(
-                                                                                                  bookingModelList[index].otp ?? '',
+                                                                                                  bookingModelList.otp ,
                                                                                                   textAlign: TextAlign.right,
                                                                                                   style: GoogleFonts.inter(
                                                                                                     color: AppThemData.primary400,
@@ -297,7 +291,7 @@ class HomeView extends StatelessWidget {
                                                                                       crossAxisAlignment: CrossAxisAlignment.end,
                                                                                       children: [
                                                                                         Text(
-                                                                                          Constant.amountToShow(amount: Constant.calculateFinalAmount(bookingModelList[index]).toStringAsFixed(2)),
+                                                                                          bookingModelList.fareAmount.toString(),
                                                                                           textAlign: TextAlign.right,
                                                                                           style: GoogleFonts.inter(
                                                                                             color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
@@ -317,7 +311,7 @@ class HomeView extends StatelessWidget {
                                                                                             ),
                                                                                             const SizedBox(width: 6),
                                                                                             Text(
-                                                                                              bookingModelList[index].vehicleType == null ? "" : bookingModelList[index].vehicleType!.persons,
+                                                                                              bookingModelList.vehicleType == null ? "" : bookingModelList.vehicleType!.persons,
                                                                                               style: GoogleFonts.inter(
                                                                                                 color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
                                                                                                 fontSize: 16,

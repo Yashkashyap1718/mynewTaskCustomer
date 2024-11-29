@@ -11,17 +11,17 @@ class BookingStatus {
 
   static String getBookingStatusTitle(String status) {
     String bookingStatus = '';
-    if (status == bookingPlaced) {
+    if (status == "requested") {
       bookingStatus = 'Placed';
-    } else if (status == bookingAccepted) {
+    } else if (status == "accepted") {
       bookingStatus = 'Accepted';
-    } else if (status == bookingOngoing) {
+    } else if (status == "in_progress") {
       bookingStatus = 'Ongoing';
-    } else if (status == bookingCancelled) {
+    } else if (status == "canceled") {
       bookingStatus = 'Cancelled';
-    } else if (status == bookingCompleted) {
+    } else if (status == "completed") {
       bookingStatus = 'Completed';
-    }else if (status == bookingRejected) {
+    }else if (status == "rejected") {
       bookingStatus = 'Rejected';
     }
     return bookingStatus;
@@ -29,17 +29,17 @@ class BookingStatus {
 
   static Color getBookingStatusTitleColor(String status) {
     Color color = const Color(0xff9d9d9d);
-    if (status == bookingPlaced) {
+    if (status == "requested") {
       color = const Color(0xff9d9d9d);
-    } else if (status == bookingAccepted) {
+    } else if (status == "accepted") {
       color = const Color(0xff1EADFF);
-    } else if (status == bookingOngoing) {
+    } else if (status == "in_progress") {
       color = const Color(0xffD19D00);
-    } else if (status == bookingCancelled) {
+    } else if (status == "canceled") {
       color = const Color(0xffFE7235);
-    } else if (status == bookingCompleted) {
+    } else if (status == "completed") {
       color = const Color(0xff27C041);
-    }else if (status == bookingRejected) {
+    }else if (status == "rejected") {
       color = const Color(0xffFE7235);
     }
     return color;

@@ -105,7 +105,7 @@ class BookingModel {
         position: json["position"] == null ? null : Positions.fromJson(json["position"]),
         coupon: json["coupon"] == null ? null : CouponModel.fromJson(json["coupon"]),
         adminCommission: json["adminCommission"] == null ? null : AdminCommission.fromJson(json["adminCommission"]),
-        distance: json["distance"] == null ? null : DistanceModel.fromJson(json["distance"]),
+        // distance: json["distance"] == null ? null : DistanceModel.fromJson(json["distance"]),
       );
 
   Map<String, dynamic> toJson() => {

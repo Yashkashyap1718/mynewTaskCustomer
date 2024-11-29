@@ -619,7 +619,7 @@ class PaymentDialogView extends StatelessWidget {
                       } else {
                         DriverUserModel? receiverUserModel =
                             await FireStoreUtils.getDriverUserProfile(controller
-                                .bookingModel.value.driverId
+                                .bookingModel.value.driver.id
                                 .toString());
                         Map<String, dynamic> playLoad = <String, dynamic>{
                           "bookingId": controller.bookingModel.value.id
@@ -638,7 +638,7 @@ class PaymentDialogView extends StatelessWidget {
                             body:
                                 'Customer has opted to pay with ${controller.selectedPaymentMethod.value}',
                             bookingId: controller.bookingModel.value.id,
-                            driverId: controller.bookingModel.value.driverId
+                            driverId: controller.bookingModel.value.driver.id
                                 .toString(),
                             senderId: FireStoreUtils.getCurrentUid(),
                             payload: playLoad);

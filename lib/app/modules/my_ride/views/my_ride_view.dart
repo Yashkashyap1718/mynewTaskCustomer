@@ -163,13 +163,13 @@ class MyRideView extends StatelessWidget {
                                             : controller.rejectedRides[index];
                                 return InkWell(
                                   onTap: () {
-                                    MyRideDetailsController detailsController =
-                                        Get.put(MyRideDetailsController());
-                                    detailsController.bookingId.value =
-                                        bookingModel.id ?? '';
-                                    detailsController.bookingModel.value =
-                                        bookingModel;
-                                    Get.to(const MyRideDetailsView());
+                                    // MyRideDetailsController detailsController =
+                                    //     Get.put(MyRideDetailsController());
+                                    // detailsController.bookingId.value =
+                                    //     bookingModel.id ?? '';
+                                    // detailsController.bookingModel.value =
+                                    //     bookingModel;
+                                    // Get.to(const MyRideDetailsView());
                                   },
                                   child: Container(
                                     width: Responsive.width(100, context),

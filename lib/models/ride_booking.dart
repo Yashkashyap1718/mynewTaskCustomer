@@ -65,6 +65,64 @@ class RideBooking {
       vehicle: Vehicle.fromJson(json['vehicle'] ?? {}),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'vehicle_id': vehicleId,
+      'pickup_address': pickupAddress,
+      'pickup_location': {
+        'type': pickupLocation.type,
+        'coordinates': pickupLocation.coordinates,
+      },
+      'dropoff_address': dropoffAddress, 
+      'dropoff_location': {
+        'type': dropoffLocation.type,
+        'coordinates': dropoffLocation.coordinates,
+      },
+      'distance': distance,
+      'fare_amount': fareAmount,
+      'duration_in_minutes': durationInMinutes,
+      'payment_status': paymentStatus,
+      'payment_mode': paymentMode,
+      'otp': otp,
+      'status': status,
+      'start_time': startTime.toIso8601String(),
+      'end_time': endTime?.toIso8601String(),
+      'createdAt': createdAt,
+      'passenger': {
+        '_id': passenger.id,
+        'name': passenger.name,
+        'email': passenger.email,
+        'phone': passenger.phone,
+        'location': {
+          'type': passenger.location.type,
+          'coordinates': passenger.location.coordinates,
+        },
+        'profile': passenger.profile,
+        'gender': passenger.gender,
+        'ride_status': passenger.rideStatus,
+        'push_notification': passenger.pushNotification,
+        'createdAt': passenger.createdAt,
+      },
+      'driver': {
+        'id': driver.id,
+        'name': driver.name,
+        'email': driver.email,
+        'phone': driver.phone,
+      },
+      'vehicle': {
+        'id': vehicle.type,
+        'type': vehicle.type,
+        'model': vehicle.model,
+        'number': vehicle.vehicleNumber,
+      },
+    };
+  }
+
+
+
+  get vehicleType => null;
 }
 
 class Location {

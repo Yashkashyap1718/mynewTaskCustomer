@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 // Model for the main response
 class NearbyDriversResponse {

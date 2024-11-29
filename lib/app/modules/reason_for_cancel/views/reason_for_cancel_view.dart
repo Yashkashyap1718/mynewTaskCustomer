@@ -1,4 +1,5 @@
 import 'package:customer/api_services.dart';
+import 'package:customer/app/modules/home/views/home_view.dart';
 import 'package:customer/constant_widgets/app_bar_with_border.dart';
 import 'package:customer/constant_widgets/custom_dialog_box.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
@@ -7,13 +8,10 @@ import 'package:customer/models/ride_booking.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
-import 'package:customer/utils/fire_store_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../controllers/reason_for_cancel_controller.dart';
 
 class ReasonForCancelView extends StatelessWidget {
   final RideBooking rideData;
@@ -70,10 +68,8 @@ class ReasonForCancelView extends StatelessWidget {
                           sendCancelRideNotification(rideData);
                                                   ShowToastDialog.showToast(
                               "Ride Cancelled Successfully..");
-                          Navigator.pop(context);
-                          Get.back();
-                          Get.back();
-                          // Get.offAll(const HomeView());
+                        
+                          Get.offAll(const HomeView());
                           // Get.toNamed(Routes.HOME);
                         },
                         negativeClick: () {
