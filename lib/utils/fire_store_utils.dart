@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,6 +28,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:customer/constant/api_constant.dart';
+
 
 class FireStoreUtils {
   static FirebaseFirestore fireStore = FirebaseFirestore.instance;
@@ -105,6 +107,10 @@ class FireStoreUtils {
           userModel = UserData.fromJson(jsonResponse['data']);
           print("USERDATAAPI  ${jsonEncode(userModel)}");
           userDataModel = userModel;
+
+         FirebaseMessaging messaging = FirebaseMessaging.instance;
+         await messaging.subscribeToTopic(userDataModel.id!);
+
           return userModel;
         } else {
           ShowToastDialog.closeLoader();
@@ -372,6 +378,9 @@ class FireStoreUtils {
     return couponList;
   }
 
+
+
+
   static Future<RideRequest?> checkforRealTimebooking(
       BookingModel bookingModel) async {
     RideRequest? data;
@@ -555,9 +564,10 @@ class FireStoreUtils {
     try {
       ShowToastDialog.showLoader("Please wait".tr);
 
-      final response = await http.post(Uri.parse(baseURL + acceptedRide),
-          headers: {"Content-Type": "application/json", "token": token},
-          body: jsonEncode({"startValue": 1, "lastValue": 10}));
+      final response = await http.post(
+        Uri.parse(baseURL + acceptedRide),
+        headers: {"Content-Type": "application/json", "token": token},
+      );
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
@@ -590,14 +600,16 @@ class FireStoreUtils {
     try {
       ShowToastDialog.showLoader("Please wait".tr);
 
-      final response = await http.post(Uri.parse(baseURL + completedRide),
-          headers: {"Content-Type": "application/json", "token": token},
-          body: jsonEncode({"startValue": 1, "lastValue": 10}));
+      final response = await http.post(
+        Uri.parse(baseURL + completedRide),
+        headers: {"Content-Type": "application/json", "token": token},
+      );
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
 
         if (responseData['status'] == true) {
+          // Map the raw data to BookingModel objects
           bookingList = (responseData['data'] as List)
               .map((item) => BookingModel.fromJson(item))
               .toList();
@@ -621,8 +633,8 @@ class FireStoreUtils {
     } catch (error) {
       ShowToastDialog.closeLoader();
       ScaffoldMessenger.of(Get.context!).showSnackBar(
-        SnackBar(
-          content: Text("Something went wrong: $error"),
+        const SnackBar(
+          content: Text("Something went wrong"),
         ),
       );
     }
@@ -638,14 +650,13 @@ class FireStoreUtils {
     try {
       ShowToastDialog.showLoader("Please wait".tr);
 
-      final response = await http.post(Uri.parse(baseURL + canceledRide),
-          headers: {"Content-Type": "application/json", "token": token},
-          body: jsonEncode({"startValue": 1, "lastValue": 10}));
+      final response = await http.post(
+        Uri.parse(baseURL + canceledRide),
+        headers: {"Content-Type": "application/json", "token": token},
+      );
 
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-
-        log(response.body);
 
         if (responseData['status'] == true) {
           // Map the raw data to BookingModel objects

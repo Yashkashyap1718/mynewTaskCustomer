@@ -6,6 +6,7 @@ import 'package:customer/app/models/driver_user_model.dart';
 import 'package:customer/app/modules/home/views/home_view.dart';
 import 'package:customer/app/modules/reason_for_cancel/views/reason_for_cancel_view.dart';
 import 'package:customer/app/routes/app_pages.dart';
+import 'package:customer/chat_page_overview.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/pick_drop_point_view.dart';
@@ -279,7 +280,23 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
                                   ),
                                 ),
                                 InkWell(
-                                    onTap: () {},
+                                    onTap: () {
+
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ChatPageOverview(
+                                          studentId: snapshot.data!.passenger.id,
+                                          teacherId: snapshot.data!.driver.id,
+                                          studentName: snapshot.data!.passenger.name ?? '',
+                                          teacherName: snapshot.data!.driver.name,
+                                          showAppBar: true,
+                                        ),
+                                      ),
+                                    );
+
+                                    },
                                     child: SvgPicture.asset(
                                         "assets/icon/ic_message.svg")),
                                 const SizedBox(width: 12),

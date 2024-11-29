@@ -1,3 +1,4 @@
+
 // Model for the main response
 class NearbyDriversResponse {
   final bool status;
@@ -82,8 +83,7 @@ class Location {
   factory Location.fromJson(Map<String, dynamic> json) {
     return Location(
       type: json['type'],
-      coordinates:
-          List<double>.from(json['coordinates'].map((x) => x.toDouble())),
+      coordinates: List<double>.from(json['coordinates'].map((x) => x.toDouble())),
     );
   }
 
@@ -95,3 +95,4 @@ class Location {
     };
   }
 }
+

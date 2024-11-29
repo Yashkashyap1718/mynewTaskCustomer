@@ -3,13 +3,11 @@
 import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:customer/app/models/booking_model.dart';
+import 'package:customer/api_services.dart';
 import 'package:customer/app/modules/home/views/widgets/drawer_view.dart';
 import 'package:customer/app/modules/html_view_screen/views/html_view_screen_view.dart';
 import 'package:customer/app/modules/language/views/language_view.dart';
 import 'package:customer/app/modules/my_ride/views/my_ride_view.dart';
-import 'package:customer/app/modules/my_ride_details/controllers/my_ride_details_controller.dart';
-import 'package:customer/app/modules/my_ride_details/views/my_ride_details_view.dart';
 import 'package:customer/app/modules/my_wallet/views/my_wallet_view.dart';
 import 'package:customer/app/modules/notification/views/notification_view.dart';
 import 'package:customer/app/modules/support_screen/views/support_screen_view.dart';
@@ -18,10 +16,10 @@ import 'package:customer/constant/booking_status.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/no_rides_view.dart';
 import 'package:customer/extension/date_time_extension.dart';
+import 'package:customer/models/ride_booking.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
-import 'package:customer/utils/fire_store_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -34,8 +32,13 @@ import '../controllers/home_controller.dart';
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
+
+
   @override
   Widget build(BuildContext context) {
+
+    RideBooking? bookingModel;
+
     final themeChange = Provider.of<DarkThemeProvider>(context);
     Get.put(HomeController());
     return GetBuilder<HomeController>(
@@ -52,7 +55,7 @@ class HomeView extends StatelessWidget {
                     SvgPicture.asset("assets/icon/logo_only.svg"),
                     const SizedBox(width: 10),
                     Text(
-                      'MyTaxi'.tr,
+                      'Travel Teacher'.tr,
                       style: GoogleFonts.inter(
                         color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
                         fontSize: 20,
@@ -96,7 +99,7 @@ class HomeView extends StatelessWidget {
                                                     children: [
                                                       InkWell(
                                                         onTap: () {
-                                                          Get.toNamed(Routes.SELECT_LOCATION);
+                                                          Get.toNamed(Routes.SELECT_LOCATION, arguments: bookingModel!);
                                                         },
                                                         child: Container(
                                                           width: Responsive.width(100, context),

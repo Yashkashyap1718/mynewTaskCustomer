@@ -14,7 +14,6 @@ import 'package:customer/app/models/chat_model/inbox_model.dart';
 import 'package:customer/app/models/driver_user_model.dart';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/constant/collection_name.dart';
-import 'package:customer/constant/constant.dart';
 import 'package:customer/constant/send_notification.dart';
 import 'package:customer/utils/fire_store_utils.dart';
 import 'package:http/http.dart' as http;
@@ -175,31 +174,31 @@ class ChatScreenController extends GetxController {
         .doc(senderUserModel.value.id.toString())
         .set(inboxModel.toJson());
 
-    ChatModel chatModel = ChatModel(
-        type: "text",
-        timestamp: Timestamp.now(),
-        senderId: senderUserModel.value.id.toString(),
-        seen: false,
-        receiverId: receiverUserModel.value.id.toString(),
-        mediaUrl: "",
-        chatID: Constant.getUuid(),
-        message: messageTextEditorController.value.text.trim());
+    // ChatModel chatModel = ChatModel(
+        // type: "text",
+        // timestamp: Timestamp.now(),
+        // senderId: senderUserModel.value.id.toString(),
+        // seen: false,
+        // receiverId: receiverUserModel.value.id.toString(),
+        // mediaUrl: "",
+        // chatID: Constant.getUuid(),
+        // message: messageTextEditorController.value.text.trim());
 
     message.value = messageTextEditorController.value.text;
     messageTextEditorController.value.clear();
 
-    await FireStoreUtils.fireStore
-        .collection(CollectionName.chat)
-        .doc(senderUserModel.value.id.toString())
-        .collection(receiverUserModel.value.id.toString())
-        .doc(chatModel.chatID)
-        .set(chatModel.toJson());
-    await FireStoreUtils.fireStore
-        .collection(CollectionName.chat)
-        .doc(receiverUserModel.value.id.toString())
-        .collection(senderUserModel.value.id.toString())
-        .doc(chatModel.chatID)
-        .set(chatModel.toJson());
+    // await FireStoreUtils.fireStore
+    //     .collection(CollectionName.chat)
+    //     .doc(senderUserModel.value.id.toString())
+    //     .collection(receiverUserModel.value.id.toString())
+    //     .doc(chatModel.chatID)
+    //     .set(chatModel.toJson());
+    // await FireStoreUtils.fireStore
+    //     .collection(CollectionName.chat)
+    //     .doc(receiverUserModel.value.id.toString())
+    //     .collection(senderUserModel.value.id.toString())
+    //     .doc(chatModel.chatID)
+    //     .set(chatModel.toJson());
 
     Map<String, dynamic> playLoad = <String, dynamic>{
       "type": "chat",
@@ -223,9 +222,9 @@ class ChatScreenController extends GetxController {
   }
 
   void addDummyData() {
-    chatList.add(ChatModel(chatID:"2" ,mediaUrl:"" ,message: "Hello",receiverId: "2",seen: true,senderId:"673d6dc42c10cc7f1648d0cc" ,timestamp: Timestamp.fromDate(DateTime.now()),type: ""));
-    chatList.add(ChatModel(chatID:"1" ,mediaUrl:"" ,message: "Hii",receiverId: "1",seen: true,senderId:"2" ,timestamp: Timestamp.fromDate(DateTime.now()),type: ""));
-    update();
+    // chatList.add(ChatModel(chatID:"2" ,mediaUrl:"" ,message: "Hello",receiverId: "2",seen: true,senderId:"673d6dc42c10cc7f1648d0cc" ,timestamp: Timestamp.fromDate(DateTime.now()),type: ""));
+    // chatList.add(ChatModel(chatID:"1" ,mediaUrl:"" ,message: "Hii",receiverId: "1",seen: true,senderId:"2" ,timestamp: Timestamp.fromDate(DateTime.now()),type: ""));
+    // update();
   }
 
 

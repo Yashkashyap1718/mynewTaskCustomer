@@ -95,11 +95,7 @@ class ChatScreenView extends StatelessWidget {
                             ChatModel chatModel = controller.chatList[index];
                           return Container(
                               padding: const EdgeInsets.only(left: 14, right: 14, top: 06, bottom: 06),
-                              child: chatBubbles(
-                                  chatModel.senderId == controller.senderUserModel.value.id ? true
-                                      : false,
-                                  chatModel,
-                                  themeChange));
+                          );
                         },)),
                         // Expanded(
                         //   child: PaginateFirestore(
@@ -252,7 +248,7 @@ class ChatScreenView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${chatModel.message}',
+                      chatModel.message,
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -266,14 +262,14 @@ class ChatScreenView extends StatelessWidget {
                 const SizedBox(
                   height: 10,
                 ),
-                Text(Constant.timestampToTime(chatModel.timestamp!),
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: themeChange.isDarkTheme()
-                          ? AppThemData.white
-                          : AppThemData.black,
-                    ))
+                // Text(Constant.timestampToTime(chatModel.timestamp!),
+                //     style: GoogleFonts.inter(
+                //       fontSize: 12,
+                //       fontWeight: FontWeight.w400,
+                //       color: themeChange.isDarkTheme()
+                //           ? AppThemData.white
+                //           : AppThemData.black,
+                //     ))
               ],
             ),
           ).paddingOnly(

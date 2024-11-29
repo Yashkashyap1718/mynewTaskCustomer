@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customer/app/models/driver_user_model.dart';
 import 'package:customer/app/models/tax_model.dart';
 import 'package:customer/app/modules/chat_screen/views/chat_screen_view.dart';
+import 'package:customer/app/modules/coupon_screen/views/coupon_screen_view.dart';
 import 'package:customer/app/modules/my_ride_details/views/widgets/payment_dialog_view.dart';
 import 'package:customer/app/modules/payment_method/views/widgets/price_row_view.dart';
 import 'package:customer/app/modules/reason_for_cancel/views/reason_for_cancel_view.dart';
@@ -127,11 +128,21 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
               ),
             ),
             body: RefreshIndicator(
-              onRefresh: () => controller.getBookingDetails(),
+              onRefresh: () async {
+                await controller.getBookingDetails();
+              },
               child: FutureBuilder(
                 future: controller.getBookingDetails(),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+
                   return SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -547,8 +558,9 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                               null
                                           ? ""
                                           : controller
-                                              .bookingModel.value.startTime!
-                                              .dateMonthYear(),
+                                                  .bookingModel.value.startTime!
+                                                  .dateMonthYear() ??
+                                              "",
                                       textAlign: TextAlign.right,
                                       style: GoogleFonts.inter(
                                         color: themeChange.isDarkTheme()

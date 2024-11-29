@@ -6,6 +6,7 @@ import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/models/near_by_drivers.dart';
 import 'package:customer/models/ride_booking.dart';
+import 'package:customer/utils/my_notification_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:http/http.dart' as http;
@@ -35,7 +36,7 @@ Future<NearbyDriversResponse?> setBooking(BookingModel bookingModel) async {
     "vehicle_type": (bookingModel.vehicleType!.title == null)
         ? ''
         : bookingModel.vehicleType!.title,
-    "fare_amount": (bookingModel.subTotal == null) ? '' : "40",
+    "fare_amount": (bookingModel.subTotal == null) ? '' : bookingModel.subTotal.toString(),
     "duration_in_minutes": "50",
   };
 
@@ -62,6 +63,9 @@ Future<NearbyDriversResponse?> setBooking(BookingModel bookingModel) async {
 }
 
 Stream<RideBooking?> checkRequest() async* {
+
+  String status="";
+
   while (true) {
     final Map<String, dynamic> body = {"startValue": 0, "lastValue": 10};
 
@@ -77,12 +81,40 @@ Stream<RideBooking?> checkRequest() async* {
         jsonDecode(response.body)["data"] != '[]') {
       RideBooking listModel =
           RideBooking.fromJson(jsonDecode(response.body)["data"]);
+
+
+
+      if(status!=listModel.status){
+        status=listModel.status;
+
+
+        if(status=="cancelled"){  
+           MyNotificationHandler().showDefaultNotification("Ride Cancelled","Ride #${listModel.id.toString().substring(0, 4)} is cancelled by Customer");
+        }
+      else if(status=="accepted"){
+          MyNotificationHandler().showDefaultNotification("Ride Accepted","Ride #${listModel.id.toString().substring(0, 4)} is accepted by Driver");
+        }
+        else if(status=="started"){
+          MyNotificationHandler().showDefaultNotification("Ride Started","Ride #${listModel.id.toString().substring(0, 4)} is started by Driver");
+        }
+        else if(status=="in_progress"){
+          MyNotificationHandler().showDefaultNotification("Ride in Progress","Ride #${listModel.id.toString().substring(0, 4)} is in progress");
+        }
+        else if(status=="completed"){
+          MyNotificationHandler().showDefaultNotification("Ride Completed","Ride #${listModel.id.toString().substring(0, 4)} is completed");
+        }
+      }
+
+
+
+
+
       yield listModel; // {{ edit_1 }}
     } else {
       yield null; // {{ edit_2 }}
     }
     await Future.delayed(Duration(
-        seconds: 5)); // Delay for 5 seconds before making the next request
+        seconds: 2)); // Delay for 5 seconds before making the next request
   }
 }
 

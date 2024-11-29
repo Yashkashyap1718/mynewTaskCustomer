@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customer/app/models/vehicle_type_model.dart';
 import 'package:customer/app/modules/select_location/controllers/select_location_controller.dart';
+import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
@@ -62,7 +63,7 @@ class CategoryView extends StatelessWidget {
                 width: 50,
                 height: 50,
                 child: CachedNetworkImage(
-                  imageUrl: vehicleType.image,
+                  imageUrl: imagePath+vehicleType.image,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Constant.loader(),
                   errorWidget: (context, url, error) =>

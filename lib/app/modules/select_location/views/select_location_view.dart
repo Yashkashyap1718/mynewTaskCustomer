@@ -1,3 +1,4 @@
+import 'package:customer/app/modules/home/views/home_view.dart';
 import 'package:customer/app/modules/select_location/views/widgets/confirm_pickup_location.dart';
 import 'package:customer/app/modules/select_location/views/widgets/finding_driver.dart';
 import 'package:customer/app/modules/select_location/views/widgets/select_location_bottom_sheet.dart';
@@ -13,9 +14,9 @@ import 'package:provider/provider.dart';
 import '../controllers/select_location_controller.dart';
 
 class SelectLocationView extends StatelessWidget {
-   SelectLocationView({super.key});
+  SelectLocationView({super.key});
 
- final controller =  Get.put(SelectLocationController());
+  final controller = Get.put(SelectLocationController());
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
@@ -124,6 +125,7 @@ class SelectLocationView extends StatelessWidget {
                           expand: true,
                           builder: (BuildContext context,
                               ScrollController scrollController) {
+                            
                             return FindingDriverBottomSheet(
                               scrollController: scrollController,
                               bookingModel: controller.bookingModel.value,
@@ -147,8 +149,8 @@ class SelectLocationView extends StatelessWidget {
                               controller.setBookingData(true);
                             }
                           } else {
-                            // Get.offAll(const HomeView());
-                            Get.back();
+                            Get.offAll(const HomeView());
+                            // Get.back();
                           }
                         },
                         child: Container(

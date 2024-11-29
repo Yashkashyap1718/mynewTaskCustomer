@@ -24,7 +24,14 @@ import '../../../../constant_widgets/show_toast_dialog.dart';
 
 class HomeController extends GetxController {
   final count = 0.obs;
-  RxString profilePic = "https://avatar.iran.liara.run/public".obs;
+
+
+
+
+
+  RxString profilePic =
+      "https://avatar.iran.liara.run/public"
+          .obs;
   RxString name = ''.obs;
   RxString phoneNumber = ''.obs;
   RxList<BannerModel> bannerList = <BannerModel>[].obs;
@@ -48,6 +55,7 @@ class HomeController extends GetxController {
 
   @override
   void onClose() {}
+
 
   sendLatLon(String lat, String lon) async {
     String? fcmToken;

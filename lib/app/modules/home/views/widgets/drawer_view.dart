@@ -6,7 +6,6 @@ import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/home/controllers/home_controller.dart';
 import 'package:customer/app/modules/my_ride/views/my_ride_view.dart';
 import 'package:customer/app/routes/app_pages.dart';
-import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/custom_dialog_box.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
@@ -25,6 +24,7 @@ class DrawerView extends StatelessWidget {
   UserData user;
 
   DrawerView({super.key, required this.user});
+
 
   @override
   Widget build(BuildContext context) {

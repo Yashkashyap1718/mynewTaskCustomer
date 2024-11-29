@@ -15,8 +15,8 @@ import 'package:customer/app/models/payment_model/stripe_failed_model.dart';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/models/wallet_transaction_model.dart';
 import 'package:customer/constant/constant.dart';
-import 'package:customer/constant/send_notification.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
+import 'package:customer/models/ride_booking.dart' as ride_booking;
 import 'package:customer/payments/marcado_pago/mercado_pago_screen.dart';
 import 'package:customer/payments/pay_fast/pay_fast_screen.dart';
 import 'package:customer/payments/pay_stack/pay_stack_screen.dart';
@@ -25,13 +25,6 @@ import 'package:customer/payments/pay_stack/paystack_url_generator.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/fire_store_utils.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_paypal_native/flutter_paypal_native.dart';
-// import 'package:flutter_paypal_native/models/custom/currency_code.dart';
-// import 'package:flutter_paypal_native/models/custom/environment.dart';
-// import 'package:flutter_paypal_native/models/custom/order_callback.dart';
-// import 'package:flutter_paypal_native/models/custom/purchase_unit.dart';
-// import 'package:flutter_paypal_native/models/custom/user_action.dart';
-// import 'package:flutter_paypal_native/str_helper.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 // import 'package:flutterwave_standard/flutterwave.dart';
 import 'package:get/get.dart';
@@ -62,23 +55,23 @@ class MyRideDetailsController extends GetxController {
   }
 
   getBookingDetails() async {
-    await FireStoreUtils().getPayment().then((value) {
-      if (value != null) {
-        paymentModel.value = value;
-        if (paymentModel.value.strip!.isActive == true) {
-          Stripe.publishableKey =
-              paymentModel.value.strip!.clientPublishableKey.toString();
-          Stripe.merchantIdentifier = 'MyTaxi';
-          Stripe.instance.applySettings();
-        }
-        if (paymentModel.value.paypal!.isActive == true) {
-          // initPayPal();
-        }
-        if (paymentModel.value.flutterWave!.isActive == true) {
-          // setRef();
-        }
-      }
-    });
+    // await FireStoreUtils().getPayment().then((value) {
+    //   if (value != null) {
+    //     paymentModel.value = value;
+    //     if (paymentModel.value.strip!.isActive == true) {
+    //       Stripe.publishableKey =
+    //           paymentModel.value.strip!.clientPublishableKey.toString();
+    //       Stripe.merchantIdentifier = 'MyTaxi';
+    //       Stripe.instance.applySettings();
+    //     }
+    //     if (paymentModel.value.paypal!.isActive == true) {
+    //       // initPayPal();
+    //     }
+    //     if (paymentModel.value.flutterWave!.isActive == true) {
+    //       // setRef();
+    //     }
+    //   }
+    // });
     // bookingModel.value =
     //     (await FireStoreUtils.getRideDetails(bookingId.value)) ??
     //         BookingModel();
@@ -95,21 +88,21 @@ class MyRideDetailsController extends GetxController {
   // }
 
   Future<String> getDistanceInKm() async {
-      String km = '';
-      LatLng departureLatLong = LatLng(
-          bookingModel.value.pickupLocation?.coordinates[0] ?? 0.0,
-          bookingModel.value.pickupLocation?.coordinates[1] ?? 0.0);
-      LatLng destinationLatLong = LatLng(
-          bookingModel.value.dropoffLocation?.coordinates[0] ?? 0.0,
-          bookingModel.value.dropoffLocation?.coordinates[1] ?? 0.0);
-      MapModel? mapModel = await Constant.getDurationDistance(
-          departureLatLong, destinationLatLong);
-      if (mapModel != null) {
-        print("KM : ${mapModel.toJson()}");
-        km = mapModel.rows!.first.elements!.first.distance!.text!;
-      }
-      return km;
+    String km = '';
+    LatLng departureLatLong = LatLng(
+        bookingModel.value.pickupLocation?.coordinates[0] ?? 0.0,
+        bookingModel.value.pickupLocation?.coordinates[1] ?? 0.0);
+    LatLng destinationLatLong = LatLng(
+        bookingModel.value.dropoffLocation?.coordinates[0] ?? 0.0,
+        bookingModel.value.dropoffLocation?.coordinates[1] ?? 0.0);
+    MapModel? mapModel = await Constant.getDurationDistance(
+        departureLatLong, destinationLatLong);
+    if (mapModel != null) {
+      print("KM : ${mapModel.toJson()}");
+      km = mapModel.rows!.first.elements!.first.distance!.text!;
     }
+    return km;
+  }
 
   completeOrder(String transactionId) async {
     ShowToastDialog.showLoader("Please wait".tr);
@@ -190,8 +183,6 @@ class MyRideDetailsController extends GetxController {
     //   Get.back();
     //   // Get.offAllNamed(Routes.HOME);
     // }
-
-    
 
     // ::::::::::::::::::::::::::::::::::::::::::::Wallet::::::::::::::::::::::::::::::::::::::::::::::::::::
     walletPaymentMethod() async {
