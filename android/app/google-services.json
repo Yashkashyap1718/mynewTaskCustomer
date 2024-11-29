@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "316861812533",
+    "project_id": "mytaxicustomer-ab2bd",
+    "storage_bucket": "mytaxicustomer-ab2bd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:316861812533:android:fc9c5fc0e2d4c62edf067c",
+        "android_client_info": {
+          "package_name": "com.ideativemind.customer"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbexQUEM9fs8MVaWkSMP-n3eSxdTvBcuQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
