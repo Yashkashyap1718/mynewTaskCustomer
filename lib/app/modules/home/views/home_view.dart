@@ -99,7 +99,12 @@ class HomeView extends StatelessWidget {
                                                     children: [
                                                       InkWell(
                                                         onTap: () {
+                                                          if(bookingModel!=null){ 
                                                           Get.toNamed(Routes.SELECT_LOCATION, arguments: bookingModel!);
+                                                          }
+                                                          else {
+                                                            Get.toNamed(Routes.SELECT_LOCATION);
+                                                          }
                                                         },
                                                         child: Container(
                                                           width: Responsive.width(100, context),
