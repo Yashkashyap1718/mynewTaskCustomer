@@ -46,7 +46,7 @@ class NoRidesView extends StatelessWidget {
             padding:
                 const EdgeInsets.only(left: 20, right: 20, top: 4, bottom: 24),
             child: Text(
-              'Your ride history is currently empty. Start your journey with MyTaxi by booking your first ride now!'
+              'Your ride history is currently empty. Start your journey with Travel Teacher by booking your first ride now!'
                   .tr,
               textAlign: TextAlign.center,
               style: GoogleFonts.inter(

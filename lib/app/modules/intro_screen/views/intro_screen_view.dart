@@ -88,7 +88,7 @@ class IntroScreenView extends StatelessWidget {
                       },
                       children: [
                         IntroScreenPage(
-                          title: "Welcome to MyTaxi".tr,
+                          title: "Welcome to Travel Teacher".tr,
                           body:
                               "Your reliable partner for swift and convenient rides. Experience hassle-free transportation at your fingertips."
                                   .tr,
@@ -97,14 +97,14 @@ class IntroScreenView extends StatelessWidget {
                         IntroScreenPage(
                           title: " Fast and Reliable".tr,
                           body:
-                              "MyTaxi ensures prompt and reliable rides, getting you to your destination with speed and efficiency."
+                              "Travel Teacher ensures prompt and reliable rides, getting you to your destination with speed and efficiency."
                                   .tr,
                           image: "assets/icon/intro_image_two.svg",
                         ),
                         IntroScreenPage(
                           title: "Seamless User Experience".tr,
                           body:
-                              "Enjoy a user-friendly interface, easy bookings, and secure payments with MyTaxi. Your journey, your way."
+                              "Enjoy a user-friendly interface, easy bookings, and secure payments with Travel Teacher. Your journey, your way."
                                   .tr,
                           image: "assets/icon/intro_image_three.svg",
                         ),
