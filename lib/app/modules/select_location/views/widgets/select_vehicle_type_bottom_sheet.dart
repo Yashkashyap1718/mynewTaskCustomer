@@ -276,7 +276,7 @@ class SelectVehicleTypeBottomSheet extends StatelessWidget {
                         RoundShapeButton(
                           size: const Size(151, 45),
                           title: "Continue".tr,
-                          buttonColor: AppThemData.primary400,
+                          buttonColor: AppThemData.primary300,
                           buttonTextColor: AppThemData.black,
                           onTap: () {
                             controller.popupIndex.value = 2;

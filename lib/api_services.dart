@@ -169,3 +169,40 @@ Future<bool?> setBookingCancel(RideBooking bookingModel) async {
 
   return canceled;
 }
+
+Future<bool> sendTopicNotification({
+  required String topic,
+  required String title,
+  required String body,
+  Map<String, dynamic>? payload,
+}) async {
+  try {
+    final response = await http.post(
+      Uri.parse('https://fcm.googleapis.com/fcm/send'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'key=AIzaSyCMRryPgY1DJOc7a7sp81Y88oBhmXkDLR8', // Replace with your FCM server key
+      },
+      body: jsonEncode({
+        'to': '/topics/$topic',
+        'notification': {
+          'title': title,
+          'body': body,
+        },
+        'data': payload ?? {},
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      log('Topic notification sent successfully');
+      return true;
+    } else {
+      log('Failed to send topic notification: ${response.statusCode}');
+      return false;
+    }
+  } catch (e) {
+    log('Error sending topic notification: $e');
+    return false;
+  }
+}
+

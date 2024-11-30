@@ -45,7 +45,7 @@ class CategoryView extends StatelessWidget {
                           ? AppThemData.grey800
                           : AppThemData.grey100)
                   : controller.selectVehicleTypeIndex.value == index
-                      ? BorderSide(width: 1, color: AppThemData.primary400)
+                      ? BorderSide(width: 1, color: AppThemData.primary300)
                       : BorderSide(
                           width: 1,
                           color: themeChange.isDarkTheme()
