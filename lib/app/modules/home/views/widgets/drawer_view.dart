@@ -15,6 +15,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../constant/constant.dart';
@@ -24,7 +25,6 @@ class DrawerView extends StatelessWidget {
   UserData user;
 
   DrawerView({super.key, required this.user});
-
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +83,9 @@ class DrawerView extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        user.name ?? "Customer",
+                                        controller.name.value ==   ""
+                                            ? user.name ?? "Customer"
+                                            : controller.name.value,
                                         style: GoogleFonts.inter(
                                           color: themeChange.isDarkTheme()
                                               ? AppThemData.white
@@ -93,10 +95,9 @@ class DrawerView extends StatelessWidget {
                                         ),
                                       ),
                                       Text(
-                                        (user.countryCode != null &&
-                                                user.phone != null)
-                                            ? "${user.countryCode}${user.phone}"
-                                            : "+91xxx-xxxx-xxx",
+                                        controller.phoneNumber.value == ""
+                                            ? "+91xxx-xxxx-xxx"
+                                            : controller.phoneNumber.value,
                                         style: GoogleFonts.inter(
                                           color: themeChange.isDarkTheme()
                                               ? AppThemData.white

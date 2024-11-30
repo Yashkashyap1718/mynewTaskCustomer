@@ -15,11 +15,11 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 class EditProfileController extends GetxController {
   //TODO: Implement EditProfileController
   RxString profileImage = "https://avatar.iran.liara.run/public".obs;
-  TextEditingController countryCodeController = TextEditingController(text: '+91');
+  TextEditingController countryCodeController =
+      TextEditingController(text: '+91');
   // TextEditingController datePickerController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
@@ -48,20 +48,43 @@ class EditProfileController extends GetxController {
   }
 
   getUserData() async {
-    userModel  = userDataModel;
-    SharedPreferences preferences = await SharedPreferences.getInstance();
- String email =    preferences.getString("email")??"";
-    if (userModel != null) {
-      name.value = userModel!.name ?? '';
-      nameController.text = userModel!.name ?? '';
-      phoneNumber.value = (userModel!.countryCode ?? '') + (userModel!.phone ?? '');
-      dobController.text = "2000-01-01";
-      emailController.text = email;
-      selectedGender.value = (userModel!.gender??"male")=="male"?1:2;
+    const String url = '$baseURL$getUserPofileEndpoint';
+    try {
+      ShowToastDialog.showLoader("Getting profile details...".tr);
+      final http.Response response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          'token': token,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body)["data"];
+
+        name.value = data['name'] ?? '';
+        nameController.text = data['name'] ?? '';
+        emailController.text = data['email'] ?? '';
+        dobController.text = data['date_of_birth'] ?? '';
+        selectedGender.value = data['gender'] == 'male' ? 1 : 2;
+
+        SharedPreferences preferences = await SharedPreferences.getInstance();
+        preferences.setString("name", data['name'] ?? '');
+        preferences.setString("phone_number", data['phone'] ?? '');
+
+        ShowToastDialog.closeLoader();
+      } else {
+        ShowToastDialog.closeLoader();
+        throw Exception('Failed to get user profile');
+      }
+    } catch (e) {
+      ShowToastDialog.closeLoader();
+      debugPrint('Error getting profile: $e');
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        const SnackBar(content: Text('Error occurred while getting profile.')),
+      );
     }
   }
-
-
 
   Future<void> pickFile(
       {required ImageSource source, required String token}) async {
@@ -100,7 +123,7 @@ class EditProfileController extends GetxController {
     final Map<String, String> payload = {
       "name": nameController.text,
       "email": emailController.text,
-      "date_of_birth": emailController.text,
+      "date_of_birth": dobController.text,
       "gender": selectedGender.value == 1 ? "male" : "female",
     };
 
@@ -116,6 +139,7 @@ class EditProfileController extends GetxController {
       );
 
       if (response.statusCode == 200) {
+        ;
         final Map<String, dynamic> data = jsonDecode(response.body);
 
         log('-----update--user-----$data');
@@ -187,7 +211,8 @@ class EditProfileController extends GetxController {
         }
       } else {
         ShowToastDialog.closeLoader();
-        throw Exception('Failed to upload profile. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to upload profile. Status code: ${response.statusCode}');
       }
     } catch (e) {
       ShowToastDialog.closeLoader();
