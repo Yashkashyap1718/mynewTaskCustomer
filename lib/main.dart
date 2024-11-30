@@ -27,20 +27,20 @@ Future<void> main() async {
   await MyNotificationHandler().requestNotificationPermissions();
 
 
-// FirebaseMessaging messaging = FirebaseMessaging.instance;
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
   
-//   // Get the device token for FCM
-//   String? token = await messaging.getToken();
-//   print("FCM Token: $token");
+  // Get the device token for FCM
+  String? token = await messaging.getToken();
+  print("FCM Token: $token");
 
   // Request permission for iOS (if required)
-  // await messaging.requestPermission();
+  await messaging.requestPermission();
 
 
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //   MyNotificationHandler().showNotification(message);
-  // });
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    MyNotificationHandler().showNotification(message);
+  });
 
   // Location location = Location();
 

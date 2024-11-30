@@ -41,7 +41,7 @@ class RoundShapeButton extends StatelessWidget {
             style: GoogleFonts.inter(
               fontSize: textSize??16,
               fontWeight: FontWeight.w600,
-              color: buttonTextColor,
+              color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
             )));
   }
 }

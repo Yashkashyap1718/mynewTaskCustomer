@@ -174,7 +174,7 @@ class ConfirmPickupBottomSheet extends StatelessWidget {
                       RoundShapeButton(
                         size: Size(Responsive.width(100, context), 45),
                         title: "Confirm pick-up".tr,
-                        buttonColor: AppThemData.primary400,
+                        buttonColor: AppThemData.primary300,
                         buttonTextColor: AppThemData.black,
                         onTap: () async {
                           ShowToastDialog.showLoader("Please wait...");
@@ -197,6 +197,16 @@ class ConfirmPickupBottomSheet extends StatelessWidget {
                           try {
                             NearbyDriversResponse? result =
                                 await setBooking(controller.bookingModel.value);
+                                
+                            for (var element in result?.data ?? []) {
+                              await sendTopicNotification(
+                                topic: element.id,
+                                title: "New Ride Request", 
+                                body: "A new ride request has been received",
+                              );
+                            }
+                            // log("result: ${result?.toJson()}");
+
                             if (result != null) {
                               // Clear existing driver markers first
                               controller.markers.removeWhere((key, value) => key.value.startsWith('driver_'));
