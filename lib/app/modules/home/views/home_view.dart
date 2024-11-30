@@ -151,206 +151,192 @@ class HomeView extends StatelessWidget {
                                                         ),
                                                       ),
                                                       const SizedBox(height: 20),
-                                                      // StreamBuilder<List<BookingModel>>(
-                                                      //     stream: FireStoreUtils().getHomeOngoingBookings(),
-                                                      //     builder: (context, snapshot) {
-                                                      //       log("---------------State : ${snapshot.connectionState}");
-                                                      //       log("--------------State : ${snapshot.data}");
-                                                      //       if (snapshot.connectionState == ConnectionState.waiting) {
-                                                      //         return Constant.loader();
-                                                      //       }
-                                                      //       if (!snapshot.hasData || (snapshot.data?.isEmpty ?? true)) {
-                                                      //         return NoRidesView(
-                                                      //           themeChange: themeChange,
-                                                      //           height: Responsive.height(40, context),
-                                                      //         );
-                                                      //       } else {
-                                                      //         List<BookingModel> bookingModelList = snapshot.data!;
-                                                      //         return ListView.builder(
-                                                      //           shrinkWrap: true,
-                                                      //           physics: const NeverScrollableScrollPhysics(),
-                                                      //           itemCount: bookingModelList.length,
-                                                      //           itemBuilder: (context, index) {
-                                                      //             return Column(
-                                                      //               mainAxisSize: MainAxisSize.min,
-                                                      //               crossAxisAlignment: CrossAxisAlignment.start,
-                                                      //               mainAxisAlignment: MainAxisAlignment.start,
-                                                      //               children: [
-                                                      //                 InkWell(
-                                                      //                   onTap: () {
-                                                      //                     MyRideDetailsController detailsController = Get.put(MyRideDetailsController());
-                                                      //                     detailsController.bookingId.value = bookingModelList[index].id ?? '';
-                                                      //                     detailsController.bookingModel.value = bookingModelList[index];
-                                                      //                     Get.to(const MyRideDetailsView());
-                                                      //                   },
-                                                      //                   child: Container(
-                                                      //                     width: Responsive.width(100, context),
-                                                      //                     padding: const EdgeInsets.all(16),
-                                                      //                     decoration: ShapeDecoration(
-                                                      //                       shape: RoundedRectangleBorder(
-                                                      //                         side: BorderSide(width: 1, color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100),
-                                                      //                         borderRadius: BorderRadius.circular(12),
-                                                      //                       ),
-                                                      //                     ),
-                                                      //                     child: Column(
-                                                      //                       mainAxisSize: MainAxisSize.min,
-                                                      //                       mainAxisAlignment: MainAxisAlignment.start,
-                                                      //                       crossAxisAlignment: CrossAxisAlignment.start,
-                                                      //                       children: [
-                                                      //                         Row(
-                                                      //                           mainAxisSize: MainAxisSize.min,
-                                                      //                           mainAxisAlignment: MainAxisAlignment.start,
-                                                      //                           crossAxisAlignment: CrossAxisAlignment.center,
-                                                      //                           children: [
-                                                      //                             Text(
-                                                      //                               bookingModelList[index].bookingTime == null ? "" : bookingModelList[index].bookingTime!.toDate().dateMonthYear(),
-                                                      //                               style: GoogleFonts.inter(
-                                                      //                                 color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
-                                                      //                                 fontSize: 14,
-                                                      //                                 fontWeight: FontWeight.w400,
-                                                      //                               ),
-                                                      //                             ),
-                                                      //                             const SizedBox(width: 8),
-                                                      //                             Container(
-                                                      //                               height: 15,
-                                                      //                               decoration: ShapeDecoration(
-                                                      //                                 shape: RoundedRectangleBorder(
-                                                      //                                   side: BorderSide(
-                                                      //                                     width: 1,
-                                                      //                                     strokeAlign: BorderSide.strokeAlignCenter,
-                                                      //                                     color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100,
-                                                      //                                   ),
-                                                      //                                 ),
-                                                      //                               ),
-                                                      //                             ),
-                                                      //                             const SizedBox(width: 8),
-                                                      //                             Expanded(
-                                                      //                               child: Text(
-                                                      //                                 bookingModelList[index].bookingTime == null ? "" : bookingModelList[index].bookingTime!.toDate().time(),
-                                                      //                                 style: GoogleFonts.inter(
-                                                      //                                   color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
-                                                      //                                   fontSize: 14,
-                                                      //                                   fontWeight: FontWeight.w400,
-                                                      //                                 ),
-                                                      //                               ),
-                                                      //                             ),
-                                                      //                             const SizedBox(width: 8),
-                                                      //                             Text(
-                                                      //                               BookingStatus.getBookingStatusTitle(bookingModelList[index].bookingStatus ?? ''),
-                                                      //                               textAlign: TextAlign.right,
-                                                      //                               style: GoogleFonts.inter(
-                                                      //                                 color: BookingStatus.getBookingStatusTitleColor(bookingModelList[index].bookingStatus ?? ''),
-                                                      //                                 fontSize: 16,
-                                                      //                                 fontWeight: FontWeight.w600,
-                                                      //                               ),
-                                                      //                             )
-                                                      //                           ],
-                                                      //                         ),
-                                                      //                         const SizedBox(height: 12),
-                                                      //                         Container(
-                                                      //                           padding: const EdgeInsets.only(bottom: 12),
-                                                      //                           child: Row(
-                                                      //                             mainAxisSize: MainAxisSize.min,
-                                                      //                             mainAxisAlignment: MainAxisAlignment.start,
-                                                      //                             crossAxisAlignment: CrossAxisAlignment.center,
-                                                      //                             children: [
-                                                      //                               CachedNetworkImage(
-                                                      //                                 imageUrl: bookingModelList[index].vehicleType == null ? Constant.profileConstant : bookingModelList[index].vehicleType!.image,
-                                                      //                               ),
-                                                      //                               const SizedBox(width: 12),
-                                                      //                               Expanded(
-                                                      //                                 child: Column(
-                                                      //                                   mainAxisSize: MainAxisSize.min,
-                                                      //                                   mainAxisAlignment: MainAxisAlignment.center,
-                                                      //                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                                      //                                   children: [
-                                                      //                                     Text(
-                                                      //                                       bookingModelList[index].vehicleType == null ? "" : bookingModelList[index].vehicleType!.title,
-                                                      //                                       style: GoogleFonts.inter(
-                                                      //                                         color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
-                                                      //                                         fontSize: 16,
-                                                      //                                         fontWeight: FontWeight.w600,
-                                                      //                                       ),
-                                                      //                                     ),
-                                                      //                                     const SizedBox(height: 2),
-                                                      //                                     if (bookingModelList[index].bookingStatus == BookingStatus.bookingAccepted)
-                                                      //                                       Row(
-                                                      //                                         children: [
-                                                      //                                           Text(
-                                                      //                                             'OTP : '.tr,
-                                                      //                                             style: GoogleFonts.inter(
-                                                      //                                               color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
-                                                      //                                               fontSize: 14,
-                                                      //                                               fontWeight: FontWeight.w400,
-                                                      //                                             ),
-                                                      //                                           ),
-                                                      //                                           Text(
-                                                      //                                             bookingModelList[index].otp ?? '',
-                                                      //                                             textAlign: TextAlign.right,
-                                                      //                                             style: GoogleFonts.inter(
-                                                      //                                               color: AppThemData.primary400,
-                                                      //                                               fontSize: 16,
-                                                      //                                               fontWeight: FontWeight.w600,
-                                                      //                                             ),
-                                                      //                                           ),
-                                                      //                                         ],
-                                                      //                                       )
-                                                      //                                   ],
-                                                      //                                 ),
-                                                      //                               ),
-                                                      //                               const SizedBox(width: 16),
-                                                      //                               Column(
-                                                      //                                 mainAxisSize: MainAxisSize.min,
-                                                      //                                 mainAxisAlignment: MainAxisAlignment.end,
-                                                      //                                 crossAxisAlignment: CrossAxisAlignment.end,
-                                                      //                                 children: [
-                                                      //                                   Text(
-                                                      //                                     Constant.amountToShow(amount: Constant.calculateFinalAmount(bookingModelList[index]).toStringAsFixed(2)),
-                                                      //                                     textAlign: TextAlign.right,
-                                                      //                                     style: GoogleFonts.inter(
-                                                      //                                       color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
-                                                      //                                       fontSize: 16,
-                                                      //                                       fontWeight: FontWeight.w500,
-                                                      //                                     ),
-                                                      //                                   ),
-                                                      //                                   const SizedBox(height: 2),
-                                                      //                                   Row(
-                                                      //                                     mainAxisSize: MainAxisSize.min,
-                                                      //                                     mainAxisAlignment: MainAxisAlignment.start,
-                                                      //                                     crossAxisAlignment: CrossAxisAlignment.center,
-                                                      //                                     children: [
-                                                      //                                       SvgPicture.asset(
-                                                      //                                         "assets/icon/ic_multi_person.svg",
-                                                      //                                         color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
-                                                      //                                       ),
-                                                      //                                       const SizedBox(width: 6),
-                                                      //                                       Text(
-                                                      //                                         bookingModelList[index].vehicleType == null ? "" : bookingModelList[index].vehicleType!.persons,
-                                                      //                                         style: GoogleFonts.inter(
-                                                      //                                           color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
-                                                      //                                           fontSize: 16,
-                                                      //                                           fontWeight: FontWeight.w400,
-                                                      //                                         ),
-                                                      //                                       ),
-                                                      //                                     ],
-                                                      //                                   ),
-                                                      //                                 ],
-                                                      //                               ),
-                                                      //                             ],
-                                                      //                           ),
-                                                      //                         ),
-                                                      //                       ],
-                                                      //                     ),
-                                                      //                   ),
-                                                      //                 ),
-                                                      //                 const SizedBox(height: 4),
-                                                      //               ],
-                                                      //             );
-                                                      //           },
-                                                      //         );
-                                                      //       }
-                                                      //     }),
-                                                      // // Container(
+                                                      StreamBuilder<RideBooking?>(
+                                                          stream: checkRequest(),
+                                                          builder: (context, snapshot) {
+
+                                                            log("---------------State : ${snapshot.connectionState}");
+                                                            log("--------------State : ${snapshot.data}");
+                                                            if (snapshot.connectionState == ConnectionState.waiting) {
+                                                              return Constant.loader();
+                                                            }
+                                                            if (!snapshot.hasData) {
+                                                              return NoRidesView(
+                                                                themeChange: themeChange,
+                                                                height: Responsive.height(40, context),
+                                                              );
+                                                            } else {
+                                                              RideBooking bookingModelList = snapshot.data!;
+                                                              bookingModel=bookingModelList   ;
+                                                              return ListView.builder(
+                                                                shrinkWrap: true,
+                                                                physics: const NeverScrollableScrollPhysics(),
+                                                                itemCount: 1,
+                                                                itemBuilder: (context, index) {
+                                                                  return Column(
+                                                                    mainAxisSize: MainAxisSize.min,
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                    children: [
+                                                                      InkWell(
+                                                                        onTap: () {
+
+
+
+
+ Get.toNamed(Routes.SELECT_LOCATION,arguments: bookingModelList);
+
+
+
+                                                                          // MyRideDetailsController detailsController = Get.put(MyRideDetailsController());
+                                                                          // detailsController.bookingId.value = bookingModelList.id ?? '';
+                                                                          // detailsController.bookingModel.value = bookingModelList;
+                                                                          // Get.to(const MyRideDetailsView());
+                                                                        },
+                                                                        child: Container(
+                                                                          width: Responsive.width(100, context),
+                                                                          padding: const EdgeInsets.all(16),
+                                                                          decoration: ShapeDecoration(
+                                                                            shape: RoundedRectangleBorder(
+                                                                              side: BorderSide(width: 1, color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100),
+                                                                              borderRadius: BorderRadius.circular(12),
+                                                                            ),
+                                                                          ),
+                                                                          child: Column(
+                                                                            mainAxisSize: MainAxisSize.min,
+                                                                            mainAxisAlignment: MainAxisAlignment.start,
+                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            children: [
+                                                                              Row(
+                                                                                mainAxisSize: MainAxisSize.min,
+                                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                children: [
+                                                                                  Text(
+                                                                                    DateTime.fromMillisecondsSinceEpoch(bookingModelList.createdAt).time(),
+                                                                                    style: GoogleFonts.inter(
+                                                                                      color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
+                                                                                      fontSize: 14,
+                                                                                      fontWeight: FontWeight.w400,
+                                                                                    ),
+                                                                                  ),
+                                                                                  const SizedBox(width: 8),
+                                                                                  Text(
+                                                                                    BookingStatus.getBookingStatusTitle(bookingModelList.status),
+                                                                                    textAlign: TextAlign.right,
+                                                                                    style: GoogleFonts.inter(
+                                                                                      color: BookingStatus.getBookingStatusTitleColor(bookingModelList.status),
+                                                                                      fontSize: 16,
+                                                                                      fontWeight: FontWeight.w600,
+                                                                                    ),
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                              const SizedBox(height: 12),
+                                                                              Container(
+                                                                                padding: const EdgeInsets.only(bottom: 12),
+                                                                                child: Row(
+                                                                                  mainAxisSize: MainAxisSize.min,
+                                                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                  children: [
+                                                                                     CachedNetworkImage(
+                                                                                      imageUrl: Constant.profileConstant,
+                                                                                    ),
+                                                                                    const SizedBox(width: 12),
+                                                                                    Expanded(
+                                                                                      child: Column(
+                                                                                        mainAxisSize: MainAxisSize.min,
+                                                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                        children: [
+                                                                                          Text(
+                                                                                             bookingModelList.vehicleType?.title ?? '',
+                                                                                            style: GoogleFonts.inter(
+                                                                                              color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                                                                                              fontSize: 16,
+                                                                                              fontWeight: FontWeight.w600,
+                                                                                            ),
+                                                                                          ),
+                                                                                          const SizedBox(height: 2),
+                                                                                          if (bookingModelList.status == "accepted")
+                                                                                            Row(
+                                                                                              children: [
+                                                                                                Text(
+                                                                                                  'OTP : '.tr,
+                                                                                                  style: GoogleFonts.inter(
+                                                                                                    color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                                                                                                    fontSize: 14,
+                                                                                                    fontWeight: FontWeight.w400,
+                                                                                                  ),
+                                                                                                ),
+                                                                                                Text(
+                                                                                                  bookingModelList.otp ,
+                                                                                                  textAlign: TextAlign.right,
+                                                                                                  style: GoogleFonts.inter(
+                                                                                                    color: AppThemData.primary400,
+                                                                                                    fontSize: 16,
+                                                                                                    fontWeight: FontWeight.w600,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ],
+                                                                                            )
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                    const SizedBox(width: 16),
+                                                                                    Column(
+                                                                                      mainAxisSize: MainAxisSize.min,
+                                                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                                                                      children: [
+                                                                                        Text(
+                                                                                          bookingModelList.fareAmount.toString(),
+                                                                                          textAlign: TextAlign.right,
+                                                                                          style: GoogleFonts.inter(
+                                                                                            color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                                                                                            fontSize: 16,
+                                                                                            fontWeight: FontWeight.w500,
+                                                                                          ),
+                                                                                        ),
+                                                                                        const SizedBox(height: 2),
+                                                                                        Row(
+                                                                                          mainAxisSize: MainAxisSize.min,
+                                                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                          children: [
+                                                                                            SvgPicture.asset(
+                                                                                              "assets/icon/ic_multi_person.svg",
+                                                                                              color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                                                                                            ),
+                                                                                            const SizedBox(width: 6),
+                                                                                            Text(
+                                                                                              bookingModelList.vehicleType == null ? "" : bookingModelList.vehicleType!.persons,
+                                                                                              style: GoogleFonts.inter(
+                                                                                                color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                                                                                                fontSize: 16,
+                                                                                                fontWeight: FontWeight.w400,
+                                                                                              ),
+                                                                                            ),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      const SizedBox(height: 4),
+                                                                    ],
+                                                                  );
+                                                                },
+                                                              );
+                                                            }
+                                                          }),
+                                                      // Container(
                                                       //   width: Responsive.width(100, context),
                                                       //   padding: const EdgeInsets.all(16),
                                                       //   margin: const EdgeInsets.only(top: 16),

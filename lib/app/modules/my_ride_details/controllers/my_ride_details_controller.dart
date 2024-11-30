@@ -61,7 +61,7 @@ class MyRideDetailsController extends GetxController {
     //     if (paymentModel.value.strip!.isActive == true) {
     //       Stripe.publishableKey =
     //           paymentModel.value.strip!.clientPublishableKey.toString();
-    //       Stripe.merchantIdentifier = 'MyTaxi';
+    //       Stripe.merchantIdentifier = 'Travel Teacher';
     //       Stripe.instance.applySettings();
     //     }
     //     if (paymentModel.value.paypal!.isActive == true) {
@@ -244,7 +244,7 @@ class MyRideDetailsController extends GetxController {
     //                     primary: AppThemData.primary400,
     //                   ),
     //                 ),
-    //                 merchantDisplayName: 'MyTaxi'));
+    //                 merchantDisplayName: 'Travel Teacher'));
     //         displayStripePaymentSheet(amount: amount);
     //       }
     //     } catch (e, s) {
