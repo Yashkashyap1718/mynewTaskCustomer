@@ -5,6 +5,7 @@ import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/app_bar_with_border.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
 import 'package:customer/constant_widgets/text_field_with_title.dart';
+import 'package:customer/extension/date_time_extension.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
@@ -142,16 +143,25 @@ class EditProfileView extends StatelessWidget {
                             : 'This field required'.tr,
                       ),
                       const SizedBox(height: 20),
-                      TextFieldWithTitle(
+                      InkWell(
+                      onTap: () async {
+                              DateTime? datetime =
+                                  await Constant.selectDate(context);
+                              controller.dobController.text =
+                                  datetime!.dateMonthYear();
+                            },
+                      child: TextFieldWithTitle(
                         title: "Date of Birth".tr,
                         hintText: "Enter Date of Birth".tr,
-                        prefixIcon: const Icon(Icons.date_range),
                         keyboardType: TextInputType.text,
                         controller: controller.dobController,
-                        validator: (value) => value != null && value.isNotEmpty
-                            ? null
-                            : 'This field required'.tr,
+                        suffixIcon: const Icon(
+                          Icons.calendar_month_outlined,
+                          size: 20,
+                        ),
+                        isEnable: false,
                       ),
+                    ),
                       // const SizedBox(height: 20),
                       // Column(
                       //   mainAxisAlignment: MainAxisAlignment.spaceAround,

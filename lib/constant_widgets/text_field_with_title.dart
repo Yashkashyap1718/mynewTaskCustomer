@@ -14,6 +14,7 @@ class TextFieldWithTitle extends StatelessWidget {
   final TextEditingController controller;
   final bool? isEnable;
   final validator;
+  final Widget? suffixIcon;
 
   const TextFieldWithTitle({
     super.key,
@@ -25,6 +26,7 @@ class TextFieldWithTitle extends StatelessWidget {
     this.prefixIcon,
     this.isEnable,
     this.validator,
+    this.suffixIcon,
   });
 
   @override
@@ -59,6 +61,7 @@ class TextFieldWithTitle extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 10),
                 child: prefixIcon,
               ),
+              suffixIcon: suffixIcon,
               hintText: hintText,
               hintStyle: GoogleFonts.inter(fontSize: 14, color: AppThemData.grey500, fontWeight: FontWeight.w400),
             ),

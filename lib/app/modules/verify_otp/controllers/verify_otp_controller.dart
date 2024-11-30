@@ -23,7 +23,6 @@ class VerifyOtpController extends GetxController {
   RxInt resendToken = 0.obs;
   RxBool isLoading = true.obs;
 
-
   @override
   void onInit() {
     getArgument();
@@ -65,23 +64,22 @@ class VerifyOtpController extends GetxController {
       if (response.statusCode == 200) {
         ShowToastDialog.closeLoader();
         final Map<String, dynamic> responseData = jsonDecode(response.body);
-        if(responseData["status"]==true){
+        if (responseData["status"] == true) {
           final String msg = responseData['msg'];
           final List<String> parts = msg.split(',');
           verificationId.value = parts.first.trim();
           ScaffoldMessenger.of(context).showSnackBar(
-             SnackBar(
+            SnackBar(
               content: Text(responseData["msg"].toString()),
             ),
           );
-        }else{
+        } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Something went wrong please try again later'),
             ),
           );
         }
-
       } else {
         ShowToastDialog.closeLoader();
         ScaffoldMessenger.of(context).showSnackBar(
@@ -137,7 +135,7 @@ class VerifyOtpController extends GetxController {
         body: jsonEncode(payload),
       );
 
-      if(response.statusCode==200){
+      if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
         print("VERIFIYOTP:: $data");
         ShowToastDialog.closeLoader();
@@ -150,18 +148,19 @@ class VerifyOtpController extends GetxController {
           final int firstDigitAsInt = int.parse(firstDigit, radix: 16);
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setString("token", token);
-           await prefs.setString("id", id);
+          await prefs.setString("id", id);
           ShowToastDialog.closeLoader();
 
-          await fetchUserProfile(token, context);
+          await fetchUserProfile(token, context, data['email'] ?? false);
         } else {
           ShowToastDialog.closeLoader();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Something went wrong'),
             ),
-          );        }
-      }else{
+          );
+        }
+      } else {
         ShowToastDialog.closeLoader();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -179,7 +178,7 @@ class VerifyOtpController extends GetxController {
     }
   }
 
-  Future<void> fetchUserProfile(token, context) async {
+  Future<void> fetchUserProfile(token, context, bool isEmialVerified) async {
     const String baseUrl = "http://172.93.54.177:3002/users/profile/preview";
     try {
       ShowToastDialog.showLoader("Please wait".tr);
@@ -191,29 +190,32 @@ class VerifyOtpController extends GetxController {
         },
       );
       if (response.statusCode == 200) {
-
         final Map<String, dynamic> responseData = jsonDecode(response.body);
         if (responseData['status'] == true) {
           final data = responseData['data'];
           UserData userModel = UserData(
             id: data['_id'] ?? '', // Default to an empty string if null
             name: data['name'] ?? '', // Default to an empty string if null
-            countryCode: data['country_code'] ?? '', // Default to an empty string if null
+            countryCode: data['country_code'] ??
+                '', // Default to an empty string if null
             phone: data['phone'] ?? '', // Default to an empty string if null
-            referralCode: data['referral_code'] ?? '', // Default to an empty string if null
-            verified: data['verified'] ?? false, // Convert to string and default to 'false' if null
+            referralCode: data['referral_code'] ??
+                '', // Default to an empty string if null
+            verified: data['verified'] ??
+                false, // Convert to string and default to 'false' if null
             role: data['role'] ?? '', // Default to an empty string if null
             status: data['status'] ?? '', // Default to an empty string if null
-            suspend: data['suspend'] ?? false, // Default to false if null
+            suspend: data['suspend'] ??
+                false, // Default to false if null  "phone" -> "9858585858"
           );
           ShowToastDialog.closeLoader();
           userDataModel = userModel;
-         // await Preferences().saveIsUserLoggedIn();
+          // await Preferences().saveIsUserLoggedIn();
           SharedPreferences preferences = await SharedPreferences.getInstance();
-          String email = preferences.getString("email")??"";
-          if(userDataModel.verified==false || userModel.gender==null || userModel.status!="Active"|| email.isEmpty){
+          String email = preferences.getString("email") ?? "";
+          if (isEmialVerified == false) {
             Get.toNamed(Routes.EMAIL_OTP);
-          }else{
+          } else {
             await Preferences().saveIsUserLoggedIn();
             Get.toNamed(Routes.HOME);
           }
@@ -223,8 +225,7 @@ class VerifyOtpController extends GetxController {
             duration: const Duration(seconds: 5),
             mobileSnackBarPosition: MobileSnackBarPosition.top,
           ).show(context);
-         // Get.toNamed(Routes.SIGNUP,arguments: {'userToken': token});
-
+          // Get.toNamed(Routes.SIGNUP,arguments: {'userToken': token});
         } else {
           ShowToastDialog.closeLoader();
 
@@ -239,7 +240,7 @@ class VerifyOtpController extends GetxController {
         ShowToastDialog.closeLoader();
 
         AnimatedSnackBar.material(
-         "Something went wrong",
+          "Something went wrong",
           type: AnimatedSnackBarType.error, // Changed to error
           duration: const Duration(seconds: 5),
           mobileSnackBarPosition: MobileSnackBarPosition.top,

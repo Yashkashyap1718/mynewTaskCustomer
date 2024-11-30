@@ -93,6 +93,9 @@ class HomeController extends GetxController {
   }
 
   void getUserData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    name.value = preferences.getString("name") ?? "";
+    phoneNumber.value = preferences.getString("phone_number") ?? "";
     isLoading.value = true;
     userData = await FireStoreUtils.getUserProfileAPI();
     print("USERDATA::: $userData");
