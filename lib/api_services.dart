@@ -83,6 +83,7 @@ Stream<RideBooking?> checkRequest() async* {
           RideBooking.fromJson(jsonDecode(response.body)["data"]);
 
 
+      log("listModel: ${listModel.toJson()}");
 
       if(status!=listModel.status){
         status=listModel.status;
