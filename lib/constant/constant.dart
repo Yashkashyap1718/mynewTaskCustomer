@@ -140,6 +140,7 @@ class Constant {
   }
 
   static String amountToShow({required String? amount}) {
+    return amount??"";
     if (Constant.currencyModel!.symbolAtRight == true) {
       return "${double.parse(amount.toString()).toStringAsFixed(Constant.currencyModel!.decimalDigits!)}${Constant.currencyModel!.symbol.toString()}";
     } else {
