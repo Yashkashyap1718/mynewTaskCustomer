@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:customer/app/models/banner_model.dart';
 import 'package:customer/app/models/booking_model.dart';
+import 'package:customer/app/models/my_ride_model.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/models/near_by_drivers.dart';
@@ -10,6 +12,7 @@ import 'package:customer/utils/my_notification_handler.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<NearbyDriversResponse?> setBooking(BookingModel bookingModel) async {
   // print("BookingModelJSONN :: ${jsonEncode(bookingModel.pickUpLocation)}");
@@ -36,7 +39,8 @@ Future<NearbyDriversResponse?> setBooking(BookingModel bookingModel) async {
     "vehicle_type": (bookingModel.vehicleType!.title == null)
         ? ''
         : bookingModel.vehicleType!.title,
-    "fare_amount": (bookingModel.subTotal == null) ? '' : bookingModel.subTotal.toString(),
+    "fare_amount":
+        (bookingModel.subTotal == null) ? '' : bookingModel.subTotal.toString(),
     "duration_in_minutes": "50",
   };
 
@@ -46,25 +50,31 @@ Future<NearbyDriversResponse?> setBooking(BookingModel bookingModel) async {
     headers: {"Content-Type": "application/json", "token": token},
   );
 
-    NearbyDriversResponse nearbyDrivers;
+  NearbyDriversResponse nearbyDrivers;
   // print("RIDEBOOKING REQUST ${response.body}");  isma be krde
   if (response.statusCode == 200) {
-
-     nearbyDrivers = NearbyDriversResponse.fromJson(jsonDecode(response.body));
+    nearbyDrivers = NearbyDriversResponse.fromJson(jsonDecode(response.body));
     // return jsonDecode(response.body);
   } else if (response.statusCode == 404) {
-        nearbyDrivers = NearbyDriversResponse(status: false, msg: "Failed to add ride", data: [], rideId: ""); // Initialize with default value
+    nearbyDrivers = NearbyDriversResponse(
+        status: false,
+        msg: "Failed to add ride",
+        data: [],
+        rideId: ""); // Initialize with default value
     log("Driver not found");
   } else {
     log("Failed to add ride:");
-    nearbyDrivers = NearbyDriversResponse(status: false, msg: "Failed to add ride", data: [], rideId: ""); // Initialize with default value
+    nearbyDrivers = NearbyDriversResponse(
+        status: false,
+        msg: "Failed to add ride",
+        data: [],
+        rideId: ""); // Initialize with default value
   }
   return nearbyDrivers;
 }
 
 Stream<RideBooking?> checkRequest() async* {
-
-  String status="";
+  String status = "";
 
   while (true) {
     final Map<String, dynamic> body = {"startValue": 0, "lastValue": 10};
@@ -82,33 +92,28 @@ Stream<RideBooking?> checkRequest() async* {
       RideBooking listModel =
           RideBooking.fromJson(jsonDecode(response.body)["data"]);
 
-
       log("listModel: ${listModel.toJson()}");
 
-      if(status!=listModel.status){
-        status=listModel.status;
+      if (status != listModel.status) {
+        status = listModel.status;
 
-
-        if(status=="cancelled"){  
-           MyNotificationHandler().showDefaultNotification("Ride Cancelled","Ride #${listModel.id.toString().substring(0, 4)} is cancelled by Customer");
-        }
-      else if(status=="accepted"){
-          MyNotificationHandler().showDefaultNotification("Ride Accepted","Ride #${listModel.id.toString().substring(0, 4)} is accepted by Driver");
-        }
-        else if(status=="started"){
-          MyNotificationHandler().showDefaultNotification("Ride Started","Ride #${listModel.id.toString().substring(0, 4)} is started by Driver");
-        }
-        else if(status=="in_progress"){
-          MyNotificationHandler().showDefaultNotification("Ride in Progress","Ride #${listModel.id.toString().substring(0, 4)} is in progress");
-        }
-        else if(status=="completed"){
-          MyNotificationHandler().showDefaultNotification("Ride Completed","Ride #${listModel.id.toString().substring(0, 4)} is completed");
+        if (status == "cancelled") {
+          MyNotificationHandler().showDefaultNotification("Ride Cancelled",
+              "Ride #${listModel.id.toString().substring(0, 4)} is cancelled by Customer");
+        } else if (status == "accepted") {
+          MyNotificationHandler().showDefaultNotification("Ride Accepted",
+              "Ride #${listModel.id.toString().substring(0, 4)} is accepted by Driver");
+        } else if (status == "started") {
+          MyNotificationHandler().showDefaultNotification("Ride Started",
+              "Ride #${listModel.id.toString().substring(0, 4)} is started by Driver");
+        } else if (status == "in_progress") {
+          MyNotificationHandler().showDefaultNotification("Ride in Progress",
+              "Ride #${listModel.id.toString().substring(0, 4)} is in progress");
+        } else if (status == "completed") {
+          MyNotificationHandler().showDefaultNotification("Ride Completed",
+              "Ride #${listModel.id.toString().substring(0, 4)} is completed");
         }
       }
-
-
-
-
 
       yield listModel; // {{ edit_1 }}
     } else {
@@ -181,7 +186,8 @@ Future<bool> sendTopicNotification({
       Uri.parse('https://fcm.googleapis.com/fcm/send'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'key=AIzaSyCMRryPgY1DJOc7a7sp81Y88oBhmXkDLR8', // Replace with your FCM server key
+        'Authorization':
+            'key=AIzaSyCMRryPgY1DJOc7a7sp81Y88oBhmXkDLR8', // Replace with your FCM server key
       },
       body: jsonEncode({
         'to': '/topics/$topic',
@@ -206,3 +212,50 @@ Future<bool> sendTopicNotification({
   }
 }
 
+Future<List<BannerModel>> getBanners() async {
+  List<BannerModel> banner_model = [];
+  final response = await http.get(
+    Uri.parse(baseURL + bannerEndPoint),
+    headers: {"Content-Type": "application/json", "token": token},
+  );
+
+  if (response.statusCode == 200) {
+    banner_model = List<BannerModel>.from(
+      jsonDecode(response.body)['data'].map(
+        (item) => BannerModel.fromJson(item),
+      ),
+    );
+    // return jsonDecode(response.body);
+  } else if (response.statusCode == 404) {
+    log("banners not found");
+    ShowToastDialog.closeLoader();
+  } else {
+    log("Failed to add banners:");
+    ShowToastDialog.closeLoader();
+  }
+
+  return banner_model;
+}
+
+Future<List<MyRideModel>> getRidesList(String api) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? token = prefs.getString("token");
+  Map<String, dynamic> payload = {"startValue": 0, "lastValue": 20};
+  final http.Response response = await http.post(
+    Uri.parse("$baseURL$api"),
+    headers: {
+      'Content-Type': 'application/json',
+      "token": token.toString(),
+    },
+    body: jsonEncode(payload),
+  );
+  if (jsonDecode(response.body)["status"] == true &&
+      response.statusCode == 200) {
+    List<MyRideModel> rides = [];
+    for (var ride in jsonDecode(response.body)["data"]) {
+      rides.add(MyRideModel.fromJson(ride));
+    }
+    return rides;
+  }
+  return [];
+}

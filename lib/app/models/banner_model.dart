@@ -21,7 +21,8 @@ class BannerModel {
     this.createdAt,
   });
 
-  factory BannerModel.fromRawJson(String str) => BannerModel.fromJson(json.decode(str));
+  factory BannerModel.fromRawJson(String str) =>
+      BannerModel.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
@@ -32,7 +33,7 @@ class BannerModel {
         image: json["image"],
         isOfferBanner: json["isOfferBanner"],
         offerText: json["offerText"],
-        createdAt: json["createdAt"],
+        // createdAt: json["createdAt"],
       );
 
   Map<String, dynamic> toJson() => {

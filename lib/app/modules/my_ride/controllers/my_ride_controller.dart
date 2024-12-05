@@ -2,13 +2,11 @@
 
 import 'dart:convert';
 
-import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/app/models/my_ride_model.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../utils/fire_store_utils.dart';
 
 class MyRideController extends GetxController {
   var selectedType = 0.obs;

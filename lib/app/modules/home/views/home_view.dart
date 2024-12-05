@@ -4,17 +4,24 @@ import 'dart:developer';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customer/api_services.dart';
+import 'package:customer/app/models/banner_model.dart';
+import 'package:customer/app/models/my_ride_model.dart';
 import 'package:customer/app/modules/home/views/widgets/drawer_view.dart';
 import 'package:customer/app/modules/html_view_screen/views/html_view_screen_view.dart';
 import 'package:customer/app/modules/language/views/language_view.dart';
 import 'package:customer/app/modules/my_ride/views/my_ride_view.dart';
+import 'package:customer/app/modules/my_ride_details/controllers/my_ride_details_controller.dart';
+import 'package:customer/app/modules/my_ride_details/views/my_ride_details_view.dart';
 import 'package:customer/app/modules/my_wallet/views/my_wallet_view.dart';
 import 'package:customer/app/modules/notification/views/notification_view.dart';
 import 'package:customer/app/modules/support_screen/views/support_screen_view.dart';
 import 'package:customer/app/routes/app_pages.dart';
+import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/booking_status.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/no_rides_view.dart';
+import 'package:customer/constant_widgets/pick_drop_point_view.dart';
+import 'package:customer/constant_widgets/round_shape_button.dart';
 import 'package:customer/extension/date_time_extension.dart';
 import 'package:customer/models/ride_booking.dart';
 import 'package:customer/theme/app_them_data.dart';
@@ -32,11 +39,8 @@ import '../controllers/home_controller.dart';
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 
-
-
   @override
   Widget build(BuildContext context) {
-
     RideBooking? bookingModel;
 
     final themeChange = Provider.of<DarkThemeProvider>(context);
@@ -45,9 +49,16 @@ class HomeView extends StatelessWidget {
         init: HomeController(),
         builder: (controller) {
           return Scaffold(
-              backgroundColor: themeChange.isDarkTheme() ? AppThemData.black : AppThemData.white,
+              backgroundColor: themeChange.isDarkTheme()
+                  ? AppThemData.black
+                  : AppThemData.white,
               appBar: AppBar(
-                shape: Border(bottom: BorderSide(color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100, width: 1)),
+                shape: Border(
+                    bottom: BorderSide(
+                        color: themeChange.isDarkTheme()
+                            ? AppThemData.grey800
+                            : AppThemData.grey100,
+                        width: 1)),
                 title: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -57,7 +68,9 @@ class HomeView extends StatelessWidget {
                     Text(
                       'Travel Teacher'.tr,
                       style: GoogleFonts.inter(
-                        color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
+                        color: themeChange.isDarkTheme()
+                            ? AppThemData.white
+                            : AppThemData.black,
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
                       ),
@@ -82,58 +95,112 @@ class HomeView extends StatelessWidget {
                         : controller.drawerIndex.value == 3
                             ? const SupportScreenView()
                             : controller.drawerIndex.value == 4
-                                ? HtmlViewScreenView(title: "Privacy & Policy".tr, htmlData: Constant.privacyPolicy)
+                                ? HtmlViewScreenView(
+                                    title: "Privacy & Policy".tr,
+                                    htmlData: Constant.privacyPolicy)
                                 : controller.drawerIndex.value == 5
-                                    ? HtmlViewScreenView(title: "Terms & Condition".tr, htmlData: Constant.termsAndConditions)
+                                    ? HtmlViewScreenView(
+                                        title: "Terms & Condition".tr,
+                                        htmlData: Constant.termsAndConditions)
                                     : controller.drawerIndex.value == 6
                                         ? const LanguageView()
                                         : controller.isLoading.value
                                             ? Constant.loader()
                                             : SingleChildScrollView(
                                                 child: Padding(
-                                                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          16, 12, 16, 12),
                                                   child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    mainAxisSize: MainAxisSize.max,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisSize:
+                                                        MainAxisSize.max,
                                                     children: [
                                                       InkWell(
                                                         onTap: () {
-                                                          if(bookingModel!=null){ 
-                                                          Get.toNamed(Routes.SELECT_LOCATION, arguments: bookingModel!);
-                                                          }
-                                                          else {
-                                                            Get.toNamed(Routes.SELECT_LOCATION);
+                                                          if (bookingModel !=
+                                                              null) {
+                                                            Get.toNamed(
+                                                                Routes
+                                                                    .SELECT_LOCATION,
+                                                                arguments:
+                                                                    bookingModel!);
+                                                          } else {
+                                                            Get.toNamed(Routes
+                                                                .SELECT_LOCATION);
                                                           }
                                                         },
                                                         child: Container(
-                                                          width: Responsive.width(100, context),
+                                                          width:
+                                                              Responsive.width(
+                                                                  100, context),
                                                           height: 56,
-                                                          margin: const EdgeInsets.fromLTRB(0, 0, 0, 12),
-                                                          padding: const EdgeInsets.all(16),
-                                                          decoration: ShapeDecoration(
-                                                            color: themeChange.isDarkTheme() ? AppThemData.grey900 : AppThemData.grey50,
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(100),
+                                                          margin:
+                                                              const EdgeInsets
+                                                                  .fromLTRB(
+                                                                  0, 0, 0, 12),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .all(16),
+                                                          decoration:
+                                                              ShapeDecoration(
+                                                            color: themeChange
+                                                                    .isDarkTheme()
+                                                                ? AppThemData
+                                                                    .grey900
+                                                                : AppThemData
+                                                                    .grey50,
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          100),
                                                             ),
                                                           ),
                                                           child: Row(
-                                                            mainAxisSize: MainAxisSize.min,
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
                                                             children: [
                                                               Icon(
-                                                                Icons.search_rounded,
-                                                                color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
+                                                                Icons
+                                                                    .search_rounded,
+                                                                color: themeChange.isDarkTheme()
+                                                                    ? AppThemData
+                                                                        .grey400
+                                                                    : AppThemData
+                                                                        .grey500,
                                                               ),
-                                                              const SizedBox(width: 8),
+                                                              const SizedBox(
+                                                                  width: 8),
                                                               Expanded(
                                                                 child: Text(
-                                                                  'Where to?'.tr,
-                                                                  style: GoogleFonts.inter(
-                                                                    color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
-                                                                    fontSize: 16,
-                                                                    fontWeight: FontWeight.w400,
+                                                                  'Where to?'
+                                                                      .tr,
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .inter(
+                                                                    color: themeChange.isDarkTheme()
+                                                                        ? AppThemData
+                                                                            .grey400
+                                                                        : AppThemData
+                                                                            .grey500,
+                                                                    fontSize:
+                                                                        16,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w400,
                                                                   ),
                                                                 ),
                                                               ),
@@ -144,68 +211,109 @@ class HomeView extends StatelessWidget {
                                                       BannerView(),
                                                       Text(
                                                         'Your Rides'.tr,
-                                                        style: GoogleFonts.inter(
-                                                          color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                          color: themeChange
+                                                                  .isDarkTheme()
+                                                              ? AppThemData
+                                                                  .grey25
+                                                              : AppThemData
+                                                                  .grey950,
                                                           fontSize: 18,
-                                                          fontWeight: FontWeight.w600,
+                                                          fontWeight:
+                                                              FontWeight.w600,
                                                         ),
                                                       ),
-                                                      const SizedBox(height: 20),
-                                                      StreamBuilder<RideBooking?>(
-                                                          stream: checkRequest(),
-                                                          builder: (context, snapshot) {
-
+                                                      const SizedBox(
+                                                          height: 20),
+                                                      StreamBuilder<
+                                                              RideBooking?>(
+                                                          stream:
+                                                              checkRequest(),
+                                                          builder: (context,
+                                                              snapshot) {
                                                             log("---------------State : ${snapshot.connectionState}");
                                                             log("--------------State : ${snapshot.data}");
-                                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                                              return Constant.loader();
+                                                            if (snapshot
+                                                                    .connectionState ==
+                                                                ConnectionState
+                                                                    .waiting) {
+                                                              return Constant
+                                                                  .loader();
                                                             }
-                                                            if (!snapshot.hasData) {
+                                                            if (!snapshot
+                                                                .hasData) {
                                                               return NoRidesView(
-                                                                themeChange: themeChange,
-                                                                height: Responsive.height(40, context),
+                                                                themeChange:
+                                                                    themeChange,
+                                                                height: Responsive
+                                                                    .height(40,
+                                                                        context),
                                                               );
                                                             } else {
-                                                              RideBooking bookingModelList = snapshot.data!;
-                                                              bookingModel=bookingModelList   ;
-                                                              return ListView.builder(
-                                                                shrinkWrap: true,
-                                                                physics: const NeverScrollableScrollPhysics(),
+                                                              RideBooking
+                                                                  bookingModelList =
+                                                                  snapshot
+                                                                      .data!;
+                                                              bookingModel =
+                                                                  bookingModelList;
+                                                              return ListView
+                                                                  .builder(
+                                                                shrinkWrap:
+                                                                    true,
+                                                                physics:
+                                                                    const NeverScrollableScrollPhysics(),
                                                                 itemCount: 1,
-                                                                itemBuilder: (context, index) {
+                                                                itemBuilder:
+                                                                    (context,
+                                                                        index) {
                                                                   return Column(
-                                                                    mainAxisSize: MainAxisSize.min,
-                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                    mainAxisSize:
+                                                                        MainAxisSize
+                                                                            .min,
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
                                                                     children: [
                                                                       InkWell(
-                                                                        onTap: () {
-
-
-
-
- Get.toNamed(Routes.SELECT_LOCATION,arguments: bookingModelList);
-
-
+                                                                        onTap:
+                                                                            () {
+                                                                          Get.toNamed(
+                                                                              Routes.SELECT_LOCATION,
+                                                                              arguments: bookingModelList);
 
                                                                           // MyRideDetailsController detailsController = Get.put(MyRideDetailsController());
                                                                           // detailsController.bookingId.value = bookingModelList.id ?? '';
                                                                           // detailsController.bookingModel.value = bookingModelList;
                                                                           // Get.to(const MyRideDetailsView());
                                                                         },
-                                                                        child: Container(
-                                                                          width: Responsive.width(100, context),
-                                                                          padding: const EdgeInsets.all(16),
-                                                                          decoration: ShapeDecoration(
-                                                                            shape: RoundedRectangleBorder(
+                                                                        child:
+                                                                            Container(
+                                                                          width: Responsive.width(
+                                                                              100,
+                                                                              context),
+                                                                          padding: const EdgeInsets
+                                                                              .all(
+                                                                              16),
+                                                                          decoration:
+                                                                              ShapeDecoration(
+                                                                            shape:
+                                                                                RoundedRectangleBorder(
                                                                               side: BorderSide(width: 1, color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100),
                                                                               borderRadius: BorderRadius.circular(12),
                                                                             ),
                                                                           ),
-                                                                          child: Column(
-                                                                            mainAxisSize: MainAxisSize.min,
-                                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                          child:
+                                                                              Column(
+                                                                            mainAxisSize:
+                                                                                MainAxisSize.min,
+                                                                            mainAxisAlignment:
+                                                                                MainAxisAlignment.start,
+                                                                            crossAxisAlignment:
+                                                                                CrossAxisAlignment.start,
                                                                             children: [
                                                                               Row(
                                                                                 mainAxisSize: MainAxisSize.min,
@@ -240,7 +348,7 @@ class HomeView extends StatelessWidget {
                                                                                   mainAxisAlignment: MainAxisAlignment.start,
                                                                                   crossAxisAlignment: CrossAxisAlignment.center,
                                                                                   children: [
-                                                                                     CachedNetworkImage(
+                                                                                    CachedNetworkImage(
                                                                                       imageUrl: Constant.profileConstant,
                                                                                     ),
                                                                                     const SizedBox(width: 12),
@@ -251,7 +359,7 @@ class HomeView extends StatelessWidget {
                                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                                         children: [
                                                                                           Text(
-                                                                                             bookingModelList.vehicleType?.title ?? '',
+                                                                                            bookingModelList.vehicleType?.title ?? '',
                                                                                             style: GoogleFonts.inter(
                                                                                               color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
                                                                                               fontSize: 16,
@@ -271,7 +379,7 @@ class HomeView extends StatelessWidget {
                                                                                                   ),
                                                                                                 ),
                                                                                                 Text(
-                                                                                                  bookingModelList.otp ,
+                                                                                                  bookingModelList.otp,
                                                                                                   textAlign: TextAlign.right,
                                                                                                   style: GoogleFonts.inter(
                                                                                                     color: AppThemData.primary400,
@@ -329,55 +437,373 @@ class HomeView extends StatelessWidget {
                                                                           ),
                                                                         ),
                                                                       ),
-                                                                      const SizedBox(height: 4),
+                                                                      const SizedBox(
+                                                                          height:
+                                                                              4),
                                                                     ],
                                                                   );
                                                                 },
                                                               );
                                                             }
                                                           }),
-                                                      // Container(
-                                                      //   width: Responsive.width(100, context),
-                                                      //   padding: const EdgeInsets.all(16),
-                                                      //   margin: const EdgeInsets.only(top: 16),
-                                                      //   decoration: ShapeDecoration(
-                                                      //     image: const DecorationImage(image: AssetImage("assets/images/offer_banner_background.png"), fit: BoxFit.cover),
-                                                      //     shape: RoundedRectangleBorder(
-                                                      //       borderRadius: BorderRadius.circular(16),
-                                                      //     ),
-                                                      //   ),
-                                                      //   child: Column(
-                                                      //     mainAxisAlignment: MainAxisAlignment.start,
-                                                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                                                      //     children: [
-                                                      //       Text(
-                                                      //         'Expanded Seating Offer',
-                                                      //         style: GoogleFonts.inter(
-                                                      //           color: AppThemData.primary400,
-                                                      //           fontSize: 18,
-                                                      //           fontWeight: FontWeight.w700,
-                                                      //         ),
-                                                      //       ),
-                                                      //       Padding(
-                                                      //         padding: const EdgeInsets.only(top: 8.0, bottom: 18),
-                                                      //         child: Text(
-                                                      //           'Our 4-seater sedans now accommodate an extra passenger at no additional cost!',
-                                                      //           style: GoogleFonts.inter(
-                                                      //             color: Colors.white,
-                                                      //             fontSize: 14,
-                                                      //             fontWeight: FontWeight.w400,
-                                                      //           ),
-                                                      //         ),
-                                                      //       ),
-                                                      //       RoundShapeButton(
-                                                      //           size: const Size(140, 34),
-                                                      //           title: "Book NowGg".tr,
-                                                      //           buttonColor: AppThemData.white,
-                                                      //           buttonTextColor: AppThemData.black,
-                                                      //           onTap: () {}),
-                                                      //     ],
-                                                      //   ),
-                                                      // ),
+                                                      Container(
+                                                        width: Responsive.width(
+                                                            100, context),
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(16),
+                                                        margin: const EdgeInsets
+                                                            .only(top: 16),
+                                                        decoration:
+                                                            ShapeDecoration(
+                                                          image: const DecorationImage(
+                                                              image: AssetImage(
+                                                                  "assets/images/offer_banner_background.png"),
+                                                              fit:
+                                                                  BoxFit.cover),
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        16),
+                                                          ),
+                                                        ),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              'Expanded Seating Offer',
+                                                              style: GoogleFonts
+                                                                  .inter(
+                                                                color: AppThemData
+                                                                    .primary400,
+                                                                fontSize: 18,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700,
+                                                              ),
+                                                            ),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      top: 8.0,
+                                                                      bottom:
+                                                                          18),
+                                                              child: Text(
+                                                                'Our 4-seater sedans now accommodate an extra passenger at no additional cost!',
+                                                                style:
+                                                                    GoogleFonts
+                                                                        .inter(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w400,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            RoundShapeButton(
+                                                                size: const Size(
+                                                                    200, 34),
+                                                                title:
+                                                                    "Book Now"
+                                                                        .tr,
+                                                                buttonColor: themeChange
+                                                                        .isDarkTheme()
+                                                                    ? AppThemData
+                                                                        .white
+                                                                    : AppThemData
+                                                                        .black,
+                                                                buttonTextColor:
+                                                                    AppThemData
+                                                                        .black,
+                                                                onTap: () {
+                                                                  if (bookingModel !=
+                                                                      null) {
+                                                                    Get.toNamed(
+                                                                        Routes
+                                                                            .SELECT_LOCATION,
+                                                                        arguments:
+                                                                            bookingModel!);
+                                                                  } else {
+                                                                    Get.toNamed(
+                                                                        Routes
+                                                                            .SELECT_LOCATION);
+                                                                  }
+                                                                }),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      Text(
+                                                        "My Rides",
+                                                        style:
+                                                            GoogleFonts.inter(
+                                                          color: themeChange
+                                                                  .isDarkTheme()
+                                                              ? AppThemData
+                                                                  .grey25
+                                                              : AppThemData
+                                                                  .grey950,
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 20,
+                                                      ),
+                                                      Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          FutureBuilder<
+                                                                  List<
+                                                                      MyRideModel>>(
+                                                              future: getRidesList(
+                                                                  myRidesEndPoint),
+                                                              builder: (context,
+                                                                  snapshot) {
+                                                                if (snapshot
+                                                                        .connectionState ==
+                                                                    ConnectionState
+                                                                        .waiting) {
+                                                                  return const Center(
+                                                                      child:
+                                                                          CircularProgressIndicator());
+                                                                }
+
+                                                                if (!snapshot
+                                                                        .hasData ||
+                                                                    snapshot
+                                                                        .data!
+                                                                        .isEmpty) {
+                                                                  return const SizedBox();
+                                                                }
+
+                                                                List<MyRideModel>
+                                                                    myRideList =
+                                                                    snapshot
+                                                                        .data!;
+
+                                                                return ListView
+                                                                    .builder(
+                                                                  itemCount:
+                                                                      myRideList
+                                                                          .length,
+                                                                  shrinkWrap:
+                                                                      true,
+                                                                  itemBuilder:
+                                                                      (context,
+                                                                          index) {
+                                                                    RxBool
+                                                                        isOpen =
+                                                                        false
+                                                                            .obs;
+                                                                    MyRideModel
+                                                                        bookingModel =
+                                                                        myRideList[
+                                                                            index];
+                                                                    return InkWell(
+                                                                      onTap:
+                                                                          () {
+                                                                        MyRideDetailsController
+                                                                            detailsController =
+                                                                            Get.put(MyRideDetailsController());
+                                                                        detailsController
+                                                                            .bookingId
+                                                                            .value = bookingModel
+                                                                                .id ??
+                                                                            '';
+                                                                        detailsController
+                                                                            .bookingModel
+                                                                            .value = bookingModel;
+                                                                        Get.to(
+                                                                            const MyRideDetailsView());
+                                                                      },
+                                                                      child:
+                                                                          Container(
+                                                                        width: Responsive.width(
+                                                                            100,
+                                                                            context),
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            16),
+                                                                        margin: const EdgeInsets
+                                                                            .all(
+                                                                            16),
+                                                                        decoration:
+                                                                            ShapeDecoration(
+                                                                          shape:
+                                                                              RoundedRectangleBorder(
+                                                                            side:
+                                                                                BorderSide(width: 1, color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100),
+                                                                            borderRadius:
+                                                                                BorderRadius.circular(12),
+                                                                          ),
+                                                                        ),
+                                                                        child:
+                                                                            Column(
+                                                                          mainAxisSize:
+                                                                              MainAxisSize.min,
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.start,
+                                                                          crossAxisAlignment:
+                                                                              CrossAxisAlignment.start,
+                                                                          children: [
+                                                                            InkWell(
+                                                                              onTap: () {
+                                                                                isOpen.value = !isOpen.value;
+                                                                              },
+                                                                              child: Row(
+                                                                                mainAxisSize: MainAxisSize.min,
+                                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                children: [
+                                                                                  const SizedBox(width: 8),
+                                                                                  Container(
+                                                                                    height: 15,
+                                                                                    decoration: ShapeDecoration(
+                                                                                      shape: RoundedRectangleBorder(
+                                                                                        side: BorderSide(
+                                                                                          width: 1,
+                                                                                          strokeAlign: BorderSide.strokeAlignCenter,
+                                                                                          color: themeChange.isDarkTheme() ? AppThemData.grey800 : AppThemData.grey100,
+                                                                                        ),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                  const SizedBox(width: 8),
+                                                                                  // Expanded(
+                                                                                  //   child: Text(
+                                                                                  //     bookingModel.createdAt == null ? "" : bookingModel.createdAt.toString(),
+                                                                                  //     style: GoogleFonts.inter(
+                                                                                  //       color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
+                                                                                  //       fontSize: 14,
+                                                                                  //       fontWeight: FontWeight.w400,
+                                                                                  //     ),
+                                                                                  //   ),
+                                                                                  // ),
+                                                                                  const SizedBox(width: 8),
+                                                                                  Icon(
+                                                                                    Icons.keyboard_arrow_right_sharp,
+                                                                                    color: themeChange.isDarkTheme() ? AppThemData.grey400 : AppThemData.grey500,
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                            const SizedBox(height: 12),
+                                                                            Container(
+                                                                              padding: const EdgeInsets.only(bottom: 12),
+                                                                              child: Row(
+                                                                                mainAxisSize: MainAxisSize.min,
+                                                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                children: [
+                                                                                  SizedBox(
+                                                                                    height: 60,
+                                                                                    width: 60,
+                                                                                    child: CachedNetworkImage(
+                                                                                      imageUrl: bookingModel.vehicle == null ? Constant.profileConstant : "$imageBaseUrl${bookingModel.vehicle!.image}",
+                                                                                      fit: BoxFit.cover,
+                                                                                      placeholder: (context, url) => Constant.loader(),
+                                                                                      errorWidget: (context, url, error) => Image.asset(Constant.userPlaceHolder),
+                                                                                    ),
+                                                                                  ),
+                                                                                  const SizedBox(width: 12),
+                                                                                  Expanded(
+                                                                                    child: Column(
+                                                                                      mainAxisSize: MainAxisSize.min,
+                                                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        Text(
+                                                                                          bookingModel.vehicle?.vehicleType == null ? "" : bookingModel.vehicle!.name,
+                                                                                          style: GoogleFonts.inter(
+                                                                                            color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                                                                                            fontSize: 16,
+                                                                                            fontWeight: FontWeight.w600,
+                                                                                          ),
+                                                                                        ),
+                                                                                        const SizedBox(height: 2),
+                                                                                        Text(
+                                                                                          bookingModel.status ?? '',
+                                                                                          // (bookingModel.paymentStatus == "cash" ?? false) ? 'Payment is Completed'.tr : 'Payment is Completed'.tr,
+                                                                                          style: GoogleFonts.inter(
+                                                                                            color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                                                                                            fontSize: 14,
+                                                                                            fontWeight: FontWeight.w400,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                  ),
+                                                                                  const SizedBox(width: 16),
+                                                                                  Column(
+                                                                                    mainAxisSize: MainAxisSize.min,
+                                                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                                                                    children: [
+                                                                                      Text(
+                                                                                        bookingModel.fareAmount ?? "0",
+                                                                                        textAlign: TextAlign.right,
+                                                                                        style: GoogleFonts.inter(
+                                                                                          color: themeChange.isDarkTheme() ? AppThemData.grey25 : AppThemData.grey950,
+                                                                                          fontSize: 16,
+                                                                                          fontWeight: FontWeight.w500,
+                                                                                        ),
+                                                                                      ),
+                                                                                      const SizedBox(height: 2),
+                                                                                      Row(
+                                                                                        mainAxisSize: MainAxisSize.min,
+                                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                                                        children: [
+                                                                                          SvgPicture.asset("assets/icon/ic_multi_person.svg"),
+                                                                                          const SizedBox(width: 6),
+                                                                                          Text(
+                                                                                            bookingModel.vehicle == null ? "" : bookingModel.vehicle!.name,
+                                                                                            style: GoogleFonts.inter(
+                                                                                              color: AppThemData.primary400,
+                                                                                              fontSize: 16,
+                                                                                              fontWeight: FontWeight.w400,
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                            Obx(() =>
+                                                                                Visibility(
+                                                                                  visible: isOpen.value,
+                                                                                  child: PickDropPointView(pickUpAddress: bookingModel.pickupAddress ?? '', dropAddress: bookingModel.dropoffAddress ?? ''),
+                                                                                )),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  },
+                                                                );
+                                                              }),
+                                                        ],
+                                                      )
                                                     ],
                                                   ),
                                                 ),
@@ -396,111 +822,132 @@ class BannerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () => Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          controller.bannerList.isEmpty
-              ? const SizedBox()
-              : SizedBox(
-                  height: Responsive.height(22, context),
-                  child: PageView.builder(
-                    itemCount: controller.bannerList.length,
-                    controller: controller.pageController,
-                    onPageChanged: (value) {
-                      controller.curPage.value = value;
-                    },
-                    itemBuilder: (context, index) {
-                      return Container(
-                        width: Responsive.width(100, context),
-                        margin: const EdgeInsets.only(bottom: 20),
-                        decoration: ShapeDecoration(
-                          image: DecorationImage(image: NetworkImage(controller.bannerList[index].image ?? ""), fit: BoxFit.cover),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: Container(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        FutureBuilder<List<BannerModel>>(
+            future: getBanners(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const SizedBox();
+              }
+
+              List<BannerModel> bannerList = snapshot.data!;
+
+              return Column(
+                children: [
+                  SizedBox(
+                    height: Responsive.height(22, context),
+                    child: PageView.builder(
+                      itemCount: bannerList.length,
+                      controller: controller.pageController,
+                      onPageChanged: (value) {
+                        controller.curPage.value = value;
+                      },
+                      itemBuilder: (context, index) {
+                        return Container(
                           width: Responsive.width(100, context),
-                          padding: const EdgeInsets.fromLTRB(16, 16, 20, 16),
+                          margin: const EdgeInsets.only(bottom: 20),
                           decoration: ShapeDecoration(
-                            color: AppThemData.black.withOpacity(0.3),
+                            image: DecorationImage(
+                                image: NetworkImage(imageBaseUrl +
+                                    (bannerList[index].image ?? "")),
+                                fit: BoxFit.cover),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             ),
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                controller.bannerList[index].bannerName ?? '',
-                                style: GoogleFonts.inter(
-                                  color: AppThemData.grey50,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                          child: Container(
+                            width: Responsive.width(100, context),
+                            padding: const EdgeInsets.fromLTRB(16, 16, 20, 16),
+                            decoration: ShapeDecoration(
+                              color: AppThemData.black.withOpacity(0.3),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
                               ),
-                              Container(
-                                width: Responsive.width(100, context),
-                                margin: const EdgeInsets.only(top: 6, bottom: 6),
-                                child: Text(
-                                  controller.bannerList[index].bannerDescription ?? '',
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  bannerList[index].bannerName ?? '',
                                   style: GoogleFonts.inter(
                                     color: AppThemData.grey50,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                              Visibility(
-                                visible: controller.bannerList[index].isOfferBanner ?? false,
-                                child: Text(
-                                  controller.bannerList[index].offerText ?? '',
-                                  style: GoogleFonts.inter(
-                                    color: AppThemData.primary400,
                                     fontSize: 12,
-                                    fontStyle: FontStyle.italic,
-                                    fontWeight: FontWeight.w500,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                              )
-                            ],
+                                Container(
+                                  width: Responsive.width(100, context),
+                                  margin:
+                                      const EdgeInsets.only(top: 6, bottom: 6),
+                                  child: Text(
+                                    bannerList[index].bannerDescription ?? '',
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.inter(
+                                      color: AppThemData.grey50,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                                Visibility(
+                                  visible:
+                                      bannerList[index].isOfferBanner ?? false,
+                                  child: Text(
+                                    bannerList[index].offerText ?? '',
+                                    style: GoogleFonts.inter(
+                                      color: AppThemData.primary400,
+                                      fontSize: 12,
+                                      fontStyle: FontStyle.italic,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-          Center(
-            child: SizedBox(
-              height: 8,
-              child: ListView.builder(
-                itemCount: controller.bannerList.length,
-                scrollDirection: Axis.horizontal,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return Obx(
-                    () => Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      width: 8,
+                  Center(
+                    child: SizedBox(
                       height: 8,
-                      decoration: BoxDecoration(
-                        color: index == controller.curPage.value ? AppThemData.primary400 : AppThemData.grey200,
-                        borderRadius: BorderRadius.circular(10),
+                      child: ListView.builder(
+                        itemCount: bannerList.length,
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return Obx(
+                            () => Container(
+                              margin: const EdgeInsets.only(right: 10),
+                              width: 8,
+                              height: 8,
+                              decoration: BoxDecoration(
+                                color: index == controller.curPage.value
+                                    ? AppThemData.primary400
+                                    : AppThemData.grey200,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
-                  );
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
+                  ),
+                ],
+              );
+            }),
+      ],
     );
   }
 }

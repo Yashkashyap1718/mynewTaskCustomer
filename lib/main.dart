@@ -12,7 +12,6 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'app/routes/app_pages.dart';
-import 'constant/api_constant.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -26,16 +25,14 @@ Future<void> main() async {
   );
   await MyNotificationHandler().requestNotificationPermissions();
 
-
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  
+
   // Get the device token for FCM
   String? token = await messaging.getToken();
   print("FCM Token: $token");
 
   // Request permission for iOS (if required)
   await messaging.requestPermission();
-
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
@@ -47,14 +44,13 @@ Future<void> main() async {
   // // Check if permission is granted, request if not
   // PermissionStatus permissionStatus = await location.requestPermission();
 
-
   // if (permissionStatus != PermissionStatus.granted) {
   //   // Handle the case where permission is not granted
   //   print('Location permission not granted');
   // } else {
   // Proceed with app startup
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  if(prefs.getString("token") != null){
+  if (prefs.getString("token") != null) {
     token = prefs.getString("token")!;
 
     print("TOKEN:: $token");
@@ -62,8 +58,6 @@ Future<void> main() async {
   runApp(MyApp());
   // }
 }
-
-
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});

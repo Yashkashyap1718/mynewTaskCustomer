@@ -61,13 +61,19 @@ class MyRideModel {
       couponId: json['coupon_id'],
       paymentStatus: json['payment_status'],
       paymentMode: json['payment_mode'],
-      startTime: DateTime.parse(json['start_time']),
-      endTime: DateTime.parse(json['end_time']),
+      startTime: json['start_time'] != null
+          ? DateTime.parse(json['start_time'])
+          : null,
+      endTime:
+          json['end_time'] != null ? DateTime.parse(json['end_time']) : null,
       remainingTime: json['remaining_time'],
       createdAt: json['createdAt'],
-      passenger: Passenger.fromJson(json['passenger']),
-      driver: Driver.fromJson(json['driver']),
-      vehicle: Vehicle.fromJson(json['vehicle']),
+      passenger: json['passenger'] != null
+          ? Passenger.fromJson(json['passenger'])
+          : null,
+      driver: json['driver'] != null ? Driver.fromJson(json['driver']) : null,
+      vehicle:
+          json['vehicle'] != null ? Vehicle.fromJson(json['vehicle']) : null,
     );
   }
 }
