@@ -28,6 +28,8 @@ const String sendMessageAPIHttp = "/users/ride/chat/send_message"; //PUT
 const String ongoingRidesEndpoint = "/users/ride/inprogress/list"; //POST
 const String completedRidesEndpoint = "/users/ride/completed/list"; //POST
 const String rejectedRidesEndpoint = "/users/ride/canceled/list"; //POST
+const String bannerEndPoint = "/users/banner_list"; //Get
+const String myRidesEndPoint = "/users/booking_list"; //Get
 String token = "";
 
 UserData userDataModel = UserData();

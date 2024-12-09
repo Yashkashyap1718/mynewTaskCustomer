@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:io';
 
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/home/controllers/home_controller.dart';
@@ -13,13 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-import '../../../../../constant/constant.dart';
-import '../../../html_view_screen/views/html_view_screen_view.dart';
 
 class DrawerView extends StatelessWidget {
   UserData user;

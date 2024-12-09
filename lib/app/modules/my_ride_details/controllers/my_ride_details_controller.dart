@@ -40,7 +40,7 @@ class MyRideDetailsController extends GetxController {
   Rx<UserModel> userModel = UserModel().obs;
   Rx<PaymentModel> paymentModel = PaymentModel().obs;
   RxString selectedPaymentMethod = "".obs;
-  razor_pay_flutter.Razorpay _razorpay = razor_pay_flutter.Razorpay();
+  final razor_pay_flutter.Razorpay _razorpay = razor_pay_flutter.Razorpay();
 
   @override
   void onInit() {
@@ -458,16 +458,16 @@ class MyRideDetailsController extends GetxController {
     //   }
     // }
 
-    String? _ref;
+    String? ref;
 
     setRef() {
       maths.Random numRef = maths.Random();
       int year = DateTime.now().year;
       int refNumber = numRef.nextInt(20000);
       if (Platform.isAndroid) {
-        _ref = "AndroidRef$year$refNumber";
+        ref = "AndroidRef$year$refNumber";
       } else if (Platform.isIOS) {
-        _ref = "IOSRef$year$refNumber";
+        ref = "IOSRef$year$refNumber";
       }
     }
 

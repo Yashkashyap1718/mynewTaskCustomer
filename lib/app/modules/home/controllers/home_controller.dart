@@ -40,6 +40,7 @@ class HomeController extends GetxController {
   RxInt curPage = 0.obs;
   RxInt drawerIndex = 0.obs;
   RxBool isLoading = false.obs;
+
   // var userData = userData().obs;
 
   @override
@@ -247,4 +248,5 @@ class HomeController extends GetxController {
       );
     }
   }
+
 }

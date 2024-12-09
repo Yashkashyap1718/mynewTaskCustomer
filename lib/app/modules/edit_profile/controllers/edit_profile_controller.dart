@@ -139,7 +139,6 @@ class EditProfileController extends GetxController {
       );
 
       if (response.statusCode == 200) {
-        ;
         final Map<String, dynamic> data = jsonDecode(response.body);
 
         log('-----update--user-----$data');
