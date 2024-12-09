@@ -96,11 +96,11 @@ class VerifyEmailOtpView extends StatelessWidget {
                       ),
                       fieldStyle: FieldStyle.underline,
                       onCompleted: (pin) async {
-                        controller.otp.value = pin;
+                        // controller.otp.value = pin;
 
                       },
                       onChanged: (pin){
-
+                        controller.otp.value = pin;
                       },
                     ),
                     const SizedBox(height: 90),

@@ -12,9 +12,7 @@ import 'package:provider/provider.dart';
 import '../controllers/verify_otp_controller.dart';
 
 class VerifyOtpView extends StatelessWidget {
-
-   const VerifyOtpView({super.key});
-
+  const VerifyOtpView({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -181,8 +179,8 @@ class VerifyOtpView extends StatelessWidget {
                         //     controller.otpCode.value = pin;
                         //   }
                       },
-                      onChanged: (pin){
-
+                      onChanged: (pin) {
+                        controller.otpCode.value = pin;
                       },
                     ),
                     const SizedBox(height: 90),
@@ -193,7 +191,9 @@ class VerifyOtpView extends StatelessWidget {
                         buttonTextColor: AppThemData.black,
                         onTap: () async {
                           // if (controller.otpCode.value.length == 4) {
-                          controller.confirmOTP(context, controller.verificationId.value,
+                          controller.confirmOTP(
+                              context,
+                              controller.otpCode.value,
                               controller.phoneNumber.value.toString());
                           // .then((value) async {
                           // ShowToastDialog.closeLoader();
@@ -294,8 +294,8 @@ class VerifyOtpView extends StatelessWidget {
                                 fontWeight: FontWeight.w600),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                controller.reSendOTP(
-                                    context, controller.phoneNumber.value.toString());
+                                controller.reSendOTP(context,
+                                    controller.phoneNumber.value.toString());
                               },
                           ),
                         ],

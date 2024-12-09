@@ -37,7 +37,7 @@ class VerifyOtpController extends GetxController {
     if (argumentData != null) {
       countryCode.value = argumentData['countryCode'];
       phoneNumber.value = argumentData['phoneNumber'];
-      verificationId.value = argumentData['verificationId'];
+      // verificationId.value = argumentData['verificationId'];
     }
     isLoading.value = false;
     update();

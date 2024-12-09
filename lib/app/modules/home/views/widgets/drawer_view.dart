@@ -1,9 +1,9 @@
 // ignore_for_file: use_build_context_synchronously
 
-
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/home/controllers/home_controller.dart';
 import 'package:customer/app/modules/my_ride/views/my_ride_view.dart';
+import 'package:customer/app/modules/my_services/my_services_view.dart';
 import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant_widgets/custom_dialog_box.dart';
 import 'package:customer/theme/app_them_data.dart';
@@ -13,7 +13,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-
 
 class DrawerView extends StatelessWidget {
   UserData user;
@@ -77,7 +76,7 @@ class DrawerView extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        controller.name.value ==   ""
+                                        controller.name.value == ""
                                             ? user.name ?? "Customer"
                                             : controller.name.value,
                                         style: GoogleFonts.inter(
@@ -178,29 +177,36 @@ class DrawerView extends StatelessWidget {
                           Get.to(const MyRideView());
                         },
                       ),
-                      // const Padding(
-                      //   padding: EdgeInsets.only(left: 50),
-                      //   child: Divider(),
-                      // ),
-                      // ListTile(
-                      //   leading: SvgPicture.asset(
-                      //     "assets/icon/ic_my_wallet.svg",
-                      //     colorFilter: ColorFilter.mode(themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black, BlendMode.srcIn),
-                      //   ),
-                      //   trailing: const Icon(Icons.keyboard_arrow_right_rounded, size: 30),
-                      //   title: Text(
-                      //     'My Wallet'.tr,
-                      //     style: GoogleFonts.inter(
-                      //         fontSize: 16,
-                      //         color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
-                      //         fontWeight: FontWeight.w400),
-                      //   ),
-                      //   onTap: () {
-                      //     Get.back();
-                      //     controller.drawerIndex.value = 2;
-                      //     // Get.to(const MyWalletView());
-                      //   },
-                      // ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 50),
+                        child: Divider(),
+                      ),
+                      ListTile(
+                        leading: SvgPicture.asset(
+                          "assets/icon/ic_my_wallet.svg",
+                          colorFilter: ColorFilter.mode(
+                              themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
+                              BlendMode.srcIn),
+                        ),
+                        trailing: const Icon(Icons.keyboard_arrow_right_rounded,
+                            size: 30),
+                        title: Text(
+                          'Services'.tr,
+                          style: GoogleFonts.inter(
+                              fontSize: 16,
+                              color: themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
+                              fontWeight: FontWeight.w400),
+                        ),
+                        onTap: () {
+                          Get.back();
+                          // controller.drawerIndex.value = 2;
+                          Get.to(() => const MyServicesView());
+                        },
+                      ),
                       // const Padding(
                       //   padding: EdgeInsets.only(left: 50),
                       //   child: Divider(),

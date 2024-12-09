@@ -107,15 +107,14 @@ class VerifyEmailOtpController extends GetxController {
       );
       print("VERIFIYOTEMAILLP:: ${response.body}");
 
-      await Preferences().saveIsUserLoggedIn();
-      Get.toNamed(Routes.HOME);
-
       if (response.statusCode == 200) {
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.setString("email", email);
         final Map<String, dynamic> data = jsonDecode(response.body);
         ShowToastDialog.closeLoader();
         if (data['status'] == true) {
+          await Preferences().saveIsUserLoggedIn();
+          Get.toNamed(Routes.HOME);
           UserData userData = UserData.fromJson(data["data"]);
           print("USERMODELSSSSSS: ${jsonEncode(userData)}");
           SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -157,11 +156,6 @@ class VerifyEmailOtpController extends GetxController {
       }
     } catch (e) {
       ShowToastDialog.closeLoader();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error occurred while confirming OTP.'),
-        ),
-      );
     }
   }
 
