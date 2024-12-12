@@ -63,7 +63,8 @@ class HomeView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset("assets/icon/logo_only.svg"),
+                    Image.asset("assets/icon/logo_only.jpeg",
+                        height: 30, width: 30),
                     const SizedBox(width: 10),
                     Text(
                       'Travel Teacher'.tr,

@@ -4,6 +4,8 @@ import 'dart:developer';
 import 'package:customer/app/models/banner_model.dart';
 import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/app/models/my_ride_model.dart';
+import 'package:customer/app/models/ride_cancel_reasons.dart';
+import 'package:customer/app/models/service_list_modal.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/models/near_by_drivers.dart';
@@ -88,7 +90,8 @@ Stream<RideBooking?> checkRequest() async* {
       },
     );
     if (response.statusCode == 200 &&
-        jsonDecode(response.body)["data"] != '[]') {
+        jsonDecode(response.body)["data"] != '[]' &&
+        jsonDecode(response.body)["data"] != null) {
       RideBooking listModel =
           RideBooking.fromJson(jsonDecode(response.body)["data"]);
 
@@ -124,8 +127,8 @@ Stream<RideBooking?> checkRequest() async* {
   }
 }
 
-Future<bool> cancelBooking(RideBooking bookingModels) async {
-  bool? isCancelled = await setBookingCancel(bookingModels);
+Future<bool> cancelBooking(RideBooking bookingModels, String reason) async {
+  bool? isCancelled = await setBookingCancel(bookingModels, reason);
   return (isCancelled ?? false);
 }
 
@@ -149,10 +152,10 @@ sendCancelRideNotification(RideBooking rideData) async {
   //     payload: playLoad);
 }
 
-Future<bool?> setBookingCancel(RideBooking bookingModel) async {
+Future<bool?> setBookingCancel(RideBooking bookingModel, String reason) async {
   ShowToastDialog.showLoader("Please wait");
   bool canceled = false;
-  Map<String, Object> map = {"ride_id": bookingModel.id};
+  Map<String, Object> map = {"ride_id": bookingModel.id, "reason": reason};
   final response = await http.put(
     Uri.parse(baseURL + userRideCanceled),
     body: jsonEncode(map),
@@ -254,6 +257,48 @@ Future<List<MyRideModel>> getRidesList(String api) async {
     List<MyRideModel> rides = [];
     for (var ride in jsonDecode(response.body)["data"]) {
       rides.add(MyRideModel.fromJson(ride));
+    }
+    return rides;
+  }
+  return [];
+}
+
+Future<List<ServiceListModal>> getServiceList() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? token = prefs.getString("token");
+  final http.Response response = await http.get(
+    Uri.parse("$baseURL$serviceListEndPoint"),
+    headers: {
+      'Content-Type': 'application/json',
+      "token": token.toString(),
+    },
+  );
+  if (jsonDecode(response.body)["status"] == true &&
+      response.statusCode == 200) {
+    List<ServiceListModal> rides = [];
+    for (var ride in jsonDecode(response.body)["data"]) {
+      rides.add(ServiceListModal.fromJson(ride));
+    }
+    return rides;
+  }
+  return [];
+}
+
+Future<List<RideCancelResaons>> getRideNotes() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? token = prefs.getString("token");
+  final http.Response response = await http.get(
+    Uri.parse("$baseURL$rideNotesEndPoint"),
+    headers: {
+      'Content-Type': 'application/json',
+      "token": token.toString(),
+    },
+  );
+  if (jsonDecode(response.body)["status"] == true &&
+      response.statusCode == 200) {
+    List<RideCancelResaons> rides = [];
+    for (var ride in jsonDecode(response.body)["data"]) {
+      rides.add(RideCancelResaons.fromJson(ride));
     }
     return rides;
   }

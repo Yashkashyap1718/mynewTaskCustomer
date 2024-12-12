@@ -18,15 +18,14 @@ class SplashScreenView extends StatelessWidget {
             body: Container(
               decoration: const BoxDecoration(
                   image: DecorationImage(
-                      opacity: 0.12,
-                      image: AssetImage("assets/images/splash_background.jpeg"),
+                      image: AssetImage("assets/images/splash_background.png"),
                       fit: BoxFit.fill)),
-              child: Center(
-                child: Image.asset(
-                  "assets/images/taxi.png",
-                  scale: 9,
-                ),
-              ),
+              // child: Center(
+              //   child: Image.asset(
+              //     "assets/images/taxi.png",
+              //     scale: 9,
+              //   ),
+              // ),
             ),
           );
         });

@@ -3,7 +3,7 @@
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/home/controllers/home_controller.dart';
 import 'package:customer/app/modules/my_ride/views/my_ride_view.dart';
-import 'package:customer/app/modules/my_services/my_services_view.dart';
+import 'package:customer/app/modules/my_services/views/service_list_view.dart';
 import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant_widgets/custom_dialog_box.dart';
 import 'package:customer/theme/app_them_data.dart';
@@ -204,7 +204,7 @@ class DrawerView extends StatelessWidget {
                         onTap: () {
                           Get.back();
                           // controller.drawerIndex.value = 2;
-                          Get.to(() => const MyServicesView());
+                          Get.to(() => const ServiceListView());
                         },
                       ),
                       // const Padding(

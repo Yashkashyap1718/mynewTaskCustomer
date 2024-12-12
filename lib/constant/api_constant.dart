@@ -30,6 +30,9 @@ const String completedRidesEndpoint = "/users/ride/completed/list"; //POST
 const String rejectedRidesEndpoint = "/users/ride/canceled/list"; //POST
 const String bannerEndPoint = "/users/banner_list"; //Get
 const String myRidesEndPoint = "/users/booking_list"; //Get
+const String serviceListEndPoint = "/users/service/list"; //Get
+const String servicePreviewEndPoint = "/users/service/preview"; //Get
+const String rideNotesEndPoint = "/users/ride/reason_list"; //Get
 String token = "";
 
 UserData userDataModel = UserData();
