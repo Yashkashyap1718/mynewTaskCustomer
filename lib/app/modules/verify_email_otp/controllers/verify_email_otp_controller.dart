@@ -160,7 +160,8 @@ class VerifyEmailOtpController extends GetxController {
   }
 
   Future<void> fetchUserProfile(token, context) async {
-    const String baseUrl = "http://172.93.54.177:3002/users/profile/preview";
+    const String baseUrl =
+        "https://travelteachergroup.com:8081/users/profile/preview";
     try {
       final response = await http.get(
         Uri.parse(baseUrl),

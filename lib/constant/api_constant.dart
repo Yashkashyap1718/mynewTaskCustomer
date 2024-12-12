@@ -1,7 +1,7 @@
 import 'package:customer/app/models/user_model.dart';
 
-const String baseURL = "http://172.93.54.177:3002";
-const String imageBaseUrl = "http://172.93.54.177:3002/uploads/";
+const String baseURL = "https://travelteachergroup.com:8081";
+const String imageBaseUrl = "https://travelteachergroup.com:8081/uploads/";
 const String sendOtpEndpoint = "/users/signin"; //POST
 const String sendOtpOnEmail = "/users/send/email"; //POST
 const String veriftOtpEndpoint = "/users/confirmation"; //POST

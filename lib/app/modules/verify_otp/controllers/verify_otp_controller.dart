@@ -179,7 +179,8 @@ class VerifyOtpController extends GetxController {
   }
 
   Future<void> fetchUserProfile(token, context, bool isEmialVerified) async {
-    const String baseUrl = "http://172.93.54.177:3002/users/profile/preview";
+    const String baseUrl =
+        "https://travelteachergroup.com:8081/users/profile/preview";
     try {
       ShowToastDialog.showLoader("Please wait".tr);
 

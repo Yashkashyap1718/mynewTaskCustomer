@@ -24,5 +24,5 @@ class ReasonForCancelController extends GetxController {
     bookingModel3.value = await getRideNotes();
   }
 
-  RxInt selectedIndex=0.obs;
+  RxInt selectedIndex=0.obs;      
 }
