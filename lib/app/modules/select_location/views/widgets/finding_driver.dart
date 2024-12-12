@@ -281,21 +281,23 @@ class _FindingDriverBottomSheetState extends State<FindingDriverBottomSheet> {
                                 ),
                                 InkWell(
                                     onTap: () {
-
-
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ChatPageOverview(
-                                          studentId: snapshot.data!.passenger.id,
-                                          teacherId: snapshot.data!.driver.id,
-                                          studentName: snapshot.data!.passenger.name ?? '',
-                                          teacherName: snapshot.data!.driver.name,
-                                          showAppBar: true,
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ChatPageOverview(
+                                            studentId:
+                                                snapshot.data!.passenger.id,
+                                            teacherId: snapshot.data!.driver.id,
+                                            studentName:
+                                                snapshot.data!.passenger.name ??
+                                                    '',
+                                            teacherName:
+                                                snapshot.data!.driver.name,
+                                            showAppBar: true,
+                                          ),
                                         ),
-                                      ),
-                                    );
-
+                                      );
                                     },
                                     child: SvgPicture.asset(
                                         "assets/icon/ic_message.svg")),

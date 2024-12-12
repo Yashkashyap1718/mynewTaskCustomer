@@ -1,7 +1,7 @@
 import 'package:customer/app/models/user_model.dart';
 
-const String baseURL = "http://172.93.54.177:3002";
-const String imageBaseUrl = "http://172.93.54.177:3002/uploads/";
+const String baseURL = "https://travelteachergroup.com:8081";
+const String imageBaseUrl = "https://travelteachergroup.com:8081/uploads/";
 const String sendOtpEndpoint = "/users/signin"; //POST
 const String sendOtpOnEmail = "/users/send/email"; //POST
 const String veriftOtpEndpoint = "/users/confirmation"; //POST
@@ -30,6 +30,9 @@ const String completedRidesEndpoint = "/users/ride/completed/list"; //POST
 const String rejectedRidesEndpoint = "/users/ride/canceled/list"; //POST
 const String bannerEndPoint = "/users/banner_list"; //Get
 const String myRidesEndPoint = "/users/booking_list"; //Get
+const String serviceListEndPoint = "/users/service/list"; //Get
+const String servicePreviewEndPoint = "/users/service/preview"; //Get
+const String rideNotesEndPoint = "/users/ride/reason_list"; //Get
 String token = "";
 
 UserData userDataModel = UserData();

@@ -21,11 +21,19 @@ class AppBarWithBorder extends StatelessWidget implements PreferredSizeWidget {
     final themeChange = Provider.of<DarkThemeProvider>(context);
     return AppBar(
       backgroundColor: bgColor,
-      shape: (isUnderlineShow ?? true) ?  Border(bottom: BorderSide(color: themeChange.isDarkTheme()? AppThemData.grey800 : AppThemData.grey100, width: 1)) : null,
+      shape: (isUnderlineShow ?? true)
+          ? Border(
+              bottom: BorderSide(
+                  color: themeChange.isDarkTheme()
+                      ? AppThemData.grey800
+                      : AppThemData.grey100,
+                  width: 1))
+          : null,
       title: Text(
         title,
         style: GoogleFonts.inter(
-          color: themeChange.isDarkTheme()? AppThemData.white : AppThemData.black,
+          color:
+              themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
           fontSize: 18,
           fontWeight: FontWeight.w600,
           // height: 0.08,
