@@ -1,6 +1,5 @@
 import 'package:customer/app/modules/my_services/controllers/service_list_controller.dart';
 import 'package:customer/app/modules/my_services_details/views/service_details_view.dart';
-import 'package:customer/app/modules/support_screen/controllers/support_screen_controller.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/app_bar_with_border.dart';
 import 'package:customer/theme/app_them_data.dart';

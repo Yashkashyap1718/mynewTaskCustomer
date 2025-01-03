@@ -5,26 +5,13 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:math' as maths;
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:customer/app/models/booking_model.dart';
-import 'package:customer/app/models/driver_user_model.dart';
 import 'package:customer/app/models/map_model.dart';
 import 'package:customer/app/models/my_ride_model.dart';
 import 'package:customer/app/models/payment_method_model.dart';
 import 'package:customer/app/models/payment_model/stripe_failed_model.dart';
 import 'package:customer/app/models/user_model.dart';
-import 'package:customer/app/models/wallet_transaction_model.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
-import 'package:customer/models/ride_booking.dart' as ride_booking;
-import 'package:customer/payments/marcado_pago/mercado_pago_screen.dart';
-import 'package:customer/payments/pay_fast/pay_fast_screen.dart';
-import 'package:customer/payments/pay_stack/pay_stack_screen.dart';
-import 'package:customer/payments/pay_stack/pay_stack_url_model.dart';
-import 'package:customer/payments/pay_stack/paystack_url_generator.dart';
-import 'package:customer/theme/app_them_data.dart';
-import 'package:customer/utils/fire_store_utils.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 // import 'package:flutterwave_standard/flutterwave.dart';
 import 'package:get/get.dart';
@@ -32,7 +19,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:mercadopago_sdk/mercadopago_sdk.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart' as razor_pay_flutter;
-import 'package:razorpay_flutter/razorpay_flutter.dart';
 
 class MyRideDetailsController extends GetxController {
   RxString bookingId = ''.obs;

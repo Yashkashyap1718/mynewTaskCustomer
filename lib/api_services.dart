@@ -216,14 +216,14 @@ Future<bool> sendTopicNotification({
 }
 
 Future<List<BannerModel>> getBanners() async {
-  List<BannerModel> banner_model = [];
+  List<BannerModel> bannerModel = [];
   final response = await http.get(
     Uri.parse(baseURL + bannerEndPoint),
     headers: {"Content-Type": "application/json", "token": token},
   );
 
   if (response.statusCode == 200) {
-    banner_model = List<BannerModel>.from(
+    bannerModel = List<BannerModel>.from(
       jsonDecode(response.body)['data'].map(
         (item) => BannerModel.fromJson(item),
       ),
@@ -237,7 +237,7 @@ Future<List<BannerModel>> getBanners() async {
     ShowToastDialog.closeLoader();
   }
 
-  return banner_model;
+  return bannerModel;
 }
 
 Future<List<MyRideModel>> getRidesList(String api) async {

@@ -1,9 +1,7 @@
 // ignore_for_file: unnecessary_overrides
 
 import 'package:customer/api_services.dart';
-import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/app/models/ride_cancel_reasons.dart';
-import 'package:customer/constant/constant.dart';
 import 'package:customer/utils/fire_store_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
