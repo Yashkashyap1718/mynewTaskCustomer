@@ -41,72 +41,58 @@ class MyRideView extends StatelessWidget {
             // ),
             body: Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
-                  child: Obx(
-                    () => Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        RoundShapeButton(
-                          title: "Ongoing".tr,
-                          buttonColor: controller.selectedType.value == 0
-                              ? AppThemData.primary400
-                              : themeChange.isDarkTheme()
-                                  ? AppThemData.black
-                                  : AppThemData.white,
-                          buttonTextColor: controller.selectedType.value == 0
-                              ? AppThemData.black
-                              : themeChange.isDarkTheme()
-                                  ? AppThemData.white
-                                  : AppThemData.black,
-                          onTap: () {
-                            controller.selectedType.value = 0;
-                          },
-                          size: Size((Responsive.width(90, context) / 3), 38),
-                          textSize: 12,
-                        ),
-                        RoundShapeButton(
-                          title: "Completed".tr,
-                          buttonColor: controller.selectedType.value == 1
-                              ? AppThemData.primary400
-                              : themeChange.isDarkTheme()
-                                  ? AppThemData.black
-                                  : AppThemData.white,
-                          buttonTextColor: controller.selectedType.value == 1
-                              ? AppThemData.black
-                              : (themeChange.isDarkTheme()
-                                  ? AppThemData.white
-                                  : AppThemData.black),
-                          onTap: () {
-                            controller.selectedType.value = 1;
-                          },
-                          size: Size((Responsive.width(90, context) / 3), 38),
-                          textSize: 12,
-                        ),
-                        RoundShapeButton(
-                          title: "Rejected".tr,
-                          buttonColor: controller.selectedType.value == 2
-                              ? AppThemData.primary400
-                              : themeChange.isDarkTheme()
-                                  ? AppThemData.black
-                                  : AppThemData.white,
-                          buttonTextColor: controller.selectedType.value == 2
-                              ? AppThemData.black
-                              : themeChange.isDarkTheme()
-                                  ? AppThemData.white
-                                  : AppThemData.black,
-                          onTap: () {
-                            controller.selectedType.value = 2;
-                          },
-                          size: Size((Responsive.width(90, context) / 3), 38),
-                          textSize: 12,
-                        ),
-                      ],
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.withOpacity(0.2),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
+                    child: Obx(
+                      () => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          RoundShapeButton(
+                            title: "Ongoing".tr,
+                            buttonColor: controller.selectedType.value == 0
+                                ? AppThemData.primary400
+                                : AppThemData.white,
+                            buttonTextColor: Colors.grey,
+                            onTap: () {
+                              controller.selectedType.value = 0;
+                            },
+                            size: Size((Responsive.width(90, context) / 3), 38),
+                            textSize: 8,
+                          ),
+                          RoundShapeButton(
+                            title: "Completed".tr,
+                            buttonColor: controller.selectedType.value == 1
+                                ? AppThemData.primary400
+                                : AppThemData.white,
+                            buttonTextColor: Colors.grey,
+                            onTap: () {
+                              controller.selectedType.value = 1;
+                            },
+                            size: Size((Responsive.width(90, context) / 3), 38),
+                            textSize: 8,
+                          ),
+                          RoundShapeButton(
+                            title: "Rejected".tr,
+                            buttonColor: controller.selectedType.value == 2
+                                ? AppThemData.primary400
+                                : AppThemData.white,
+                            buttonTextColor: Colors.grey,
+                            onTap: () {
+                              controller.selectedType.value = 2;
+                            },
+                            size: Size((Responsive.width(90, context) / 3), 38),
+                            textSize: 8,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                const Divider(),
                 RefreshIndicator(
                   onRefresh: () async {
                     if (controller.selectedType.value == 0) {

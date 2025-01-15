@@ -72,6 +72,16 @@ Future<NearbyDriversResponse?> setBooking(BookingModel bookingModel) async {
         data: [],
         rideId: ""); // Initialize with default value
   }
+
+  if (nearbyDrivers.data.isEmpty) {
+    nearbyDrivers = NearbyDriversResponse(
+        status: false,
+        msg: "Failed to add ride",
+        data: [],
+        rideId: ""); // Initialize with default value
+    log("Driver not found");
+  }
+
   return nearbyDrivers;
 }
 

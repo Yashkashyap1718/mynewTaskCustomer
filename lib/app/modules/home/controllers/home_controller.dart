@@ -24,6 +24,7 @@ import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:customer/models/ride_booking.dart';
 
 import '../../../../constant_widgets/show_toast_dialog.dart';
 
@@ -41,6 +42,8 @@ class HomeController extends GetxController {
   RxBool isLoading = false.obs;
 
   // var userData = userData().obs;
+
+  final bookingModel = Rx<RideBooking?>(null);
 
   @override
   void onInit() {
@@ -109,18 +112,16 @@ class HomeController extends GetxController {
             id: "pickUp",
             descriptor: dropIcon!,
             rotation: 0.0);
-        updateCameraLocation(sourceLocation!, sourceLocation!, mapController);
       } else {
         MarkerId markerId = const MarkerId("pickUp");
         if (markers.containsKey(markerId)) {
           markers.removeWhere((key, value) => key == markerId);
-          updateCameraLocation(sourceLocation!, sourceLocation!, mapController);
         }
         log("==> ${markers.containsKey(markerId)}");
         currentLocationPosition2 = currentLocationPosition;
       }
     }
-
+    updateCameraLocation(destination!, destination!, mapController);
     currentLocationPosition2 = currentLocationPosition;
     isLoading.value = false;
   }
@@ -337,6 +338,9 @@ class HomeController extends GetxController {
     userData = await FireStoreUtils.getUserProfileAPI();
     print("USERDATA::: $userData");
     if (userData != null) {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString("token")!;
+
       isLoading.value = false;
       if (userData!.status != "Active") {
         Get.defaultDialog(
