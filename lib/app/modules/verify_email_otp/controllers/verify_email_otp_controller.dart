@@ -149,8 +149,8 @@ class VerifyEmailOtpController extends GetxController {
       } else {
         ShowToastDialog.closeLoader();
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error occurred while confirming OTP.'),
+          SnackBar(
+            content: Text(jsonDecode(response.body)['msg'].toString()),
           ),
         );
       }

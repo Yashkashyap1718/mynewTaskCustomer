@@ -5,6 +5,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:customer/app/models/user_model.dart';
+import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfileController extends GetxController {
@@ -50,12 +52,14 @@ class EditProfileController extends GetxController {
   getUserData() async {
     const String url = '$baseURL$getUserPofileEndpoint';
     try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("token");
       ShowToastDialog.showLoader("Getting profile details...".tr);
       final http.Response response = await http.get(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
-          'token': token,
+          'token': token ?? '',
         },
       );
 
@@ -65,7 +69,11 @@ class EditProfileController extends GetxController {
         name.value = data['name'] ?? '';
         nameController.text = data['name'] ?? '';
         emailController.text = data['email'] ?? '';
-        dobController.text = data['date_of_birth'] ?? '';
+        dobController.text = data['date_of_birth'] != null
+            ? DateFormat('dd-MM-yyyy')
+                .format(DateTime.parse(data['date_of_birth']))
+                .toString()
+            : '';
         selectedGender.value = data['gender'] == 'male' ? 1 : 2;
 
         SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -120,6 +128,9 @@ class EditProfileController extends GetxController {
   ) async {
     const String url = '$baseURL$updatePofileEndpoint';
 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString("token");
+
     final Map<String, String> payload = {
       "name": nameController.text,
       "email": emailController.text,
@@ -133,7 +144,7 @@ class EditProfileController extends GetxController {
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
-          'token': token,
+          'token': token ?? '',
         },
         body: jsonEncode(payload),
       );
@@ -144,7 +155,7 @@ class EditProfileController extends GetxController {
         log('-----update--user-----$data');
         // Handle the successful response as needed
         ShowToastDialog.closeLoader();
-        Get.back(result: true);
+        Get.offAllNamed(Routes.HOME);
         ScaffoldMessenger.of(Get.context!).showSnackBar(
           const SnackBar(content: Text('Profile completed successfully!')),
         );
@@ -182,15 +193,18 @@ class EditProfileController extends GetxController {
 
       // Create the request body
       Map<String, dynamic> body = {
-        "profile": base64Image,
+        "profile": 'data:image/jpeg;base64,$base64Image',
       };
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("token");
 
       // Send the POST request
       final response = await http.post(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
-          'token': token,
+          'token': token ?? '',
         },
         body: jsonEncode(body),
       );

@@ -50,11 +50,7 @@ Future<void> main() async {
   // } else {
   // Proceed with app startup
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  if (prefs.getString("token") != null) {
-    token = prefs.getString("token")!;
-
-    print("TOKEN:: $token");
-  }
+  prefs.setString("fcmMessageToken", token ?? '');
   runApp(MyApp());
   // }
 }
