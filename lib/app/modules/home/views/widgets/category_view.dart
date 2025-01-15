@@ -63,7 +63,7 @@ class CategoryView extends StatelessWidget {
                 width: 50,
                 height: 50,
                 child: CachedNetworkImage(
-                  imageUrl: imagePath+vehicleType.image,
+                  imageUrl: imagePath + vehicleType.image,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => Constant.loader(),
                   errorWidget: (context, url, error) =>
@@ -88,28 +88,17 @@ class CategoryView extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 2),
-                    // Obx(() {
-                    //   if (controller.mapModel.value == null ||
-                    //       controller.mapModel.value!.rows == null ||
-                    //       controller.mapModel.value!.rows!.isEmpty) {
-                    //     return Text('No data available');
-                    //   }
-                    //   final rows = controller.mapModel.value!.rows;
-                    //   if (rows!.first?.elements == null ||
-                    //       rows!.first!.elements!.isEmpty) {
-                    //     return Text('No data available');
-                    //   }
-                    //   return Text(
-                    //     '${'We will arrived in '.tr}${rows.first.elements!.first.duration!.text ?? ''}',
-                    //     style: GoogleFonts.inter(
-                    //       color: themeChange.isDarkTheme()
-                    //           ? AppThemData.grey25
-                    //           : AppThemData.grey950,
-                    //       fontSize: 14,
-                    //       fontWeight: FontWeight.w400,
-                    //     ),
-                    //   );
-                    // }),
+                    Text(
+                      '${vehicleType.charges.farMinimumCharges} km',
+                      style: GoogleFonts.inter(
+                        color: themeChange.isDarkTheme()
+                            ? AppThemData.grey25
+                            : AppThemData.grey950,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
                   ],
                 ),
               ),

@@ -1,16 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customer/api_services.dart';
 import 'package:customer/app/models/banner_model.dart';
+import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/app/models/my_ride_model.dart';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/language/views/language_view.dart';
 import 'package:customer/app/modules/my_ride_details/controllers/my_ride_details_controller.dart';
 import 'package:customer/app/modules/my_ride_details/views/my_ride_details_view.dart';
 import 'package:customer/app/modules/notification/views/notification_view.dart';
+import 'package:customer/app/modules/select_location/views/widgets/select_location_bottom_sheet.dart';
 import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant/booking_status.dart';
 import 'package:customer/constant_widgets/no_rides_view.dart';
+import 'package:customer/constant_widgets/pick_drop_point_view.dart';
 import 'package:customer/extension/date_time_extension.dart';
 import 'package:customer/models/ride_booking.dart';
 import 'package:customer/theme/responsive.dart';
@@ -18,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
@@ -48,41 +52,34 @@ class HomeView extends StatelessWidget {
                 body: Stack(
                   children: [
                     // Map Background
-                    controller.currentLocationPosition != null
-                        ? GoogleMap(
-                            initialCameraPosition: CameraPosition(
-                              target: LatLng(
-                                controller.currentLocationPosition!.latitude,
-                                controller.currentLocationPosition!.longitude,
+                    Obx(() {
+                      return controller.currentLocationPosition != null
+                          ? GoogleMap(
+                              initialCameraPosition: CameraPosition(
+                                target: LatLng(
+                                  controller.currentLocationPosition!.latitude,
+                                  controller.currentLocationPosition!.longitude,
+                                ),
+                                zoom: 15,
                               ),
-                              zoom: 15,
-                            ),
-                            padding: const EdgeInsets.only(top: 2.0),
-                            polylines:
-                                Set<Polyline>.of(controller.polyLines.values),
-                            markers: Set<Marker>.of(controller.markers.values),
-                            onMapCreated: (GoogleMapController mapController) {
-                              controller.mapController = mapController;
-                            },
-                          )
-                        : Center(child: CircularProgressIndicator()),
+                              padding: const EdgeInsets.only(top: 2.0),
+                              polylines:
+                                  Set<Polyline>.of(controller.polyLines.values),
+                              markers:
+                                  Set<Marker>.of(controller.markers.values),
+                              onMapCreated:
+                                  (GoogleMapController mapController) {
+                                controller.mapController = mapController;
+                              },
+                            )
+                          : Container();
+                    }),
                     // Bottom Sheet
-
-                    Positioned(
-                        top: 0,
-                        child: SafeArea(
-                          child: IconButton(
-                              icon: Icon(Icons.menu),
-                              onPressed: () {
-                                // Open the Drawer
-                                Scaffold.of(context).openDrawer();
-                              }),
-                        )),
 
                     DraggableScrollableSheet(
                       initialChildSize: 0.42,
                       minChildSize: 0.42,
-                      maxChildSize: 1.0,
+                      maxChildSize: 0.99,
                       builder: (BuildContext context,
                           ScrollController scrollController) {
                         return Container(
@@ -91,7 +88,7 @@ class HomeView extends StatelessWidget {
                                 ? AppThemData.black
                                 : AppThemData.white,
                             borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(16)),
+                                top: Radius.circular(25)),
                           ),
                           child: SingleChildScrollView(
                             controller: scrollController,
@@ -224,29 +221,34 @@ class HomeView extends StatelessWidget {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Icon(Icons.search_rounded,
-                color: themeChange.isDarkTheme()
-                    ? AppThemData.grey400
-                    : AppThemData.grey500),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                'Where to?'.tr,
-                style: GoogleFonts.inter(
+        child: InkWell(
+          onTap: () {
+            Get.toNamed(Routes.SELECT_LOCATION);
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(Icons.search_rounded,
                   color: themeChange.isDarkTheme()
                       ? AppThemData.grey400
-                      : AppThemData.grey500,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
+                      : AppThemData.grey500),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  'Where to?'.tr,
+                  style: GoogleFonts.inter(
+                    color: themeChange.isDarkTheme()
+                        ? AppThemData.grey400
+                        : AppThemData.grey500,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -267,6 +269,7 @@ class HomeView extends StatelessWidget {
 
   Widget _buildRideList(
       HomeController controller, DarkThemeProvider themeChange) {
+    bool once = false;
     return StreamBuilder<RideBooking?>(
       stream: checkRequest(),
       builder: (context, snapshot) {
@@ -277,6 +280,25 @@ class HomeView extends StatelessWidget {
           return NoRidesView(
               themeChange: themeChange, height: Responsive.height(40, context));
         }
+
+        controller.bookingModel.value = snapshot.data!;
+
+        try {
+          controller.sourceLocation = LatLng(
+              controller.bookingModel.value?.pickupLocation.coordinates[0] ?? 0,
+              controller.bookingModel.value?.pickupLocation.coordinates[1] ??
+                  0);
+          controller.destination = LatLng(
+              controller.bookingModel.value?.dropoffLocation.coordinates[0] ??
+                  0,
+              controller.bookingModel.value?.dropoffLocation.coordinates[1] ??
+                  0);
+          if (!once) {
+            controller.getData();
+            once = true;
+          }
+          controller.update();
+        } catch (e) {}
 
         RideBooking bookingModelList = snapshot.data!;
 
@@ -327,6 +349,12 @@ class HomeView extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  child: PickDropPointView(
+                      pickUpAddress: snapshot.data!.pickupAddress ?? '',
+                      dropAddress: snapshot.data!.dropoffAddress ?? ''),
+                ),
                 Container(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Row(
@@ -345,7 +373,8 @@ class HomeView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              bookingModelList.vehicleType?.title ?? '',
+                              bookingModelList.vehicleType?.title ??
+                                  'Waiting for Driver',
                               style: GoogleFonts.inter(
                                 color: themeChange.isDarkTheme()
                                     ? AppThemData.grey25
@@ -581,7 +610,7 @@ class HomeView extends StatelessWidget {
             List<MyRideModel> myRideList = snapshot.data!;
 
             return ListView.builder(
-              itemCount: 2,
+              itemCount: 1,
               shrinkWrap: true,
               itemBuilder: (context, index) {
                 RxBool isOpen = false.obs;
@@ -640,9 +669,9 @@ class HomeView extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                DateTime.fromMillisecondsSinceEpoch(
-                                        bookingModel.createdAt!)
-                                    .toString(),
+                                DateFormat('dd-MM-yyyy , HH:mm a').format(
+                                    DateTime.fromMillisecondsSinceEpoch(
+                                        bookingModel.createdAt!)),
                                 style: GoogleFonts.inter(
                                   color: themeChange.isDarkTheme()
                                       ? AppThemData.grey400
@@ -669,21 +698,6 @@ class HomeView extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              // SizedBox(
-                              //   height: 60,
-                              //   width: 60,
-                              //   child: CachedNetworkImage(
-                              //     imageUrl: bookingModel.vehicle == null
-                              //         ? Constant.profileConstant
-                              //         : "$imageBaseUrl${bookingModel.vehicle!.image}",
-                              //     fit: BoxFit.cover,
-                              //     placeholder: (context, url) =>
-                              //         Constant.loader(),
-                              //     errorWidget: (context, url, error) =>
-                              //         Image.asset(Constant.userPlaceHolder),
-                              //   ),
-                              // ),
-                              // const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
