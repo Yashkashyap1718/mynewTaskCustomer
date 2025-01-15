@@ -158,20 +158,20 @@ class UserData {
 
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(
-      id: json['_id'] as String,
-      name: json['name'] as String?, // Nullable
-      countryCode: json['country_code'] as String,
-      phone: json['phone'] as String,
-      referralCode: json['referral_code'] as String,
-      verified: json['verified'] as bool,
-      role: json['role'] as String,
+      id: json['_id'] as String? ?? '',
+      name: json['name'] as String? ?? 'Hii user', // Nullable
+      countryCode: json['country_code'] as String? ?? '',
+      phone: json['phone'] as String? ?? '',
+      referralCode: json['referral_code'] as String? ?? '',
+      verified: json['verified'] as bool? ?? false,
+      role: json['role'] as String? ?? '',
       languages: List<String>.from(json['languages']),
-      profile: json['profile'] as String,
-      pushNotification: json['push_notification'] as String,
-      status: json['status'] as String,
-      suspend: json['suspend'] as String,
-      gender: json['gender'] as String,
-      createdAt: json['createdAt'] as dynamic,
+      profile: json['profile'] as String? ?? '',
+      pushNotification: json['push_notification'] as String? ?? '',
+      status: json['status'] as String? ?? '',
+      suspend: json['suspend'] as String? ?? '',
+      gender: json['gender'] as String? ?? '',
+      createdAt: json['createdAt'] as dynamic? ?? '',
     );
   }
 

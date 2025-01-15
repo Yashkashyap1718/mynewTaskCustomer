@@ -1,6 +1,7 @@
 import 'package:customer/api_services.dart';
 import 'package:customer/app/modules/home/views/home_view.dart';
 import 'package:customer/app/modules/reason_for_cancel/controllers/reason_for_cancel_controller.dart';
+import 'package:customer/app/routes/app_pages.dart';
 import 'package:customer/constant_widgets/app_bar_with_border.dart';
 import 'package:customer/constant_widgets/custom_dialog_box.dart';
 import 'package:customer/constant_widgets/round_shape_button.dart';
@@ -77,13 +78,13 @@ class ReasonForCancelView extends StatelessWidget {
                                 "Ride Cancelled Successfully..");
 
                             Get.offAll(const HomeView());
-                            // Get.toNamed(Routes.HOME);
+                            Get.toNamed(Routes.HOME);
                           },
                           negativeClick: () {
-                            Navigator.pop(context);
-                            Get.back();
-                            // Get.offAll(const HomeView());
-                            // Get.toNamed(Routes.HOME);
+                            // Navigator.pop(context);
+                            // Get.back();
+                            Get.offAll(const HomeView());
+                            Get.toNamed(Routes.HOME);
                           },
                           positiveString: "Back to Home".tr,
                           negativeString: "Cancel".tr,

@@ -69,30 +69,32 @@ Widget _buildServiceItem(BuildContext context, String serviceName,
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              serviceName,
-              style: GoogleFonts.inter(
-                color: themeChange.isDarkTheme()
-                    ? AppThemData.white
-                    : AppThemData.black,
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                serviceName,
+                style: GoogleFonts.inter(
+                  color: themeChange.isDarkTheme()
+                      ? AppThemData.white
+                      : AppThemData.black,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
-            ),
-            Text(
-              serviceDescription,
-              style: GoogleFonts.inter(
-                color: themeChange.isDarkTheme()
-                    ? AppThemData.white
-                    : AppThemData.black,
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
+              Text(
+                serviceDescription,
+                style: GoogleFonts.inter(
+                  color: themeChange.isDarkTheme()
+                      ? AppThemData.white
+                      : AppThemData.black,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
         Image.network(
           "$imageBaseUrl$serviceImage",

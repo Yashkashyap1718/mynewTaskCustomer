@@ -135,60 +135,60 @@ class SelectLocationController extends GetxController {
     super.onInit();
   }
 
-  getTax() async {
-    await FireStoreUtils().getTaxList().then((value) {
-      if (value != null) {
-        Constant.taxList = value;
-        taxList.value = value;
-        print("===> ${Constant.taxList!.length}");
-      }
-    });
-  }
-
-  static Future<bool> updateCurrentLocation({
-    required double latitude,
-    required double longitude,
-  }) async {
-    final String url = baseURL + currentLocationEndpoint;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    token = prefs.getString("token") ?? "";
-
-    // Request body
-    final Map<String, dynamic> body = {
-      "latitude": latitude.toString(),
-      "longitude": longitude.toString(),
-      "fcmToken": token,
-    };
-    // Constant().getDriverData(mapModel.value, bookingModel.value);
-    try {
-      // HTTP PUT request
-      final response = await http.put(
-        Uri.parse(url),
-        headers: {
-          'token': token.toString(),
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(body),
-      );
-
-      // Check if the response status is OK
-      if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
-
-        if (jsonResponse['status'] == true) {
-          log("Location updated successfully: ${jsonResponse['msg']}");
-          return true;
-        } else {
-          log("Failed to update location: ${jsonResponse['msg']}");
+    getTax() async {
+      await FireStoreUtils().getTaxList().then((value) {
+        if (value != null) {
+          Constant.taxList = value;
+          taxList.value = value;
+          print("===> ${Constant.taxList!.length}");
         }
-      } else {
-        log("Error: ${response.statusCode} - ${response.reasonPhrase}");
-      }
-    } catch (error, stackTrace) {
-      log('Failed to update current location: $error $stackTrace');
+      });
     }
-    return false;
-  }
+
+    static Future<bool> updateCurrentLocation({
+      required double latitude,
+      required double longitude,
+    }) async {
+      final String url = baseURL + currentLocationEndpoint;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      token = prefs.getString("token") ?? "";
+
+      // Request body
+      final Map<String, dynamic> body = {
+        "latitude": latitude.toString(),
+        "longitude": longitude.toString(),
+        "fcmToken": token,
+      };
+      // Constant().getDriverData(mapModel.value, bookingModel.value);
+      try {
+        // HTTP PUT request
+        final response = await http.put(
+          Uri.parse(url),
+          headers: {
+            'token': token.toString(),
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(body),
+        );
+
+        // Check if the response status is OK
+        if (response.statusCode == 200) {
+          final jsonResponse = jsonDecode(response.body);
+
+          if (jsonResponse['status'] == true) {
+            log("Location updated successfully: ${jsonResponse['msg']}");
+            return true;
+          } else {
+            log("Failed to update location: ${jsonResponse['msg']}");
+          }
+        } else {
+          log("Error: ${response.statusCode} - ${response.reasonPhrase}");
+        }
+      } catch (error, stackTrace) {
+        log('Failed to update current location: $error $stackTrace');
+      }
+      return false;
+    }
 
   getData() async {
     currentLocationPosition = await Utils.getCurrentLocation();

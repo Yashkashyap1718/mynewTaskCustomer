@@ -156,7 +156,7 @@ class VerifyOtpController extends GetxController {
           ShowToastDialog.closeLoader();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Something went wrong'),
+              content: Text('Wrong OTP entered'),
             ),
           );
         }
@@ -164,7 +164,7 @@ class VerifyOtpController extends GetxController {
         ShowToastDialog.closeLoader();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Something went wrong'),
+            content: Text('Wrong OTP entered'),
           ),
         );
       }

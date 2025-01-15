@@ -417,11 +417,11 @@ class DrawerView extends StatelessWidget {
                               positiveString: "Log out".tr,
                               negativeString: "Cancel".tr,
                               positiveClick: () async {
-                                await controller.logOutUser(context);
-
-                                // await FirebaseAuth.instance.signOut();
-
                                 Navigator.pop(context);
+                                // Get.to(const MyRideDetailsView());
+                                await controller.logOutUser(context);
+// 
+                                // await FirebaseAuth.instance.signOut();
                               },
                               negativeClick: () {
                                 Navigator.pop(context);

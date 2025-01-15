@@ -59,12 +59,15 @@ class _LoginViewState extends State<LoginView> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 32),
                           child: Center(
-                              child: Image.asset(
-                            themeChange.isDarkTheme()
-                                ? "assets/images/taxi.png"
-                                : "assets/images/taxi.png",
-                            scale: 6,
-                          )),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.asset(
+                                  themeChange.isDarkTheme()
+                                      ? "assets/images/taxi.png"
+                                      : "assets/images/taxi.png",
+                                  scale: 6,
+                                ),
+                              )),
                         ),
                         Text(
                           "Login".tr,
@@ -104,7 +107,7 @@ class _LoginViewState extends State<LoginView> {
                                     isCountryNameShow: true,
                                     countryCodeController:
                                         controller.countryCodeController,
-                                    isEnable: true,
+                                    isEnable: false,
                                     onChanged: (value) {
                                       controller.countryCodeController.text =
                                           value.dialCode.toString();
@@ -130,7 +133,8 @@ class _LoginViewState extends State<LoginView> {
                                     validator: (value) => validateMobile(
                                         value,
                                         controller
-                                            .countryCodeController.value.text,"Mobile"),
+                                            .countryCodeController.value.text,
+                                        "Mobile"),
                                     decoration: InputDecoration(
                                       border: InputBorder.none,
                                       focusedBorder: InputBorder.none,

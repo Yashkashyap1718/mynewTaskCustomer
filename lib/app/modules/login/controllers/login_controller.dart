@@ -12,11 +12,12 @@ import 'package:http/http.dart' as http;
 class LoginController extends GetxController {
   TextEditingController countryCodeController =
       TextEditingController(text: '+91');
-  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController phoneNumberController = TextEditingController(text: '');
   Rx<GlobalKey<FormState>> formKey = GlobalKey<FormState>().obs;
 
   @override
   void onInit() {
+    phoneNumberController = TextEditingController(text: '');
     super.onInit();
   }
 
@@ -25,7 +26,7 @@ class LoginController extends GetxController {
     super.onReady();
   }
 
-  @override
+  @override 
   void onClose() {}
 
   Future<void> sendOTP(BuildContext context) async {
