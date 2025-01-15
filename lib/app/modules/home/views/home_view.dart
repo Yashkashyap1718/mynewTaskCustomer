@@ -44,6 +44,7 @@ class HomeView extends StatelessWidget {
       builder: (controller) {
         return controller.currentLocationPosition != null
             ? Scaffold(
+                appBar: _buildAppBar(themeChange),
                 body: Stack(
                   children: [
                     // Map Background
@@ -114,8 +115,8 @@ class HomeView extends StatelessWidget {
 
   AppBar _buildAppBar(DarkThemeProvider themeChange) {
     return AppBar(
-      backgroundColor: Colors.transparent, // Make AppBar transparent
-      elevation: 0, // Remove shadow
+      elevation: 0,
+      backgroundColor: Colors.transparent,
       title: _buildAppBarTitle(themeChange),
       centerTitle: true,
       actions: [_buildNotificationButton()],
