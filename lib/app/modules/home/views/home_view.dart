@@ -75,6 +75,7 @@ class HomeView extends StatelessWidget {
                               onPressed: () {
                                 // Open the Drawer
                                 Scaffold.of(context).openDrawer();
+                                
                               }),
                         )),
 

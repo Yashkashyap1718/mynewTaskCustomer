@@ -14,6 +14,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../constant/constant.dart';
@@ -50,51 +51,50 @@ class EditProfileView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Center(
-                        child: myProfileView(controller, context),
-                        // Stack(
-                        //   alignment: Alignment.bottomRight,
-                        //   children: [
-                        //     Obx(
-                        //       () => Container(
-                        //         width: 110,
-                        //         height: 110,
-                        //         clipBehavior: Clip.antiAlias,
-                        //         decoration: ShapeDecoration(
-                        //           color: Colors.white,
-                        //           shape: RoundedRectangleBorder(
-                        //             borderRadius: BorderRadius.circular(200),
-                        //           ),
-                        //           image: DecorationImage(
-                        //             image: NetworkImage(controller.profilePic.value),
-                        //             fit: BoxFit.cover,
-                        //           ),
-                        //         ),
-                        //       ),
-                        //     ),
-                        //     Container(
-                        //       width: 26,
-                        //       height: 26,
-                        //       padding: const EdgeInsets.all(5),
-                        //       margin: const EdgeInsets.only(bottom: 8),
-                        //       clipBehavior: Clip.antiAlias,
-                        //       decoration: ShapeDecoration(
-                        //         color: AppThemData.primary400,
-                        //         shape: RoundedRectangleBorder(
-                        //             borderRadius: BorderRadius.circular(200), side: const BorderSide(color: AppThemData.white, width: 3)),
-                        //       ),
-                        //       child: SvgPicture.asset(
-                        //         "assets/icon/ic_drawer_edit.svg",
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
-                      ),
+                      // Center(
+                      // child: myProfileView(controller, context),
+                      // Stack(
+                      //   alignment: Alignment.bottomRight,
+                      //   children: [
+                      //     Obx(
+                      //       () => Container(
+                      //         width: 110,
+                      //         height: 110,
+                      //         clipBehavior: Clip.antiAlias,
+                      //         decoration: ShapeDecoration(
+                      //           color: Colors.white,
+                      //           shape: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(200),
+                      //           ),
+                      //           image: DecorationImage(
+                      //             image: NetworkImage(controller.profilePic.value),
+                      //             fit: BoxFit.cover,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ),
+                      //     Container(
+                      //       width: 26,
+                      //       height: 26,
+                      //       padding: const EdgeInsets.all(5),
+                      //       margin: const EdgeInsets.only(bottom: 8),
+                      //       clipBehavior: Clip.antiAlias,
+                      //       decoration: ShapeDecoration(
+                      //         color: AppThemData.primary400,
+                      //         shape: RoundedRectangleBorder(
+                      //             borderRadius: BorderRadius.circular(200), side: const BorderSide(color: AppThemData.white, width: 3)),
+                      //       ),
+                      //       child: SvgPicture.asset(
+                      //         "assets/icon/ic_drawer_edit.svg",
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      // ),
                       const SizedBox(height: 12),
                       Center(
                         child: Text(
-                          controller.userModel?.referralCode?.toString() ??
-                              "Hi User",
+                          controller.userModel?.referralCode?.toString() ?? "",
                           textAlign: TextAlign.center,
                           style: GoogleFonts.inter(
                             color: themeChange.isDarkTheme()
@@ -137,6 +137,7 @@ class EditProfileView extends StatelessWidget {
                         hintText: "Enter Email".tr,
                         prefixIcon: const Icon(Icons.email_outlined),
                         keyboardType: TextInputType.emailAddress,
+                        isEnable: false,
                         controller: controller.emailController,
                         validator: (value) => value != null && value.isNotEmpty
                             ? null
@@ -144,24 +145,24 @@ class EditProfileView extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                       InkWell(
-                      onTap: () async {
-                              DateTime? datetime =
-                                  await Constant.selectDate(context);
-                              controller.dobController.text =
-                                  datetime!.dateMonthYear();
-                            },
-                      child: TextFieldWithTitle(
-                        title: "Date of Birth".tr,
-                        hintText: "Enter Date of Birth".tr,
-                        keyboardType: TextInputType.text,
-                        controller: controller.dobController,
-                        suffixIcon: const Icon(
-                          Icons.calendar_month_outlined,
-                          size: 20,
+                        onTap: () async {
+                          DateTime? datetime =
+                              await Constant.selectDate(context);
+                          controller.dobController.text =
+                              DateFormat('dd-MM-yyyy').format(datetime!);
+                        },
+                        child: TextFieldWithTitle(
+                          title: "Date of Birth".tr,
+                          hintText: "Enter Date of Birth".tr,
+                          keyboardType: TextInputType.text,
+                          controller: controller.dobController,
+                          suffixIcon: const Icon(
+                            Icons.calendar_month_outlined,
+                            size: 20,
+                          ),
+                          isEnable: false,
                         ),
-                        isEnable: false,
                       ),
-                    ),
                       // const SizedBox(height: 20),
                       // Column(
                       //   mainAxisAlignment: MainAxisAlignment.spaceAround,
