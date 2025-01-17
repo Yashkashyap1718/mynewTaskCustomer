@@ -248,12 +248,11 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          controller.bookingModel.value
-                                                      .vehicle ==
-                                                  null
-                                              ? ""
-                                              : controller.bookingModel.value
-                                                  .vehicle!.name,
+                                          controller.bookingModel.value.driver
+                                                  ?.name ??
+                                              controller.bookingModel.value
+                                                  .vehicle?.name ??
+                                              'No Driver Assigned',
                                           style: GoogleFonts.inter(
                                             color: themeChange.isDarkTheme()
                                                 ? AppThemData.grey25
@@ -264,11 +263,11 @@ class MyRideDetailsView extends GetView<MyRideDetailsController> {
                                         ),
                                         const SizedBox(height: 2),
                                         Text(
-                                          (controller.bookingModel.value
-                                                      .paymentStatus ==
-                                                  "cash")
-                                              ? 'Payment is Completed'.tr
-                                              : 'Payment is Completed'.tr,
+                                          controller.bookingModel.value.vehicle
+                                                  ?.vehicleNumber ??
+                                              controller.bookingModel.value
+                                                  .vehicle?.vehicleType ??
+                                              '',
                                           style: GoogleFonts.inter(
                                             color: themeChange.isDarkTheme()
                                                 ? AppThemData.grey25

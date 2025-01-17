@@ -6,6 +6,7 @@ import 'package:customer/app/models/booking_model.dart';
 import 'package:customer/app/models/my_ride_model.dart';
 import 'package:customer/app/models/ride_cancel_reasons.dart';
 import 'package:customer/app/models/service_list_modal.dart';
+import 'package:customer/app/modules/home/controllers/home_controller.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/models/near_by_drivers.dart';
@@ -85,9 +86,10 @@ Future<NearbyDriversResponse?> setBooking(BookingModel bookingModel) async {
   return nearbyDrivers;
 }
 
+RideBooking? ride;
+
 Stream<RideBooking?> checkRequest() async* {
   String status = "";
-
   while (true) {
     final Map<String, dynamic> body = {"startValue": 0, "lastValue": 10};
 
@@ -99,12 +101,19 @@ Stream<RideBooking?> checkRequest() async* {
         "token": token,
       },
     );
+
+    // if (jsonDecode(response.body)["data"] == '[]' ||
+    //     jsonDecode(response.body)["data"] == null) {
+    //   lastRide = ride;
+    //   yield lastRide; // {{ edit_1 }}
+    // }
+
     if (response.statusCode == 200 &&
         jsonDecode(response.body)["data"] != '[]' &&
         jsonDecode(response.body)["data"] != null) {
       RideBooking listModel =
           RideBooking.fromJson(jsonDecode(response.body)["data"]);
-
+      ride = listModel;
       log("listModel: ${listModel.toJson()}");
 
       if (status != listModel.status) {

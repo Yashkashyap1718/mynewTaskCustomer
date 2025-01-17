@@ -14,6 +14,7 @@ import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/theme/responsive.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../controllers/my_ride_controller.dart';
@@ -61,7 +62,7 @@ class MyRideView extends StatelessWidget {
                             onTap: () {
                               controller.selectedType.value = 0;
                             },
-                            size: Size((Responsive.width(90, context) / 3), 38),
+                            size: Size((Responsive.width(90, context) / 2), 38),
                             textSize: 8,
                           ),
                           RoundShapeButton(
@@ -73,19 +74,7 @@ class MyRideView extends StatelessWidget {
                             onTap: () {
                               controller.selectedType.value = 1;
                             },
-                            size: Size((Responsive.width(90, context) / 3), 38),
-                            textSize: 8,
-                          ),
-                          RoundShapeButton(
-                            title: "Rejected".tr,
-                            buttonColor: controller.selectedType.value == 2
-                                ? AppThemData.primary400
-                                : AppThemData.white,
-                            buttonTextColor: Colors.grey,
-                            onTap: () {
-                              controller.selectedType.value = 2;
-                            },
-                            size: Size((Responsive.width(90, context) / 3), 38),
+                            size: Size((Responsive.width(90, context) / 2), 38),
                             textSize: 8,
                           ),
                         ],
@@ -178,10 +167,11 @@ class MyRideView extends StatelessWidget {
                                                 CrossAxisAlignment.center,
                                             children: [
                                               Text(
-                                                bookingModel.startTime == null
-                                                    ? ""
-                                                    : bookingModel.createdAt
-                                                        .toString(),
+                                                DateFormat('EEE, MMM d, ' 'yy')
+                                                    .format(DateTime
+                                                        .fromMillisecondsSinceEpoch(
+                                                            bookingModel
+                                                                .createdAt!)),
                                                 style: GoogleFonts.inter(
                                                   color:
                                                       themeChange.isDarkTheme()
@@ -189,40 +179,6 @@ class MyRideView extends StatelessWidget {
                                                           : AppThemData.grey500,
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                              const SizedBox(width: 8),
-                                              Container(
-                                                height: 15,
-                                                decoration: ShapeDecoration(
-                                                  shape: RoundedRectangleBorder(
-                                                    side: BorderSide(
-                                                      width: 1,
-                                                      strokeAlign: BorderSide
-                                                          .strokeAlignCenter,
-                                                      color: themeChange
-                                                              .isDarkTheme()
-                                                          ? AppThemData.grey800
-                                                          : AppThemData.grey100,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 8),
-                                              Expanded(
-                                                child: Text(
-                                                  bookingModel.createdAt == null
-                                                      ? ""
-                                                      : bookingModel.createdAt
-                                                          .toString(),
-                                                  style: GoogleFonts.inter(
-                                                    color: themeChange
-                                                            .isDarkTheme()
-                                                        ? AppThemData.grey400
-                                                        : AppThemData.grey500,
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
                                                 ),
                                               ),
                                               const SizedBox(width: 8),
@@ -250,19 +206,23 @@ class MyRideView extends StatelessWidget {
                                               SizedBox(
                                                 height: 60,
                                                 width: 60,
-                                                child: CachedNetworkImage(
-                                                  imageUrl: bookingModel
-                                                              .vehicle ==
-                                                          null
-                                                      ? Constant.profileConstant
-                                                      : "$imageBaseUrl${bookingModel.vehicle!.image}",
-                                                  fit: BoxFit.cover,
-                                                  placeholder: (context, url) =>
-                                                      Constant.loader(),
-                                                  errorWidget:
-                                                      (context, url, error) =>
-                                                          Image.asset(Constant
-                                                              .userPlaceHolder),
+                                                child: ClipOval(
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: bookingModel
+                                                                .vehicle ==
+                                                            null
+                                                        ? Constant
+                                                            .profileConstant
+                                                        : "$imageBaseUrl${bookingModel.vehicle!.image}",
+                                                    fit: BoxFit.cover,
+                                                    placeholder:
+                                                        (context, url) =>
+                                                            Constant.loader(),
+                                                    errorWidget: (context, url,
+                                                            error) =>
+                                                        Image.asset(Constant
+                                                            .userPlaceHolder),
+                                                  ),
                                                 ),
                                               ),
                                               const SizedBox(width: 12),
@@ -276,12 +236,11 @@ class MyRideView extends StatelessWidget {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      bookingModel.vehicle
-                                                                  ?.vehicleType ==
-                                                              null
-                                                          ? ""
-                                                          : bookingModel
-                                                              .vehicle!.name,
+                                                      bookingModel
+                                                              .driver?.name ??
+                                                          bookingModel.vehicle
+                                                              ?.vehicleNumber ??
+                                                          "",
                                                       style: GoogleFonts.inter(
                                                         color: themeChange
                                                                 .isDarkTheme()
@@ -295,13 +254,9 @@ class MyRideView extends StatelessWidget {
                                                     ),
                                                     const SizedBox(height: 2),
                                                     Text(
-                                                      (bookingModel.paymentStatus ==
-                                                                  "cash" ??
-                                                              false)
-                                                          ? 'Payment is Completed'
-                                                              .tr
-                                                          : 'Payment is Completed'
-                                                              .tr,
+                                                      bookingModel
+                                                              .vehicle?.name ??
+                                                          "",
                                                       style: GoogleFonts.inter(
                                                         color: themeChange
                                                                 .isDarkTheme()
@@ -348,15 +303,10 @@ class MyRideView extends StatelessWidget {
                                                         CrossAxisAlignment
                                                             .center,
                                                     children: [
-                                                      SvgPicture.asset(
-                                                          "assets/icon/ic_multi_person.svg"),
-                                                      const SizedBox(width: 6),
                                                       Text(
-                                                        bookingModel.vehicle ==
-                                                                null
-                                                            ? ""
-                                                            : bookingModel
-                                                                .vehicle!.name,
+                                                        bookingModel.vehicle
+                                                                ?.vehicleType ??
+                                                            "",
                                                         style:
                                                             GoogleFonts.inter(
                                                           color: AppThemData

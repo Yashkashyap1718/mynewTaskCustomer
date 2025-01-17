@@ -108,6 +108,8 @@ class SelectVehicleTypeBottomSheet extends StatelessWidget {
                                             Constant.vehicleTypeList![index],
                                         index: index,
                                         isForPayment: false,
+                                        distance:
+                                            controller.distance.toString(),
                                       );
                                     },
                                   ),
@@ -124,16 +126,17 @@ class SelectVehicleTypeBottomSheet extends StatelessWidget {
                   child: Container(
                     width: Responsive.width(100, context),
                     decoration: BoxDecoration(
-                        color: themeChange.isDarkTheme()
-                            ? AppThemData.black
-                            : AppThemData.white,
-                        border: Border(
-                          top: BorderSide(
-                              width: 1.0,
-                              color: themeChange.isDarkTheme()
-                                  ? AppThemData.grey800
-                                  : AppThemData.grey100),
-                        ),),
+                      color: themeChange.isDarkTheme()
+                          ? AppThemData.black
+                          : AppThemData.white,
+                      border: Border(
+                        top: BorderSide(
+                            width: 1.0,
+                            color: themeChange.isDarkTheme()
+                                ? AppThemData.grey800
+                                : AppThemData.grey100),
+                      ),
+                    ),
                     padding:
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Row(

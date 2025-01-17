@@ -42,70 +42,14 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeChange = Provider.of<DarkThemeProvider>(context);
     Get.put(HomeController());
-
     return GetBuilder<HomeController>(
       init: HomeController(),
       builder: (controller) {
-        return controller.currentLocationPosition != null
-            ? Scaffold(
-                appBar: _buildAppBar(themeChange),
-                body: Stack(
-                  children: [
-                    // Map Background
-                    Obx(() {
-                      return controller.currentLocationPosition != null
-                          ? GoogleMap(
-                              initialCameraPosition: CameraPosition(
-                                target: LatLng(
-                                  controller.currentLocationPosition!.latitude,
-                                  controller.currentLocationPosition!.longitude,
-                                ),
-                                zoom: 15,
-                              ),
-                              padding: const EdgeInsets.only(top: 2.0),
-                              polylines:
-                                  Set<Polyline>.of(controller.polyLines.values),
-                              markers:
-                                  Set<Marker>.of(controller.markers.values),
-                              onMapCreated:
-                                  (GoogleMapController mapController) {
-                                controller.mapController = mapController;
-                              },
-                            )
-                          : Container();
-                    }),
-                    // Bottom Sheet
-
-                    DraggableScrollableSheet(
-                      initialChildSize: 0.42,
-                      minChildSize: 0.42,
-                      maxChildSize: 0.99,
-                      builder: (BuildContext context,
-                          ScrollController scrollController) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            color: themeChange.isDarkTheme()
-                                ? AppThemData.black
-                                : AppThemData.white,
-                            borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(25)),
-                          ),
-                          child: SingleChildScrollView(
-                            controller: scrollController,
-                            child: Column(
-                              children: [
-                                _buildBody(controller, themeChange, context),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-                drawer: DrawerView(user: controller.userData!),
-              )
-            : Center(child: CircularProgressIndicator());
+        return Scaffold(
+          appBar: _buildAppBar(themeChange),
+          body: _buildBody(controller, themeChange, context),
+          drawer: DrawerView(user: controller.userData),
+        );
       },
     );
   }
@@ -277,11 +221,15 @@ class HomeView extends StatelessWidget {
           return Constant.loader();
         }
         if (!snapshot.hasData) {
+          // if (lastRide != null) {
+          //   controller.bookingModel.value = lastRide;
+          // } else {
           return NoRidesView(
               themeChange: themeChange, height: Responsive.height(40, context));
+          // }
+        } else {
+          controller.bookingModel.value = snapshot.data!;
         }
-
-        controller.bookingModel.value = snapshot.data!;
 
         try {
           controller.sourceLocation = LatLng(
@@ -335,9 +283,20 @@ class HomeView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      DateTime.fromMillisecondsSinceEpoch(
-                              bookingModelList.createdAt)
-                          .time(),
+                      {
+                            "pending": "Pending",
+                            "accepted": "Accepted",
+                            "requested": "Requested",
+                            "rejected": "Rejected",
+                            "cancelled": "Cancelled",
+                            "onGoing": "On Going",
+                            "waiting": "Waiting",
+                            "started": "Started",
+                            "arrived": "Arrived",
+                            "in_progress": "In Progress",
+                            "completed": "Completed",
+                          }[bookingModelList.status] ??
+                          "Unknown",
                       textAlign: TextAlign.right,
                       style: GoogleFonts.inter(
                         color: BookingStatus.getBookingStatusTitleColor(
@@ -373,8 +332,10 @@ class HomeView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              bookingModelList.vehicleType?.title ??
-                                  'Waiting for Driver',
+                              bookingModelList.driver.name == ''
+                                  ? 'Waiting for Driver'
+                                  : bookingModelList.driver.name ??
+                                      'Waiting for Driver',
                               style: GoogleFonts.inter(
                                 color: themeChange.isDarkTheme()
                                     ? AppThemData.grey25

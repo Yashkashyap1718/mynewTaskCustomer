@@ -30,7 +30,7 @@ class _ChatPageOverviewState extends State<ChatPageOverview> {
   );
   final _scrollController = ScrollController();
   final _messageController = TextEditingController();
-  
+
   Stream<List<ChatModel>> get _chatStream => _rtdb
       .ref()
       .child('/chat/${widget.studentId}_75S_${widget.teacherId}')
@@ -41,7 +41,8 @@ class _ChatPageOverviewState extends State<ChatPageOverview> {
   List<ChatModel> _transformSnapshot(DatabaseEvent event) {
     final data = event.snapshot.value as Map<dynamic, dynamic>;
     final messages = data.values
-        .map((value) => _fromJsonMap(Map<String, dynamic>.from(value['message'])))
+        .map((value) =>
+            _fromJsonMap(Map<String, dynamic>.from(value['message'])))
         .toList();
     messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
     return messages;
@@ -116,21 +117,23 @@ class _ChatPageOverviewState extends State<ChatPageOverview> {
               child: StreamBuilder<List<ChatModel>>(
                 stream: _chatStream,
                 builder: (context, snapshot) {
-                  if (snapshot. hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
+                  if (snapshot.hasError) {
+                    return Center(child: Text('No Messages'));
                   }
-                  
+
                   if (!snapshot.hasData) {
                     return const Center(child: CircularProgressIndicator());
                   }
 
                   final messages = snapshot.data!;
-                  WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
-                  
+                  WidgetsBinding.instance
+                      .addPostFrameCallback((_) => _scrollToBottom());
+
                   return ListView.builder(
                     controller: _scrollController,
                     itemCount: messages.length,
-                    itemBuilder: (context, index) => _buildMessageBubble(messages[index]),
+                    itemBuilder: (context, index) =>
+                        _buildMessageBubble(messages[index]),
                   );
                 },
               ),
@@ -160,11 +163,12 @@ class _ChatPageOverviewState extends State<ChatPageOverview> {
 
   Widget _buildMessageBubble(ChatModel message) {
     final isMe = message.from == widget.studentId;
-    
+
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Row(
-        mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment:
+            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           Container(
             constraints: BoxConstraints(

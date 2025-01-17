@@ -16,12 +16,14 @@ class CategoryView extends StatelessWidget {
   final VehicleTypeModel vehicleType;
   final int index;
   final bool isForPayment;
+  final String distance;
 
   const CategoryView(
       {super.key,
       required this.vehicleType,
       required this.index,
-      required this.isForPayment});
+      required this.isForPayment,
+      required this.distance});
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +91,7 @@ class CategoryView extends StatelessWidget {
                     ),
                     const SizedBox(height: 2),
                     Text(
-                      '${vehicleType.charges.farMinimumCharges} km',
+                      '$distance',
                       style: GoogleFonts.inter(
                         color: themeChange.isDarkTheme()
                             ? AppThemData.grey25

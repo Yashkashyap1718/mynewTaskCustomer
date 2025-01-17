@@ -62,6 +62,8 @@ class SelectLocationController extends GetxController {
   BitmapDescriptor? driverIcon;
   RideBooking? rideBooking;
 
+  String? distance;
+
   changeVehicleType(int index) {
     selectVehicleTypeIndex.value = index;
     bookingModel.value.vehicleType = Constant.vehicleTypeList![index];
@@ -78,117 +80,112 @@ class SelectLocationController extends GetxController {
     log('-----mapModel---$mapModel');
 
     rideBooking = Get.arguments;
-    log("bookingModel.value: ${bookingModel.value.toJson()}");  
+    log("bookingModel.value: ${bookingModel.value.toJson()}");
 
     try {
+      sourceLocation = LatLng(rideBooking!.pickupLocation.coordinates[0],
+          rideBooking!.pickupLocation.coordinates[1]);
+      destination = LatLng(rideBooking!.dropoffLocation.coordinates[0],
+          rideBooking!.dropoffLocation.coordinates[1]);
 
- sourceLocation=LatLng(
-      rideBooking!.pickupLocation.coordinates[0], rideBooking!.pickupLocation.coordinates[1]);
- destination=LatLng(
-      rideBooking!.dropoffLocation.coordinates[0], rideBooking!.dropoffLocation.coordinates[1]);
+      bookingModel.value = BookingModel(
+          id: rideBooking?.id,
+          pickUpLocation: LocationLatLng(
+              latitude: rideBooking?.pickupLocation.coordinates[1] ?? 0,
+              longitude: rideBooking?.pickupLocation.coordinates[0] ?? 0),
+          dropLocation: LocationLatLng(
+              latitude: rideBooking?.dropoffLocation.coordinates[1] ?? 0,
+              longitude: rideBooking?.dropoffLocation.coordinates[0] ?? 0),
+          pickUpLocationAddress: rideBooking?.pickupAddress,
+          dropLocationAddress: rideBooking?.dropoffAddress,
+          paymentType: rideBooking?.paymentMode,
+          otp: rideBooking?.otp,
+          bookingStatus: rideBooking?.status,
+          driverId: rideBooking?.driver.id,
+          customerId: rideBooking?.passenger.id,
+          subTotal: rideBooking?.fareAmount,
+          vehicleType: rideBooking?.vehicleType,
+          distance: DistanceModel(
+            distance: rideBooking?.distance,
+            distanceType: Constant.distanceType,
+          ),
+          // createAt: rideBooking?.createdAt != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+          // updateAt: rideBooking?.endTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+          // bookingTime: rideBooking?.startTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+          // pickupTime: rideBooking?.startTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+          // dropTime: rideBooking?.endTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
+          paymentStatus: rideBooking?.paymentStatus == "cash",
+          rejectedDriverId: [],
+          taxList: [],
+          position: null,
+          coupon: null,
+          adminCommission: null,
+          cancelledBy: null,
+          cancelledReason: null,
+          discount: "0");
 
-    bookingModel.value = BookingModel(
-                            id: rideBooking?.id,
-                            pickUpLocation: LocationLatLng(
-                              latitude: rideBooking?.pickupLocation.coordinates[1] ?? 0,
-                              longitude: rideBooking?.pickupLocation.coordinates[0] ?? 0
-                            ),
-                            dropLocation: LocationLatLng(
-                              latitude: rideBooking?.dropoffLocation.coordinates[1] ?? 0,
-                              longitude: rideBooking?.dropoffLocation.coordinates[0] ?? 0
-                            ),
-                            pickUpLocationAddress: rideBooking?.pickupAddress,
-                            dropLocationAddress: rideBooking?.dropoffAddress,
-                            paymentType: rideBooking?.paymentMode,
-                            otp: rideBooking?.otp,
-                            bookingStatus: rideBooking?.status,
-                            driverId: rideBooking?.driver.id,
-                            customerId: rideBooking?.passenger.id,
-                            subTotal: rideBooking?.fareAmount,
-                            vehicleType: rideBooking?.vehicleType,
-                            // createAt: rideBooking?.createdAt != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
-                            // updateAt: rideBooking?.endTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
-                            // bookingTime: rideBooking?.startTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
-                            // pickupTime: rideBooking?.startTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
-                            // dropTime: rideBooking?.endTime != null ? timestamp.Timestamp.fromDate(rideBooking!.createdAt as DateTime) : null,
-                          paymentStatus: rideBooking?.paymentStatus == "cash",
-                          rejectedDriverId: [],
-                          taxList: [],
-                          position: null,
-                          coupon: null,
-                          adminCommission: null,
-                          distance: null,
-                          cancelledBy: null,
-                          cancelledReason: null,
-                          discount: "0"
-                          );
+      popupIndex.value = 3;
+    } catch (e) {}
 
-
-    popupIndex.value = 3;
-    }catch(e){
-
-    }
-
-  
     getData();
 
     super.onInit();
   }
 
-    getTax() async {
-      await FireStoreUtils().getTaxList().then((value) {
-        if (value != null) {
-          Constant.taxList = value;
-          taxList.value = value;
-          print("===> ${Constant.taxList!.length}");
-        }
-      });
-    }
-
-    static Future<bool> updateCurrentLocation({
-      required double latitude,
-      required double longitude,
-    }) async {
-      final String url = baseURL + currentLocationEndpoint;
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      token = prefs.getString("token") ?? "";
-
-      // Request body
-      final Map<String, dynamic> body = {
-        "latitude": latitude.toString(),
-        "longitude": longitude.toString(),
-        "fcmToken": token,
-      };
-      // Constant().getDriverData(mapModel.value, bookingModel.value);
-      try {
-        // HTTP PUT request
-        final response = await http.put(
-          Uri.parse(url),
-          headers: {
-            'token': token.toString(),
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(body),
-        );
-
-        // Check if the response status is OK
-        if (response.statusCode == 200) {
-          final jsonResponse = jsonDecode(response.body);
-
-          if (jsonResponse['status'] == true) {
-            log("Location updated successfully: ${jsonResponse['msg']}");
-            return true;
-          } else {
-            log("Failed to update location: ${jsonResponse['msg']}");
-          }
-        } else {
-          log("Error: ${response.statusCode} - ${response.reasonPhrase}");
-        }
-      } catch (error, stackTrace) {
-        log('Failed to update current location: $error $stackTrace');
+  getTax() async {
+    await FireStoreUtils().getTaxList().then((value) {
+      if (value != null) {
+        Constant.taxList = value;
+        taxList.value = value;
+        print("===> ${Constant.taxList!.length}");
       }
-      return false;
+    });
+  }
+
+  static Future<bool> updateCurrentLocation({
+    required double latitude,
+    required double longitude,
+  }) async {
+    final String url = baseURL + currentLocationEndpoint;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString("token") ?? "";
+
+    // Request body
+    final Map<String, dynamic> body = {
+      "latitude": latitude.toString(),
+      "longitude": longitude.toString(),
+      "fcmToken": token,
+    };
+    // Constant().getDriverData(mapModel.value, bookingModel.value);
+    try {
+      // HTTP PUT request
+      final response = await http.put(
+        Uri.parse(url),
+        headers: {
+          'token': token.toString(),
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+
+      // Check if the response status is OK
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse['status'] == true) {
+          log("Location updated successfully: ${jsonResponse['msg']}");
+          return true;
+        } else {
+          log("Failed to update location: ${jsonResponse['msg']}");
+        }
+      } else {
+        log("Error: ${response.statusCode} - ${response.reasonPhrase}");
+      }
+    } catch (error, stackTrace) {
+      log('Failed to update current location: $error $stackTrace');
     }
+    return false;
+  }
 
   getData() async {
     currentLocationPosition = await Utils.getCurrentLocation();
@@ -283,6 +280,9 @@ class SelectLocationController extends GetxController {
         GeoFirePoint position = GeoFlutterFire().point(
             latitude: sourceLocation!.latitude,
             longitude: sourceLocation!.longitude);
+
+        distance = mapModel.value?.rows?.first.elements?.first.distance?.text
+            .toString();
 
         bookingModel.value.position =
             Positions(geoPoint: position.geoPoint, geohash: position.hash);
@@ -491,9 +491,9 @@ class SelectLocationController extends GetxController {
         .getBytesFromAsset('assets/icon/ic_pick_up_map.png', 100);
     final Uint8List dropUint8List = await Constant()
         .getBytesFromAsset('assets/icon/ic_drop_in_map.png', 100);
-    final Uint8List driverUint8List = await Constant()
-        .getBytesFromAsset('assets/icon/car_image.png', 50);
-      
+    final Uint8List driverUint8List =
+        await Constant().getBytesFromAsset('assets/icon/car_image.png', 50);
+
     pickUpIcon = BitmapDescriptor.fromBytes(pickUpUint8List);
     dropIcon = BitmapDescriptor.fromBytes(dropUint8List);
     driverIcon = BitmapDescriptor.fromBytes(driverUint8List);

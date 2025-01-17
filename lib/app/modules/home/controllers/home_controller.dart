@@ -28,6 +28,9 @@ import 'package:customer/models/ride_booking.dart';
 
 import '../../../../constant_widgets/show_toast_dialog.dart';
 
+// sidhumusse wala
+RideBooking? lastRide;
+
 class HomeController extends GetxController {
   final count = 0.obs;
 
@@ -48,7 +51,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     getUserData();
-    getData();
+    // getData();
     super.onInit();
   }
 

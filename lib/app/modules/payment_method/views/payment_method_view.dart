@@ -60,6 +60,9 @@ class PaymentMethodView extends StatelessWidget {
                       vehicleType: Constant.vehicleTypeList![index],
                       index: index,
                       isForPayment: true,
+                      distance: Constant
+                          .vehicleTypeList![index].charges.farMinimumCharges
+                          .toString(),
                     ),
                     Container(
                       width: Responsive.width(100, context),

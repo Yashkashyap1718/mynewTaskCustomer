@@ -15,7 +15,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class DrawerView extends StatelessWidget {
-  UserData user;
+  UserData? user;
 
   DrawerView({super.key, required this.user});
 
@@ -77,7 +77,7 @@ class DrawerView extends StatelessWidget {
                                     children: [
                                       Text(
                                         controller.name.value == ""
-                                            ? user.name ?? "Customer"
+                                            ? user!.name ?? "Customer"
                                             : controller.name.value,
                                         style: GoogleFonts.inter(
                                           color: themeChange.isDarkTheme()
@@ -420,7 +420,7 @@ class DrawerView extends StatelessWidget {
                                 Navigator.pop(context);
                                 // Get.to(const MyRideDetailsView());
                                 await controller.logOutUser(context);
-// 
+//
                                 // await FirebaseAuth.instance.signOut();
                               },
                               negativeClick: () {
