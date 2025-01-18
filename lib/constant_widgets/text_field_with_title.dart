@@ -38,7 +38,12 @@ class TextFieldWithTitle extends StatelessWidget {
       children: [
         Text(
           title,
-          style: GoogleFonts.inter(fontSize: 14, color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.grey950, fontWeight: FontWeight.w500),
+          style: GoogleFonts.inter(
+              fontSize: 14,
+              color: themeChange.isDarkTheme()
+                  ? AppThemData.white
+                  : AppThemData.grey950,
+              fontWeight: FontWeight.w500),
         ),
         Container(
           transform: Matrix4.translationValues(0.0, -05.0, 0.0),
@@ -49,21 +54,35 @@ class TextFieldWithTitle extends StatelessWidget {
             inputFormatters: inputFormatters,
             enabled: isEnable,
             validator: validator,
-            style: GoogleFonts.inter(fontSize: 14, color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.grey950, fontWeight: FontWeight.w400),
+            style: GoogleFonts.inter(
+                fontSize: 14,
+                color: themeChange.isDarkTheme()
+                    ? AppThemData.white
+                    : AppThemData.grey950,
+                fontWeight: FontWeight.w400),
             decoration: InputDecoration(
-              prefixIconConstraints: const BoxConstraints(minWidth: 23, maxHeight: 20),
-              border: const UnderlineInputBorder(borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
-              focusedBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
-              enabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
-              errorBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
-              disabledBorder: const UnderlineInputBorder(borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
+              prefixIconConstraints:
+                  const BoxConstraints(minWidth: 23, maxHeight: 20),
+              border: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
+              focusedBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
+              enabledBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
+              errorBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
+              disabledBorder: const UnderlineInputBorder(
+                  borderSide: BorderSide(color: AppThemData.grey500, width: 1)),
               prefixIcon: Padding(
                 padding: const EdgeInsets.only(right: 10),
                 child: prefixIcon,
               ),
               suffixIcon: suffixIcon,
               hintText: hintText,
-              hintStyle: GoogleFonts.inter(fontSize: 14, color: AppThemData.grey500, fontWeight: FontWeight.w400),
+              hintStyle: GoogleFonts.inter(
+                  fontSize: 14,
+                  color: AppThemData.grey500,
+                  fontWeight: FontWeight.w400),
             ),
           ),
         ),

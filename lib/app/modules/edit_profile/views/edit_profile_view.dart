@@ -51,8 +51,9 @@ class EditProfileView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Center(
-                      // child: myProfileView(controller, context),
+                      Center(
+                        child: myProfileView(controller, context),
+                      ),
                       // Stack(
                       //   alignment: Alignment.bottomRight,
                       //   children: [
@@ -147,7 +148,7 @@ class EditProfileView extends StatelessWidget {
                       InkWell(
                         onTap: () async {
                           DateTime? datetime =
-                              await Constant.selectDate(context);
+                              await Constant.selectDate(context, themeChange);
                           controller.dobController.text =
                               DateFormat('dd-MM-yyyy').format(datetime!);
                         },
@@ -340,7 +341,7 @@ class EditProfileView extends StatelessWidget {
                             imageUrl: controller.profileImage.value),
                       ),
                     )
-                  : (Constant().hasValidUrl(controller.profileImage.value))
+                  : (Constant.hasValidUrl(controller.profileImage.value))
                       ? Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(60),

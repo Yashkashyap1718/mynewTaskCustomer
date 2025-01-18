@@ -34,7 +34,7 @@ RideBooking? lastRide;
 class HomeController extends GetxController {
   final count = 0.obs;
 
-  RxString profilePic = "https://avatar.iran.liara.run/public".obs;
+  RxString profilePic = "".obs;
   RxString name = ''.obs;
   RxString phoneNumber = ''.obs;
   RxList<BannerModel> bannerList = <BannerModel>[].obs;
@@ -337,6 +337,7 @@ class HomeController extends GetxController {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     name.value = preferences.getString("name") ?? "";
     phoneNumber.value = preferences.getString("phone_number") ?? "";
+    profilePic.value = preferences.getString("profile") ?? "";
     isLoading.value = true;
     userData = await FireStoreUtils.getUserProfileAPI();
     print("USERDATA::: $userData");
@@ -360,7 +361,6 @@ class HomeController extends GetxController {
             });
         return;
       }
-      profilePic.value = "https://avatar.iran.liara.run/public";
       name.value = userData!.name ?? '';
       phoneNumber.value =
           (userData!.countryCode ?? '91') + (userData!.phone ?? '****');

@@ -44,8 +44,8 @@ class MyRideView extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.2),
-                  ),
+                      // color: Colors.grey.withOpacity(0.2),
+                      ),
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(16, 8, 16, 10),
                     child: Obx(
@@ -57,24 +57,36 @@ class MyRideView extends StatelessWidget {
                             title: "Ongoing".tr,
                             buttonColor: controller.selectedType.value == 0
                                 ? AppThemData.primary400
-                                : AppThemData.white,
+                                : AppThemData.primary200,
                             buttonTextColor: Colors.grey,
                             onTap: () {
                               controller.selectedType.value = 0;
                             },
-                            size: Size((Responsive.width(90, context) / 2), 38),
+                            size: Size((Responsive.width(90, context) / 3), 38),
                             textSize: 8,
                           ),
                           RoundShapeButton(
                             title: "Completed".tr,
                             buttonColor: controller.selectedType.value == 1
                                 ? AppThemData.primary400
-                                : AppThemData.white,
+                                : AppThemData.primary200,
                             buttonTextColor: Colors.grey,
                             onTap: () {
                               controller.selectedType.value = 1;
                             },
-                            size: Size((Responsive.width(90, context) / 2), 38),
+                            size: Size((Responsive.width(90, context) / 3), 38),
+                            textSize: 8,
+                          ),
+                          RoundShapeButton(
+                            title: "Cancelled".tr,
+                            buttonColor: controller.selectedType.value == 2
+                                ? AppThemData.primary400
+                                : AppThemData.primary200,
+                            buttonTextColor: Colors.grey,
+                            onTap: () {
+                              controller.selectedType.value = 2;
+                            },
+                            size: Size((Responsive.width(90, context) / 3), 38),
                             textSize: 8,
                           ),
                         ],
@@ -240,7 +252,7 @@ class MyRideView extends StatelessWidget {
                                                               .driver?.name ??
                                                           bookingModel.vehicle
                                                               ?.vehicleNumber ??
-                                                          "",
+                                                          "No Driver Assigned",
                                                       style: GoogleFonts.inter(
                                                         color: themeChange
                                                                 .isDarkTheme()

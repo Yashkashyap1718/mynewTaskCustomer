@@ -1,10 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:customer/app/models/user_model.dart';
 import 'package:customer/app/modules/home/controllers/home_controller.dart';
 import 'package:customer/app/modules/my_ride/views/my_ride_view.dart';
 import 'package:customer/app/modules/my_services/views/service_list_view.dart';
 import 'package:customer/app/routes/app_pages.dart';
+import 'package:customer/constant/api_constant.dart';
+import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/custom_dialog_box.dart';
 import 'package:customer/theme/app_them_data.dart';
 import 'package:customer/utils/dark_theme_provider.dart';
@@ -48,26 +51,31 @@ class DrawerView extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Container(
-                                  width: 60,
-                                  height: 60,
-                                  margin: const EdgeInsets.only(right: 10),
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    color: themeChange.isDarkTheme()
-                                        ? AppThemData.white
-                                        : AppThemData.black,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(200),
-                                    ),
-                                    image: DecorationImage(
-                                      image: NetworkImage(controller
-                                              .profilePic.value ??
-                                          "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.pngegg.com%2Fen%2Fsearch%3Fq%3Duser&psig=AOvVaw1N5jfjCo7kz2U2tohFaTMd&ust=1729279101833000&source=images&cd=vfe&opi=89978449&ved=0CBEQjRxqFwoTCODU_uaQlokDFQAAAAAdAAAAABAE"),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
+                                (controller.profilePic.value.isNotEmpty)
+                                    ? Container(
+                                        width: 60,
+                                        height: 60,
+                                        margin:
+                                            const EdgeInsets.only(right: 10),
+                                        clipBehavior: Clip.antiAlias,
+                                        decoration: ShapeDecoration(
+                                          color: themeChange.isDarkTheme()
+                                              ? AppThemData.white
+                                              : AppThemData.black,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(200),
+                                          ),
+                                          image: DecorationImage(
+                                            image: CachedNetworkImageProvider(
+                                                imageBaseUrl +
+                                                    controller
+                                                        .profilePic.value),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
                                 Expanded(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -249,30 +257,37 @@ class DrawerView extends StatelessWidget {
                       //         fontWeight: FontWeight.w400),
                       //   ),
                       // ),
-                      // // const Padding(
-                      // //   padding: EdgeInsets.only(left: 50),
-                      // //   child: Divider(),
-                      // // ),
-                      // // ListTile(
-                      // //   leading: SvgPicture.asset(
-                      // //     "assets/icon/ic_support.svg",
-                      // //     height: 22,
-                      // //     colorFilter: ColorFilter.mode(themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black, BlendMode.srcIn),
-                      // //   ),
-                      // //   trailing: const Icon(Icons.keyboard_arrow_right_rounded, size: 30),
-                      // //   title: Text(
-                      // //     'Support'.tr,
-                      // //     style: GoogleFonts.inter(
-                      // //         fontSize: 16,
-                      // //         color: themeChange.isDarkTheme() ? AppThemData.white : AppThemData.black,
-                      // //         fontWeight: FontWeight.w400),
-                      // //   ),
-                      // //   onTap: () {
-                      // //     Get.back();
-                      // //     controller.drawerIndex.value = 3;
-                      // //     // Get.to(const MyWalletView());
-                      // //   },
-                      // // ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 50),
+                        child: Divider(),
+                      ),
+                      ListTile(
+                        leading: SvgPicture.asset(
+                          "assets/icon/ic_support.svg",
+                          height: 22,
+                          colorFilter: ColorFilter.mode(
+                              themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
+                              BlendMode.srcIn),
+                        ),
+                        trailing: const Icon(Icons.keyboard_arrow_right_rounded,
+                            size: 30),
+                        title: Text(
+                          'Support'.tr,
+                          style: GoogleFonts.inter(
+                              fontSize: 16,
+                              color: themeChange.isDarkTheme()
+                                  ? AppThemData.white
+                                  : AppThemData.black,
+                              fontWeight: FontWeight.w400),
+                        ),
+                        onTap: () {
+                          Get.back();
+                          controller.drawerIndex.value = 3;
+                          // Get.to(const MyWalletView());
+                        },
+                      ),
                       // const Padding(
                       //   padding: EdgeInsets.only(left: 50),
                       //   child: Divider(),

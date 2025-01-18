@@ -75,6 +75,7 @@ class EditProfileController extends GetxController {
                 .toString()
             : '';
         selectedGender.value = data['gender'] == 'male' ? 1 : 2;
+        profileImage.value = ("$imageBaseUrl${data['profile']}") ?? '';
 
         SharedPreferences preferences = await SharedPreferences.getInstance();
         preferences.setString("name", data['name'] ?? '');
@@ -176,7 +177,6 @@ class EditProfileController extends GetxController {
   // Upload Profile
 // Upload Profile function
   Future<void> uploadProfile(String token) async {
-    const String url = '$baseURL/users/profile/upload';
     // Check if the profile image path is not empty
     if (profileImage.value.isEmpty) {
       print('No image selected');
@@ -200,8 +200,8 @@ class EditProfileController extends GetxController {
       String? token = prefs.getString("token");
 
       // Send the POST request
-      final response = await http.post(
-        Uri.parse(url),
+      final response = await http.put(
+        Uri.parse('$baseURL/users/profile/upload'),
         headers: {
           'Content-Type': 'application/json',
           'token': token ?? '',
@@ -218,6 +218,9 @@ class EditProfileController extends GetxController {
           ScaffoldMessenger.of(Get.context!).showSnackBar(
             SnackBar(content: Text(data['msg'])),
           );
+          SharedPreferences preferences = await SharedPreferences.getInstance();
+          preferences.setString("profile", data['data']);
+          Get.offAllNamed(Routes.HOME);
         } else {
           ShowToastDialog.closeLoader();
           throw Exception(data['msg']);

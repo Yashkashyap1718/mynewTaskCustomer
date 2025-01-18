@@ -22,14 +22,15 @@ class AppThemData {
   static const Color warning500 = Color(0xFFFFD600);
   static const Color blue = Color(0xFF016AA2);
   static const Color danger_500p = Color(0xFFFF3B30);
+  static const Color primary300 = Color.fromARGB(255, 63, 113, 222);
+  static Color primary400 = const Color.fromARGB(255, 63, 113, 222);
+  static Color primary500 = const Color(0xFFFEA735);
 
   static const List<Color> gradient03 = [Color(0xFFFF8008), Color(0xFFFFC837)];
 
   static const Color primary50 = Color(0xFFFFF8F0);
   static const Color primary100 = Color(0xFFFFE9CC);
   static const Color primary200 = Color(0xFFFFDEB3);
-  static const Color primary300 = Color.fromARGB(255, 63, 113, 222);
-  static Color primary400 = Color.fromARGB(255, 63, 113, 222);
   // static Color primary500 =  Color(0xFFFEA735);
   static const Color primary600 = Color(0xFFFE9001);
   static const Color primary700 = Color(0xFFCB7401);

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:customer/app/models/support_reason_model.dart';
 import 'package:customer/app/models/support_ticket_model.dart';
+import 'package:customer/app/owner_support_ticket_modal.dart';
 import 'package:customer/constant/constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/utils/fire_store_utils.dart';
@@ -11,6 +12,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:customer/api_services.dart';
+import 'dart:convert';
 
 class CreateSupportTicketController extends GetxController {
   Rx<GlobalKey<FormState>> formKey = GlobalKey<FormState>().obs;
@@ -19,6 +22,7 @@ class CreateSupportTicketController extends GetxController {
   Rx<SupportReasonModel> selectedSupportTitle = SupportReasonModel().obs;
 
   Rx<TextEditingController> subjectController = TextEditingController().obs;
+  Rx<TextEditingController> titleController = TextEditingController().obs;
   Rx<TextEditingController> descriptionController = TextEditingController().obs;
 
   @override
@@ -39,8 +43,8 @@ class CreateSupportTicketController extends GetxController {
     if (formKey.value.currentState!.validate()) {
       ShowToastDialog.showLoader("Please Wait".tr);
       if (supportImages.isNotEmpty &&
-          Constant().hasValidUrl(supportImages[0]) == false) {
-        supportImages.value = await Constant.uploadSupportImage(supportImages);
+          Constant.hasValidUrl(supportImages[0]) == false) {
+        // supportImages.value = await Constant.uploadSupportImage(supportImages);
       }
     }
 
@@ -53,7 +57,7 @@ class CreateSupportTicketController extends GetxController {
     supportTicketModel.value.status = "pending";
     supportTicketModel.value.createAt = Timestamp.now();
     supportTicketModel.value.updateAt = Timestamp.now();
-    supportTicketModel.value.type = "customer";
+    supportTicketModel.value.type = "driver";
 
     await FireStoreUtils.addSupportTicket(supportTicketModel.value)
         .then((value) {
@@ -108,6 +112,32 @@ class CreateSupportTicketController extends GetxController {
       }
     } on PlatformException catch (e) {
       ShowToastDialog.showToast("Failed to Pick : \n $e");
+    }
+  }
+
+  Future<void> createSupportTicket() async {
+    Map<String, dynamic> params = {
+      "title": selectedSupportTitle.value.reason,
+      "subject": subjectController.value.text,
+      "description": descriptionController.value.text,
+      "image": supportImages
+          .map((image) =>
+              "data:image/jpeg;base64,${base64Encode(File(image).readAsBytesSync())}")
+          .toList(),
+    };
+
+    try {
+      ShowToastDialog.showLoader("Creating ticket...".tr);
+      final response = await createSupportTicketAPI(params);
+      if (response["status"] == true) {
+        Get.back();
+      }
+      ShowToastDialog.closeLoader();
+      ShowToastDialog.showToast("Support Ticket Created".tr);
+      // Handle success (e.g., navigate back or clear fields)
+    } catch (e) {
+      ShowToastDialog.closeLoader();
+      ShowToastDialog.showToast("Error: ${e.toString()}");
     }
   }
 }

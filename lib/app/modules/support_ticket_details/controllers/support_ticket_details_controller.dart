@@ -1,11 +1,12 @@
 import 'dart:developer';
 
-import 'package:customer/app/models/support_ticket_model.dart';
+import 'package:customer/app/owner_support_ticket_modal.dart';
 import 'package:get/get.dart';
 
 class SupportTicketDetailsController extends GetxController {
   RxBool isLoading = true.obs;
-  Rx<SupportTicketModel> supportTicketModel = SupportTicketModel().obs;
+  Rx<SupportTicketDataModel> supportTicketModel =
+      SupportTicketDataModel(userId: UserId()).obs;
 
   @override
   void onInit() {

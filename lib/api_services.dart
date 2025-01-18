@@ -7,11 +7,13 @@ import 'package:customer/app/models/my_ride_model.dart';
 import 'package:customer/app/models/ride_cancel_reasons.dart';
 import 'package:customer/app/models/service_list_modal.dart';
 import 'package:customer/app/modules/home/controllers/home_controller.dart';
+import 'package:customer/app/owner_support_ticket_modal.dart';
 import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/models/near_by_drivers.dart';
 import 'package:customer/models/ride_booking.dart';
 import 'package:customer/utils/my_notification_handler.dart';
+import 'package:customer/utils/preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:http/http.dart' as http;
@@ -322,4 +324,53 @@ Future<List<RideCancelResaons>> getRideNotes() async {
     return rides;
   }
   return [];
+}
+
+Future<List<SupportTicketDataModel>> getDriverSupportTickList() async {
+  int inital = 0;
+  int last = 20;
+
+  String endPoint = getTicketList;
+
+  Map<String, dynamic> params = {"startValue": inital, "lastValue": last};
+
+  // String token = await Preferences.getToken();
+
+  final response = await http.post(
+    Uri.parse(baseURL + endPoint),
+    headers: {"Content-Type": "application/json", "token": token},
+    body: jsonEncode(params),
+  );
+
+  if (response.statusCode == 200 && jsonDecode(response.body)["status"]) {
+    List<SupportTicketDataModel> list = List<SupportTicketDataModel>.from(
+        jsonDecode(response.body)["data"]
+            .map((e) => SupportTicketDataModel.fromJson(e)));
+
+    return list;
+  } else {
+    return [];
+  }
+}
+
+Future<Map<String, dynamic>> createSupportTicketAPI(
+    Map<String, dynamic> params) async {
+  String endPoint = createSupportTicket;
+  params["title"] = "I am not getting any responder from customer1";
+
+  final response = await http.post(
+    Uri.parse(baseURL + endPoint),
+    headers: {
+      "Content-Type": "application/json",
+      "token": token,
+    },
+    body: jsonEncode(params),
+  );
+
+  if (response.statusCode == 200) {
+    return jsonDecode(response.body);
+  } else {
+    throw Exception(
+        'Failed to create support ticket: ${response.reasonPhrase}');
+  }
 }

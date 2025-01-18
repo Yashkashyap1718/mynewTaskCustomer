@@ -19,6 +19,7 @@ import 'package:customer/constant/api_constant.dart';
 import 'package:customer/constant_widgets/show_toast_dialog.dart';
 import 'package:customer/extension/string_extensions.dart';
 import 'package:customer/theme/app_them_data.dart';
+import 'package:customer/utils/dark_theme_provider.dart';
 import 'package:customer/utils/fire_store_utils.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -245,7 +246,7 @@ class Constant {
     }
   }
 
-  bool hasValidUrl(String value) {
+  static bool hasValidUrl(String value) {
     String pattern =
         r'(http|https)://[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?';
     RegExp regExp = RegExp(pattern);
@@ -406,18 +407,25 @@ class Constant {
     return null;
   }
 
-  static Future<DateTime?> selectDate(context) async {
+  static Future<DateTime?> selectDate(
+      context, DarkThemeProvider themeChange) async {
     DateTime? pickedDate = await showDatePicker(
         context: context,
         builder: (context, child) {
           return Theme(
             data: Theme.of(context).copyWith(
-              colorScheme: const ColorScheme.light(
-                primary: AppThemData.primary600, // header background color
-                onPrimary: AppThemData.grey100, // header text color
-                onSurface: AppThemData.grey100, // body text color
+              colorScheme: ColorScheme.light(
+                primary: themeChange.isDarkTheme()
+                    ? AppThemData.primary700
+                    : AppThemData.primary600, // header background color
+                onPrimary: themeChange.isDarkTheme()
+                    ? AppThemData.grey900
+                    : AppThemData.grey100, // header text color
+                onSurface: themeChange.isDarkTheme()
+                    ? AppThemData.grey800
+                    : AppThemData.grey100, // body text color
               ),
-              textButtonTheme: const TextButtonThemeData(
+              textButtonTheme: TextButtonThemeData(
                   // style: TextButton.styleFrom(
                   //   foregroundColor: AppThemData.grey100, // button text color
                   // ),
